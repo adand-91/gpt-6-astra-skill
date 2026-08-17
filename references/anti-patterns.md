@@ -89,3 +89,28 @@ Two or three concrete options, the cost of each in the user's own vocabulary, an
 
 The user approved one irreversible action, so the agent takes four more of the same kind. Approval is
 per action. A locked sheet authorises the *scope*, not every side effect encountered along the way.
+
+## 13. Refuting without offering the alternative
+
+The user's plan will not work, and the agent says so — and stops there. The user now knows less about
+what to do than before they asked, and the exchange reads as obstruction.
+
+Say what breaks, why, and the replacement, in one message. The other half of this failure is building
+the replacement silently, which is a scope change wearing a helpful face.
+
+## 14. Laundering a misconception into CONFIRMED
+
+The user states something confidently, so it goes in as `CONFIRMED` and everything downstream is built
+on it. But `CONFIRMED` only records that they said it — not that it is true, achievable, or good for
+them.
+
+This is distinct from anti-pattern 1, which is about the agent's own guesses. This one is about
+treating a user's certainty as evidence. Correct it and re-confirm.
+
+## 15. Pricing by how hard it sounds
+
+"Also just match up the names between the two files" arrives as a footnote and is the entire project.
+The estimate gets set on the parts that sounded impressive, and the item that will actually consume
+the time — and might partly fail — was never surfaced.
+
+Name the real work before estimating, and say the cheap parts are cheap in the same breath.

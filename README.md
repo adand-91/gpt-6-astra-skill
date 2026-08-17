@@ -38,6 +38,9 @@ plan, not in a commit message. Defaults are fine. Unlabelled defaults are the bu
 - **Opens** with a restatement, then at most three questions per round, ranked by how much the answer
   changes the outcome. No questionnaire dumps.
 - **Decides instead of asking** when being wrong is cheap to undo, and says which choices those were.
+- **Handles the user who is not an expert**: proposes options instead of demanding specifications,
+  says when their plan will not get them what they want *and* what to do instead, and names which part
+  is the real work before estimating. `CONFIRMED` means they said it, not that it is correct.
 - **Locks** a one-screen confirmation sheet — goal, in/out of scope, inputs, outputs, acceptance,
   constraints, where it runs, open items — before expensive work starts.
 - **Classifies** every later request as `DEFECT`, `REFINEMENT`, or `NEW SCOPE`, out loud, so scope
@@ -100,9 +103,11 @@ normative file makes its mirror mechanically detectable as stale instead of quie
 ```
 SKILL.md                  normative skill document (loaded by the agent)
 SKILL.zh-CN.md            checked Chinese mirror
-references/               loaded on demand: clarify loop, sheet rules, change control,
-                          closeout, anti-patterns — each with a .zh-CN.md mirror
-templates/                the confirmation sheet, English and Chinese
+references/               loaded on demand: clarify loop, sheet rules, non-expert users,
+                          change control, closeout, anti-patterns (15 of them)
+                          — each with a .zh-CN.md mirror
+templates/                the confirmation sheet, and the nine fields as plain-language
+                          questions with example answers — both in English and Chinese
 scripts/                  the two checkers
 tests/                    unittest, no third-party dependencies
 ```

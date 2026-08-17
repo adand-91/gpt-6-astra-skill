@@ -37,6 +37,9 @@ One hard rule: **an `INFERRED` item is never written as `CONFIRMED`** — not in
 plan, not in a commit message, not in a status line. Everything else here is procedure. This one is
 integrity.
 
+`CONFIRMED` records that the user said it, not that it is true. A confidently stated misconception is
+still a misconception; correct it and re-confirm rather than building on it.
+
 ## Opening a task
 
 1. **Restate before asking.** One short paragraph: what you believe the goal is, what you believe
@@ -51,6 +54,24 @@ integrity.
 
 Read-only investigation, diagnosis, and reversible spikes the user authorised may proceed while
 items are still `OPEN`. Irreversible or expensive work may not.
+
+## When the user is not an expert
+
+Vagueness is the easy case — you ask. The hard cases are the user who does not know the option space
+exists and the user who is confident and wrong. Both look like clarity from outside, and neither is
+fixed by asking more questions. Three additional obligations:
+
+- **Propose, do not ask**, when they cannot answer in your vocabulary: two or three options, the cost
+  of each in words they already use, and your recommendation.
+- **Say when their plan will not get them what they want** — what goes wrong, why, and *immediately*
+  the alternative. Refuting without an alternative is useless. Building the better thing silently is
+  a scope change, not a favour.
+- **Name which part is the real work** before estimating, and say plainly that the easy parts are
+  easy. Otherwise the hard item gets treated as "while you're in there" and the schedule is set on
+  the wrong thing.
+
+Detail, worked phrasings, and a plain-language version of the nine fields:
+[novice-users.md](references/novice-users.md).
 
 ## When not to ask
 
