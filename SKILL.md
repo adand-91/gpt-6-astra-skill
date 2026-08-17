@@ -1,133 +1,118 @@
 ---
 name: requirement-ledger
 description: >-
-  Keep a live requirement ledger for any task big enough to go wrong: restate the goal in your own
-  words, label every item CONFIRMED / INFERRED / OPEN and never let an INFERRED item pass as
-  CONFIRMED, ask only the one to three questions whose answers would change the deliverable, lock a
-  one-screen confirmation sheet before building, and settle every item as DONE / PARTIAL / CANCELLED
-  / BLOCKED at closeout.
-  TRIGGER: the request is vague, large, or spans several rounds; scope keeps growing; you are about
-  to spend real effort on a target you inferred rather than were told; the user asks "is this what
-  you meant", "give me a plan first", "what do you still need", "where are we"; a long task is
-  wrapping up and you owe an honest account of what was done, cut, or blocked; work is handed off
-  between sessions, agents, or engines.
-  Do NOT use for single-step reversible requests, for pure Q&A, or as a way to postpone doing the
-  work.
+  Read a finished or half-finished project's own conversation and turn it into three things:
+  what the user actually needed as opposed to what they first asked for, what went wrong and
+  at which layer, and which repeated work is worth turning into a Skill. Counting is done by
+  a script; the model only interprets, and quotes the user verbatim.
+  TRIGGER: the user says 总结我的真需求 / 总结一下错误 / 复盘一下 / 我们到底做到哪了 /
+  这活儿干完了 / 哪些能自动化 / 优化一下这个 Skill / 生成优化记录, or asks for a
+  retrospective, post-mortem, handoff summary, or "what did we actually learn" over a past
+  session, a project, or a time window.
+  Do NOT use for live requirement clarification during a task, for ordinary development, or
+  to write numbers you have not measured.
 ---
 
 # Requirement ledger
 
-An agent's most expensive failure is not a bug. It is finishing something nobody asked for, or
-reporting "done" on a scope that quietly shrank. This skill keeps one ledger that opens the task and
-closes it.
+A project's conversation already contains the answers to the questions people ask afterwards:
+what did they really want, where did it go wrong, what did we do by hand three times. Nobody
+reads it back, so the answers are lost and the same mistake is paid for again.
 
-Non-normative background and failure cases: [anti-patterns.md](references/anti-patterns.md).
+This skill reads it back. Mechanically first, then interpretively.
 
-## The three labels
+## The one rule
 
-Every requirement sits in exactly one state, and the label is always visible to the user:
+**Every number comes from the script. The model never estimates one.**
 
-| Label | Means | Who may move it |
-|---|---|---|
-| `CONFIRMED` | The user said it, or approved your restatement of it | The user only |
-| `INFERRED` | Your default, chosen because being wrong is cheap to reverse | You, but it stays labelled |
-| `OPEN` | The answer would change deliverable, cost, schedule, or acceptance | Resolved by asking, or deferred on the record |
+Counting messages by eye, guessing proportions, or repeating a figure a subagent said out
+loud is the failure this skill exists to prevent — a retrospective with invented numbers is
+worse than none, because it is quoted later as fact. Details in
+[evidence-rules.md](references/evidence-rules.md).
 
-One hard rule: **an `INFERRED` item is never written as `CONFIRMED`** — not in a summary, not in a
-plan, not in a commit message, not in a status line. Everything else here is procedure. This one is
-integrity.
+## Step 0 — get the facts
 
-`CONFIRMED` records that the user said it, not that it is true. A confidently stated misconception is
-still a misconception; correct it and re-confirm rather than building on it.
-
-## Opening a task
-
-1. **Restate before asking.** One short paragraph: what you believe the goal is, what you believe
-   the finished thing looks like. Restating is not agreement — present it as a candidate.
-2. **Build the first ledger** from the request, the files, and the repo. Anything already answered
-   in the conversation or on disk starts as `CONFIRMED` and is never asked about again.
-3. **Ask at most three questions**, ranked by how much the answer changes the outcome. When the user
-   cannot answer in your terms, do not hand the jargon back: give two or three concrete options,
-   say what each one costs, and name your recommendation. Details in
-   [clarify-loop.md](references/clarify-loop.md).
-4. **Loop**: small batch → answer → updated ledger → next batch. Never dump a questionnaire.
-
-Read-only investigation, diagnosis, and reversible spikes the user authorised may proceed while
-items are still `OPEN`. Irreversible or expensive work may not.
-
-## When the user is not an expert
-
-Vagueness is the easy case — you ask. The hard cases are the user who does not know the option space
-exists and the user who is confident and wrong. Both look like clarity from outside, and neither is
-fixed by asking more questions. Three additional obligations:
-
-- **Propose, do not ask**, when they cannot answer in your vocabulary: two or three options, the cost
-  of each in words they already use, and your recommendation.
-- **Say when their plan will not get them what they want** — what goes wrong, why, and *immediately*
-  the alternative. Refuting without an alternative is useless. Building the better thing silently is
-  a scope change, not a favour.
-- **Name which part is the real work** before estimating, and say plainly that the easy parts are
-  easy. Otherwise the hard item gets treated as "while you're in there" and the schedule is set on
-  the wrong thing.
-
-Detail, worked phrasings, and a plain-language version of the nine fields:
-[novice-users.md](references/novice-users.md).
-
-## When not to ask
-
-Asking is not free; an interrogation is its own failure. Apply one test to each `OPEN` item:
-
-> If I guess wrong, what does it cost to undo?
-
-- **Cheap to undo** — decide it, label `INFERRED`, state it in one line, keep going.
-- **Expensive to undo** — outward-facing, destructive, hard to reverse, or it changes the price,
-  the schedule, or what acceptance means — ask before building.
-
-Do not ask about things you can verify yourself. Do not ask a second time. When the user says "you
-decide", every remaining `OPEN` item becomes `INFERRED` and you proceed.
-
-## Locking
-
-Anything beyond a single reversible step gets a confirmation sheet before you build. Fixed fields —
-goal, in scope, out of scope, inputs, outputs, acceptance, constraints, where it runs, open items —
-one screen, no prose. Template and field rules:
-[confirmation-sheet.md](references/confirmation-sheet.md).
-
-The sheet is locked only by an explicit user OK, or an explicit "you decide these". Silence is not
-a lock. Mechanical pre-check before you rely on a sheet:
+Always before reading anything:
 
 ```bash
-python3 scripts/check_confirmation_sheet.py path/to/sheet.md
+python3 scripts/scan_transcript.py --engine both --since 7d --format json --out /tmp/facts.json
+python3 scripts/scan_transcript.py --engine claude --project myproject   # one project
+python3 scripts/scan_transcript.py path/to/session.jsonl                 # one session
 ```
 
-`VALID_SHEET` means the required fields exist, nothing is labelled two ways, and no `INFERRED` item
-has been promoted. It checks form, not truth, and it does not replace the user's OK.
+Reads Claude Code (`~/.claude/projects`), Codex (`~/.codex/sessions`), or a plain-text
+transcript. Streams line by line — real sessions reach 250 MB and single lines reach 1.5 M
+characters of base64, so nothing is ever loaded whole. Roughly 1 GB per 3 seconds.
 
-## After the lock
+What it hands you: real user turns (**not** tool results, which both engines feed back as
+user messages), every user message verbatim, course corrections as flagged candidates,
+failed tool calls with the tool named, repeated command shapes, and repeated tool sequences.
 
-Every new request is classified out loud before you act on it:
+Add `--no-text` when the output will be shared: it keeps the counts and drops the verbatim
+text.
 
-- **`DEFECT`** — the delivered thing does not do what the sheet says. Fix it, no renegotiation.
-- **`REFINEMENT`** — inside the locked scope, no new deliverable. Do it, note it.
-- **`NEW SCOPE`** — new deliverable, new surface, or new acceptance. Back to the ledger before any
-  work: it is `OPEN` until the user confirms it, and it never enters silently.
+## Step 1 — the real requirement
 
-Rules and the failure this prevents: [change-control.md](references/change-control.md).
+What the user needed, which is rarely what they opened with. Built from the **corrections**,
+not from the first message: every course correction is a place where the delivered thing and
+the wanted thing diverged, and the sentence they used to fix it usually names the real
+requirement outright.
 
-## Closing a task
+Each item is labelled, and the labels never merge:
 
-Walk back to the **earliest** requirement in the task, not the last few rounds, and settle every
-ledger item as exactly one of:
+| Label | Means |
+|---|---|
+| `SAID` | The user's own words, quoted, with a timestamp |
+| `INFERRED` | Your reading of what they meant — must stay marked as yours |
+| `UNKNOWN` | The transcript does not answer it; say so instead of filling it in |
 
-`DONE` · `PARTIAL` · `CANCELLED` · `BLOCKED`
+Method, and how to walk back to the earliest requirement rather than the most recent:
+[real-requirement.md](references/real-requirement.md).
 
-Nothing may be dropped silently. `PARTIAL` and `BLOCKED` must say what is missing and why.
-Starting a process, spawning an agent, or writing a plan is not `DONE`. Full procedure:
-[closeout.md](references/closeout.md).
+## Step 2 — the mistakes
 
-## Where the ledger lives
+Not a list of error messages. Each entry gets a layer, because the layer decides whether
+anything can be fixed at all: a missing rule, a rule that existed but did not fire, two
+rules that conflicted, a wrong-place rule, a genuine tool limit, or a one-off.
 
-Keep it in the reply while the task is short. Once the task spans sessions, write it to disk next to
-the work — the ledger is the thing a later agent, or the same agent after a context reset, reads
-first. If the project already has a handoff or checkpoint file, the ledger goes there rather than
-into a second competing file.
+Only the first four are worth acting on. Calling a tool limit a process failure produces
+rules that cannot work. See [mistakes.md](references/mistakes.md).
+
+## Step 3 — the automatable part
+
+The script's `repeated_commands` and `repeated_tool_sequences` are the raw candidates: work
+done by hand three or more times. Most of them should not become a Skill. The test is whether
+the *judgement* is stable, not whether the keystrokes repeat —
+[skill-extraction.md](references/skill-extraction.md) has the filter, the proposal format,
+and what an optimisation record must record.
+
+## Authorisation
+
+Default output is a **proposal plus an optimisation record**. Nothing is written to a real
+Skill directory, no production file is edited, no rule is changed.
+
+On explicit go — "开干", "执行", "写吧", "apply it" — generate the actual `SKILL.md`, and
+first check the target: reuse or extend an existing Skill before adding a new one. Two Skills
+that cover the same ground are worse than the manual work they replaced.
+
+## Output
+
+Both files are written to disk before you summarise anything in chat, because a chat summary
+does not survive a context reset:
+
+- the retrospective, from [templates/retro-report.md](templates/retro-report.md);
+- the optimisation record, from
+  [templates/optimization-record.md](templates/optimization-record.md), if step 3 produced
+  anything.
+
+Then check it mechanically:
+
+```bash
+python3 scripts/check_retro_report.py path/to/report.md
+```
+
+`VALID_RETRO` means the required sections exist, every claim carries a label, and no number
+appears without a source. It checks form, not truth.
+
+Failure modes worth knowing before you start:
+[anti-patterns.md](references/anti-patterns.md).
