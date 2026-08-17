@@ -1,4 +1,4 @@
-<!-- translation-of: SKILL.md sha256:34b4789f097e2fe5 -->
+<!-- translation-of: SKILL.md sha256:74ebeaecc5b6a5fa -->
 <!-- SKILL.md 是权威源。改动先改英文，再用 scripts/check_translation_sync.py --update 重新盖章。 -->
 
 # 需求账本

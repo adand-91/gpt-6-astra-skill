@@ -6,9 +6,11 @@ description: >-
   at which layer, and which repeated work is worth turning into a Skill. Counting is done by
   a script; the model only interprets, and quotes the user verbatim.
   TRIGGER: the user says 总结我的真需求 / 总结一下错误 / 复盘一下 / 我们到底做到哪了 /
-  这活儿干完了 / 哪些能自动化 / 优化一下这个 Skill / 生成优化记录, or asks for a
-  retrospective, post-mortem, handoff summary, or "what did we actually learn" over a past
-  session, a project, or a time window.
+  这活儿干完了 / 哪些能自动化 / 优化一下这个 Skill / 生成优化记录, or in plainer words
+  我当初到底想要啥 / 这项目都改了些什么 / 帮我看看这活干得怎么样 / 下次别再这样了 /
+  以后能不能自动点, or asks for a retrospective, post-mortem, handoff summary, or "what did
+  we actually learn" over a past session, a project, or a time window. Users who could not
+  write a spec up front are the main audience: they get one derived from their own corrections.
   Do NOT use for live requirement clarification during a task, for ordinary development, or
   to write numbers you have not measured.
 ---
