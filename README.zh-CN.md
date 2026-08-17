@@ -1,4 +1,4 @@
-<!-- translation-of: README.md sha256:83a264332f0a6c8e -->
+<!-- translation-of: README.md sha256:5929a116e1a92280 -->
 
 # requirement-ledger
 
@@ -52,13 +52,13 @@
 ### Claude Code
 
 ```bash
-git clone https://github.com/YOUR-NAME/requirement-ledger ~/.claude/skills/requirement-ledger
+git clone https://github.com/adand-91/requirement-ledger ~/.claude/skills/requirement-ledger
 ```
 
 ### Codex
 
 ```bash
-git clone https://github.com/YOUR-NAME/requirement-ledger ~/.codex/skills/requirement-ledger
+git clone https://github.com/adand-91/requirement-ledger ~/.codex/skills/requirement-ledger
 ```
 
 ### 其他 agent

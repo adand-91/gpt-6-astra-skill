@@ -56,13 +56,13 @@ written in either language.
 ### Claude Code
 
 ```bash
-git clone https://github.com/YOUR-NAME/requirement-ledger ~/.claude/skills/requirement-ledger
+git clone https://github.com/adand-91/requirement-ledger ~/.claude/skills/requirement-ledger
 ```
 
 ### Codex
 
 ```bash
-git clone https://github.com/YOUR-NAME/requirement-ledger ~/.codex/skills/requirement-ledger
+git clone https://github.com/adand-91/requirement-ledger ~/.codex/skills/requirement-ledger
 ```
 
 ### Any other agent
