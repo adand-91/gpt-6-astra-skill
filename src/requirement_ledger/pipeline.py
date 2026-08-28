@@ -37,9 +37,15 @@ def _source_completeness(items: list[dict[str, Any]]) -> str:
     return "incomplete" if any(item.get("completeness") != "complete" for item in items) else "complete"
 
 
-def _input_stat_signature(info: os.stat_result) -> tuple[int, int, int, int, int, int, int]:
-    return (info.st_dev, info.st_ino, info.st_mode, info.st_nlink, info.st_size,
-            info.st_mtime_ns, info.st_ctime_ns)
+def _test_log_content_signature(info: os.stat_result) -> tuple[int, int]:
+    """Return content metadata stable across path and handle stats.
+
+    Same-file identity is checked separately with ``os.path.samestat``.  On
+    Windows, ``lstat`` and ``fstat`` can report different non-content fields
+    for the same file, so a combined identity/content tuple causes false
+    ``E_INPUT_CHANGED`` results.
+    """
+    return (info.st_size, info.st_mtime_ns)
 
 
 def _read_test_log_stable(path: Path) -> tuple[str, int, list[dict[str, Any]], str]:
@@ -52,9 +58,10 @@ def _read_test_log_stable(path: Path) -> tuple[str, int, list[dict[str, Any]], s
         path_before = os.lstat(path)
         descriptor = os.open(path, flags)
         opened = os.fstat(descriptor)
+        initial_signature = _test_log_content_signature(opened)
         if not stat.S_ISREG(opened.st_mode) or opened.st_nlink > 1:
             raise UnsafePathError("test log must remain a single-linked regular file")
-        if _input_stat_signature(path_before) != _input_stat_signature(opened):
+        if not os.path.samestat(path_before, opened):
             raise InputChangedError("test log changed before it could be bound")
         if opened.st_size > MAX_TEST_LOG_BYTES:
             raise UnsafePathError("test log exceeds the v0.1 10 MiB per-file limit")
@@ -72,9 +79,10 @@ def _read_test_log_stable(path: Path) -> tuple[str, int, list[dict[str, Any]], s
 
         final_fd = os.fstat(descriptor)
         path_after = os.lstat(path)
-        initial_signature = _input_stat_signature(opened)
-        if (initial_signature != _input_stat_signature(final_fd)
-                or initial_signature != _input_stat_signature(path_after)):
+        if (not stat.S_ISREG(path_after.st_mode) or path_after.st_nlink > 1
+                or not os.path.samestat(opened, path_after)
+                or initial_signature != _test_log_content_signature(final_fd)
+                or initial_signature != _test_log_content_signature(path_after)):
             raise InputChangedError("test log changed while it was being read")
     except (InputChangedError, UnsafePathError):
         raise

@@ -30,7 +30,7 @@ Use this for every public version. A checked box must point to command output or
 
 ## Pre-release evidence — 2026-08-28
 
-- Unit suite: 95 tests, exit 0.
+- Unit suite: 96 tests, exit 0.
 - Translation checker: `TRANSLATIONS_IN_SYNC`, exit 0.
 - Compile and seven targeted fail-closed security regressions: exit 0.
 - Wheel and sdist were built from the release candidate; final post-commit hashes are recorded on
@@ -44,6 +44,11 @@ Use this for every public version. A checked box must point to command output or
 - Second public CI run `33152855005` proved LF normalisation on three Windows Python versions,
   then exposed a Windows Python 3.12 path-stat/handle-stat mismatch. Transcript binding now checks
   same-file identity separately from stable size/mtime content metadata; a new regression covers it.
+- Third public CI run `33153226392` proved the transcript fix on Windows Python 3.12, then exposed
+  the same false-positive metadata comparison in test-log binding on Windows Python 3.13. The
+  test-log reader now uses same-file identity plus stable size/mtime checks and keeps its single
+  descriptor, regular-file, single-link, size-limit, and read-after drift guards. A synthetic
+  cross-platform regression covers differing path/handle metadata.
 
 ## After release — follow-up, not a pre-release gate
 

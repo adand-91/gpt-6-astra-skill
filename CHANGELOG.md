@@ -28,5 +28,5 @@ No changes yet.
 - Local actions remain proposals and are never automatically applied.
 - No project-code execution, dependency installation, network, telemetry, commit, push, Issue,
   PR, Release, or upload is performed by the CLI.
-- Repository text is pinned to LF for deterministic bilingual hashes on Windows, and transcript
-  binding separates same-file identity from cross-platform-stable content metadata.
+- Repository text is pinned to LF for deterministic bilingual hashes on Windows. Transcript and
+  test-log binding separate same-file identity from cross-platform-stable content metadata.

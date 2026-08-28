@@ -1,4 +1,4 @@
-<!-- translation-of: CHANGELOG.md sha256:bce723bd0186734e -->
+<!-- translation-of: CHANGELOG.md sha256:e1a3919ebf8df87d -->
 
 # 变更日志
 
@@ -30,5 +30,5 @@
 - 本地动作始终是建议，绝不自动应用。
 - CLI 不运行项目代码、不安装依赖、不联网、不遥测，也不执行 commit、push、Issue、PR、
   Release 或上传。
-- 仓库文本固定为 LF，确保 Windows 上双语哈希确定；transcript 绑定将同一文件身份与跨平台稳定的
-  内容元数据分开验证。
+- 仓库文本固定为 LF，确保 Windows 上双语哈希确定。transcript 与测试日志绑定均将同一文件身份
+  与跨平台稳定的内容元数据分开验证。

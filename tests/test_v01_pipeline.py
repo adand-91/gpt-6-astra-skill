@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import json
 import os
+import stat
 import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest import mock
 
 from requirement_ledger.errors import InputChangedError, PrivacyBlockError, UnsafePathError
@@ -184,7 +186,31 @@ class TestPipeline(unittest.TestCase):
             log.write_text("FAILED synthetic case\n", encoding="utf-8")
             stable = (1, 2, 3, 1, 22, 4, 5)
             changed = (1, 2, 3, 1, 23, 6, 7)
-            with mock.patch("requirement_ledger.pipeline._input_stat_signature",
-                            side_effect=[stable, stable, stable, changed]):
+            with mock.patch("requirement_ledger.pipeline._test_log_content_signature",
+                            side_effect=[stable, stable, changed]):
                 with self.assertRaises(InputChangedError):
                     pipeline_module._read_test_log_stable(log)
+
+    def test_test_log_path_and_handle_metadata_use_identity_plus_content(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            log = Path(tmp) / "test.log"
+            log.write_text("FAILED synthetic case\n", encoding="utf-8")
+            real_lstat = pipeline_module.os.lstat
+
+            def lstat_with_different_mode(value: object):
+                info = real_lstat(value)
+                return SimpleNamespace(
+                    st_mode=info.st_mode ^ stat.S_IWGRP,
+                    st_nlink=info.st_nlink,
+                    st_size=info.st_size,
+                    st_mtime_ns=info.st_mtime_ns,
+                    st_dev=info.st_dev,
+                    st_ino=info.st_ino,
+                )
+
+            with mock.patch.object(pipeline_module.os, "lstat",
+                                   side_effect=lstat_with_different_mode), \
+                    mock.patch.object(pipeline_module.os.path, "samestat", return_value=True):
+                _, _, events, completeness = pipeline_module._read_test_log_stable(log)
+            self.assertEqual(events[0]["private_text"], "FAILED synthetic case")
+            self.assertEqual(completeness, "complete")
