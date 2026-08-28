@@ -1,0 +1,47 @@
+name: Bug report
+description: Report a reproducible problem without sharing private data.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Privacy first: do not paste real transcripts, credentials, tokens, personal data, customer data, private paths, or other secrets here. Use a minimal synthetic example instead.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy and safety check
+      options:
+        - label: I used a minimal synthetic reproduction and did not include real transcripts, secrets, credentials, personal or customer data.
+          required: true
+        - label: I removed any secrets and private paths from the reproduction and attachments.
+          required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal synthetic reproduction
+      description: Provide the smallest self-contained steps, inputs, and expected/actual result using invented, non-sensitive values. Do not attach private files.
+      placeholder: |
+        Steps:
+        1. Run ... with synthetic input ...
+        2. Observe ...
+        Expected: ...
+        Actual: ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Share only non-sensitive basics such as OS, runtime version, and package version. Do not include usernames, home directories, hostnames, or private paths.
+      placeholder: "OS: macOS 15; runtime: ...; version: ..."
+    validations:
+      required: false
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional non-sensitive context
+      description: Optional. Describe relevant behavior in your own words; do not paste logs, transcripts, screenshots, or files containing private information.
+    validations:
+      required: false

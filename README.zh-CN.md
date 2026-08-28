@@ -1,163 +1,221 @@
-<!-- translation-of: README.md sha256:92bc5fae06f7a560 -->
+<!-- translation-of: README.md sha256:1f31d5a3e842eebd -->
 
 # requirement-ledger
 
-**从 vibe coding 到「终于知道自己当初到底想要什么」。** 把它对准一个你已经跟 AI 一起做出来的项目，
-它会把对话读回来：你真正需要的是什么、哪儿出了错、哪些重复的活值得做成一个 Skill。
+**一个让 Codex 或其他编程 Agent 持续优化任意 Git 项目的本地、隐私优先证据闭环。**
+它把你明确提供的对话、错误、Git 状态和测试结果变成可追溯的问题候选、修复计划与前后对照证据。
 
-[English](README.md)
+[English](README.md) · [v0.1 契约](V0.1_CONTRACT.zh-CN.md) ·
+[未完成项](docs/PROJECT_GAPS.md) · [安全政策](SECURITY.zh-CN.md)
 
-## 这是给谁用的
+> v0.1 不会自动修改项目。CLI 负责采集和组织证据；Codex 仍是开发者，任何真实修改都保持可见、
+> 可审查。
 
-你靠跟 agent 聊天做出了一个东西。大体能用。开工前你写不出规格书，
-到现在你也还是写不出来。
+## 为什么要做这个项目
 
-**这不是你不自律。** 没人能给一个自己还没见过的东西写规格。但它有实实在在的代价：
-你留下的每个空白，agent 都默默替你填了，其中一些填错了，
-你花了十几个回合去纠正，而这些一个字都没被记下来。下个项目，同样的空白，同样的十几个回合。
+AI 辅助项目往往把自己产生的最有价值信息丢掉了：
 
-如果你是个手里拿着已签字需求文档的产品经理，你不需要这个东西。
+- 用户纠正了 Agent，但真实需求仍埋在聊天里；
+- 同一个错误再次出现，却没人说得清它是上游通病、项目自身问题、个人配置问题，还是仍然未知；
+- 没冻结 baseline，也没用同一个测试复验，就把补丁叫作“已修复”；
+- 有价值的反馈没有到维护者手里，未经处理的真实日志却被直接贴进公开 Issue。
 
-## 你不需要提前知道自己要什么
+Requirement Ledger 把这个闭环显式化：
 
-别写规格了。先把东西糙糙地做出来，然后让它把**你自己的话**读回给你听。
+```text
+显式 Codex/Claude/文本输入 + 测试日志 + 只读 Git 快照
+  -> 私有证据
+  -> 保守归因
+  -> 不含原话的报告 + 修复草案
+  -> 由宿主控制的 Codex 补丁
+  -> 绑定摘要的 oracle 修改前后结果
+```
 
-它靠的是这么一件事。每一次你告诉 agent「你做错了」的时候，
-你其实就把自己真正想要的东西描述出来了 —— 很精确，用你自己的词，而且你并没打算这么做：
+它适用于普通软件项目。目标项目不需要使用 AI、Python 或本 Skill；只有证据采集器本身使用 Python。
 
-> 「不是让你重写 我就想让它别每次都问我一遍」
+## v0.1 已交付什么
 
-这一句里同时装着真需求、agent 猜错的那个东西，以及你会怎么验它。
-而你**开启**那个任务时发的那条消息是：「优化一下这个流程」。
-
-所以需求不是从你提的要求里提的，是从**你不得不纠正它的地方**提的 ——
-那是整份对话里唯一一处你说得很具体的地方。
-
-## 它怎么工作
-
-三件你可以用大白话喊的事：总结我的真需求 · 总结一下错误 · 哪些能自动化。
-
-**第 0 步永远先跑脚本。** 你让 agent「总结一下这个项目」，拿到的是肉眼估的数字、
-被当成需求的开场那句话，以及一份冒充全项目总结的「最后两轮总结」。所以计数必须机械：
-`scan_transcript.py` 直接读原始会话文件，报出真实用户回合、你手敲的每一条原话、
-你的纠偏、失败的工具调用和重复的命令。模型只负责解释 ——
-而且不许说出脚本没产出过的数字。
-
-**第 1 步 你真正需要的是什么。** 从纠偏里建，就是上面那套。然后反向回溯到你**最早**提的那件事，
-把每条往后追 —— 因为最可能被悄悄放掉的需求，恰恰是第一天提的那些。
-每条的结局是：已完成、部分完成、明确取消、受阻，还是**静默丢弃** ——
-最后那个才是值得拿到的发现，而且它还欠着你。
-
-**第 2 步 哪儿错了，以及修不修得动。** 不是一张报错清单。每条错误判一个层级：
-根本没有规则、有规则但没触发、两条规则冲突、规则待在一个读得太晚的地方、
-真实的工具限制，还是一次性偶发。只有前四种能动手，
-而把前两种搞混，正是「再加一条规则」通常让事情更糟的原因。
-
-**第 3 步 把重复的活变成 Skill。** 同一条命令你手工跑了十四遍，脚本看见了。
-但大部分重复**不该**做成 Skill，所以有个筛子：判断稳不稳定、是不是已经有了、
-是不是脚本更合适、以后还会不会再来。活下来的写成提案。
-只有你说开干，它才变成真的 `SKILL.md` —— 没人审过的生成 Skill 是个带着触发器的负债。
-
-三个标签贯穿全程且绝不混：`原话`（你的话，逐字，带时间戳）、
-`推断`（模型的解读，标成模型的）、`未知`（对话回答不了 —— 那就说不知道，不许填上）。
+- 零运行时依赖的标准包与 `requirement-ledger` 命令，支持 Python 3.10–3.13。
+- 显式 Claude Code、Codex JSONL 和纯文本适配器，按事件过滤时间并检查输入读取时是否变化。
+- 固定的只读 Git 快照：HEAD、status 摘要、脏文件数和跟踪文件数；绝不读取或输出 remote URL。
+- 版本化的 `SourceRef`、`EvidenceItem`、`IssueRecord`、`FixProposal`、`ValidationResult`。
+- `upstream`、`project-local`、`personal`、`unknown` 四类归因字段，并诚实地默认 `unknown`。
+- 物理分离的私有证据与无原话报告、严格文件权限、不覆盖写入和失败即停止的隐私闸门。
+- 标为 `DRAFT — NOT SENT`、`not-applied` 的修复计划；没有隐藏补丁、commit、push、Issue、
+  PR、Release、上传或遥测。
+- 完全合成、结果确定的端到端 Demo。
 
 ## 安装
 
-### Claude Code
+克隆仓库并在本地安装：
 
 ```bash
+git clone https://github.com/adand-91/requirement-ledger
+cd requirement-ledger
+python3 -m pip install .
+requirement-ledger --version
+```
+
+运行时只使用 Python 标准库。构建隔离可能下载构建工具；已经准备好依赖的离线环境可以使用
+`python3 -m pip install --no-build-isolation --no-deps .`。
+
+### 安装 Codex 或 Claude Skill
+
+本仓库同时也是完整的 Agent Skill：
+
+```bash
+# Codex
+git clone https://github.com/adand-91/requirement-ledger ~/.codex/skills/requirement-ledger
+
+# Claude Code
 git clone https://github.com/adand-91/requirement-ledger ~/.claude/skills/requirement-ledger
 ```
 
-### Codex
+Skill 会告诉宿主何时采集证据、何时停在方案，以及如何把审查后的计划交回正常开发流程。
+它不会扩大任何权限。
+
+## 60 秒合成 Demo
+
+这条命令不会检查仓库、主目录或真实对话：
 
 ```bash
-git clone https://github.com/adand-91/requirement-ledger ~/.codex/skills/requirement-ledger
+requirement-ledger demo --output-dir /tmp/requirement-ledger-demo
+find /tmp/requirement-ledger-demo -maxdepth 1 -type f -print
 ```
 
-### 其他 agent
+它会生成五个文件：
 
-`SKILL.md` 是一份自包含的指令文件，`references/` 按需加载，脚本是纯 Python 零依赖。
-贴进系统提示词、`CLAUDE.md`、`AGENTS.md` 或任何规则文件都行：
-
-```bash
-cat SKILL.zh-CN.md >> AGENTS.md
+```text
+01-evidence.private.json   原始合成证据；私有格式
+02-analysis.json           保守问题候选
+03-proposals.json          DRAFT — NOT SENT、未应用的计划
+04-report.md               不含原话的报告；仍需人工隐私复核
+05-validation.json         合成的 baseline 失败 -> 修改后通过结果
 ```
 
-然后就正常跟你的 agent 说话：复盘一下这个项目 / 总结我的真需求 / 哪些能自动化。
+源样例位于 [examples/anonymous](examples/anonymous/README.md)。
 
-## 机械层
+## 用在真实项目上
 
-零依赖，只用标准库。也可以单独拿来跑。
+请亲自选择准确的仓库与证据文件。建议把私有证据放在项目目录之外：
 
 ```bash
-python3 scripts/scan_transcript.py --engine both --since 7d
-python3 scripts/scan_transcript.py --engine claude --project myproject --out facts.json
+requirement-ledger doctor --repo /path/to/project
+
+requirement-ledger scan \
+  --repo /path/to/project \
+  --input /path/to/explicit-codex-or-claude-session.jsonl \
+  --test-log /path/to/existing-test-output.log \
+  --output /tmp/project-evidence.private.json
+
+requirement-ledger analyze \
+  --evidence /tmp/project-evidence.private.json \
+  --output /tmp/project-analysis.json
+
+requirement-ledger report \
+  --analysis /tmp/project-analysis.json \
+  --output /tmp/project-report.md
+
+requirement-ledger suggest \
+  --analysis /tmp/project-analysis.json \
+  --output /tmp/project-proposals.json
+```
+
+`scan` 不会发现 `~/.codex`、`~/.claude` 或其他项目。JSONL 默认自动识别来源；文件名特殊时可用
+`--provider codex|claude|text` 指定。ISO-8601 时间窗口按 JSONL 事件应用；纯文本没有时间戳，
+所以会拒绝时间参数，而不是假装过滤成功。
+
+### 不运行项目代码也能记录验证结果
+
+v0.1 刻意不执行任意第三方项目测试。请让 Codex 或现有沙箱先冻结准确的 argv、工作目录、相关
+环境与 fixture 摘要，把该描述做 SHA-256，然后在审查后的改动前后运行。两个小型 JSON 与命令行
+都必须提供同一个 64 位十六进制摘要：
+
+```json
+{"oracle": "unit-regression", "oracle_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "exit_code": 1}
+```
+
+```json
+{"oracle": "unit-regression", "oracle_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "exit_code": 0}
+```
+
+```bash
+requirement-ledger verify \
+  --oracle unit-regression \
+  --oracle-digest aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa \
+  --baseline /tmp/baseline.json \
+  --after /tmp/after.json \
+  --output /tmp/validation.json
+```
+
+只有 oracle 名称和摘要都一致，并且从失败变成成功，才是 `improved`。身份不一致、布尔值／非整数
+退出码或超出 0–255 的退出码都是 `inconclusive`；baseline 成功、修改后失败是 `regressed`。
+
+## 不装懂的归因
+
+每条问题把疑似范围和最终范围分开记录：
+
+| 范围 | 确认条件 |
+|---|---|
+| `upstream` | 独立项目／会话、相同 provider／版本、清洁复现，并排除本地与个人原因 |
+| `project-local` | 直接仓库证据，以及在其他地方不复现的清洁对照 |
+| `personal` | 另行授权的个人配置证据或清洁配置对照 |
+| `unknown` | 上述条件不成立时的默认值 |
+
+一次抱怨不是上游结论，一次项目测试失败也不能证明依赖有错。证据不完整或相互冲突时禁止确认。
+规范细节见 [v0.1 契约](V0.1_CONTRACT.zh-CN.md)。
+
+## 隐私与安全
+
+私有证据可能含用户原话，文件名必须以 `.private.json` 结尾；操作系统支持时会使用严格权限。
+不要把它附到 Issue、PR、邮件或聊天中。
+
+报告会排除原话、本地路径、会话 ID、命令参数、remote 和原始错误。写报告前，自动闸门会检查
+常见秘密、认证／Cookie 请求头、邮箱、电话、主目录、带凭据 remote、UUID、IP 地址和终端
+控制字符。命中后返回 `E_PRIVACY_BLOCK`，且不会创建报告文件。
+
+**自动隐私检查通过不能证明文件可以安全分享。** 每份报告都会说明仍需人工复核。
+
+v0.1 CLI 没有项目代码执行器、补丁应用器、依赖安装器、网络客户端、遥测、浏览器、GitHub 写入
+或账号集成。唯一子进程通过可信绝对路径执行固定只读 Git 探针，并清除会重定向 Git 的环境变量。
+输出父目录必须预先存在，独占写入前会检查每一级祖先。使用真实证据前请阅读
+[威胁模型](docs/THREAT_MODEL.md)与[安全政策](SECURITY.zh-CN.md)。
+
+## 旧版复盘工具
+
+原始 Skill 流程继续作为兼容入口保留：
+
+```bash
 python3 scripts/scan_transcript.py path/to/session.jsonl
-python3 scripts/scan_transcript.py --engine both --since 7d --no-text   # 可安全外发
+python3 scripts/check_retro_report.py path/to/report.md
+python3 scripts/check_translation_sync.py
 ```
 
-真实对话记录是很凶的，这个脚本是围着这一点写的，不是围着理想情况写的。
-下面每一条，都是先付出过一个错数字才搞明白的：
+旧扫描器在显式使用 `--engine` 时仍能发现本地 Agent 目录。它的 `--no-text` 只删除消息／错误正文，
+路径、会话元数据与命令形状仍可能存在，**绝不是 share-safe**。新工作流应使用标准包管线，并把
+所有旧输出视为私有数据。
 
-- 会话能到 250 MB，单行能有 152 万字符的 base64。它逐行流式读，
-  超长行只量不解析，从不解码 base64。大约 3 秒 1 GB；带 `--since` 时先按 mtime
-  跳过过期文件，连打开都不打开。
-- **两个引擎都把工具输出当用户消息回灌。** 把那些算进去，
-  一段 79 个回合的对话会变成 918 个「用户回合」，需求提炼会被工具日志淹掉 ——
-  这是在一个真实的 105 MB 会话上量出来的。Claude 适配器丢掉 `tool_result` 块；
-  Codex 适配器优先用 `event_msg/user_message`，那才是你真正手敲的东西。
-- Claude Code 用 slug 化的工作目录给文件夹命名，所有非 ASCII 字符都变成短横，
-  于是一个叫 `接单工作台` 的项目住在 `-Users-…-Desktop------` 里。
-  只按路径匹配会返回 0 个会话；`--project` 匹配路径**或**每个文件内部记录的工作目录。
-- 纠偏是按关键词找的，所以只作为**候选**上报，永远不是结论。
-  「这个不错」含「不」但那是在夸。一张没配文字的截图可能是整份对话里最锋利的一次纠偏。
-  每一条由模型判定。
-
-## 校验产出
+## 开发
 
 ```bash
-python3 scripts/check_retro_report.py report.md          # VALID_RETRO，或者哪儿不对
-python3 scripts/check_retro_report.py report.md --lang zh
-python3 scripts/check_translation_sync.py                # 中文镜像有没有过期
-python3 -m unittest discover -s tests                    # 56 个测试
+python3 -m pip install --no-build-isolation --no-deps -e .
+python3 -m unittest discover -s tests -v
+python3 -m compileall -q src scripts tests
+python3 scripts/check_translation_sync.py
 ```
 
-报告校验器会拒掉那些让复盘变得有害的东西 —— 因为它后来会被当事实引用：
-数字没有出处、结论没有标签、缺时间窗口或窗口没写时区偏移、
-用程度词冒充实测、为了显得完整而凑出来的空小节。它只查形式不查真伪。
-中英文小节名和标签都认。
+所有样例必须完全合成。绝不要把真实对话、秘密、私有 remote、客户名、会话标识或个人路径放入
+Issue 或测试。参见 [CONTRIBUTING.zh-CN.md](CONTRIBUTING.zh-CN.md)、
+[SUPPORT.zh-CN.md](SUPPORT.zh-CN.md)和[项目缺口账本](docs/PROJECT_GAPS.md)。
 
-## 里面有什么
+## 哪些部分是刻意没有完成的
 
-```
-SKILL.md                  skill 本体，约 100 行，agent 实际加载的那份
-references/               5 份按需加载：取证规则、真需求提炼、
-                          错误层级、Skill 提炼、16 条失败模式
-templates/                复盘报告、优化记录
-scripts/                  scan_transcript.py —— Claude Code、Codex、纯文本三个适配器
-                          check_retro_report.py、check_translation_sync.py
-tests/                    56 个测试，无第三方依赖
-```
+v0.1 不提供安全的自主修改。在移动这条边界前，必须先有隔离后端、对象绑定批准令牌、冻结 oracle
+执行、事务性应用与回滚故障注入。结构化测试适配器、清洁复现、日报／周报、可选采用证据、治理
+与签名发布也仍未完成。
 
-所有东西都有中英两份。英文是权威源；每个 `*.zh-CN.md` 都记着英文源的 SHA256，
-所以一改权威源，镜像就会被机械地判定为过期，而不是悄悄变成错的。
+这些事项长期记录在 [docs/PROJECT_GAPS.md](docs/PROJECT_GAPS.md)，不让“看起来完整”冒充“已经完工”。
 
-## 它不是什么
+## 许可证
 
-- **不是规格书生成器。** 它不帮你决定该做什么。它告诉你你已经提过什么 ——
-  前提是有一份对话可读。
-- **不是看板。** 那些计数存在的意义是让文字保持诚实，不是给人看的。
-- **无法告诉你一份报告是不是对的。** 脚本校验结构。内容只有当时在场的人能确认。
-- **不是一个没人管的 Skill 生产线。** 它出提案；只有你明确说开干才写真的 `SKILL.md`，
-  而且「本轮不新增 Skill」是一个正常且常见的结论。
-
-## 隐私
-
-脚本读你本机的会话文件，输出里按设计包含你逐字的原话 —— 那些引文就是证据。
-不往任何地方上传。任何你打算外发、粘贴或附上的输出，都用 `--no-text`：
-它保留全部计数，去掉全部引文。
-
-## 许可
-
-MIT，见 [LICENSE](LICENSE)。
+MIT，详见 [LICENSE](LICENSE)。

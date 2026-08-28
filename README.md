@@ -1,172 +1,241 @@
 # requirement-ledger
 
-**From vibe coding to knowing what you actually wanted.** Point it at a project you already
-built with an AI agent and it reads the conversation back: what you really needed, what went
-wrong, and which repeated work is worth turning into a Skill.
+**A local, privacy-first evidence loop for improving any Git project with Codex or another
+coding agent.** It turns the conversations, errors, Git state, and test results you explicitly
+give it into traceable issue candidates, repair plans, and before/after evidence.
 
-[中文说明](README.zh-CN.md)
+[中文说明](README.zh-CN.md) · [v0.1 contract](V0.1_CONTRACT.md) ·
+[open gaps](docs/PROJECT_GAPS.md) · [security](SECURITY.md)
 
-## Who this is for
+> v0.1 does not autonomously edit your project. The CLI gathers and structures evidence;
+> Codex remains the developer, and every real modification stays visible and reviewable.
 
-You built something by talking to an agent. It mostly works. You could not have written a
-spec for it before you started, and you still could not write one now.
+## Why this exists
 
-That is not a discipline problem. Nobody can specify a thing they have not seen yet. But it
-has a real cost: the agent filled every gap you left silently, some of those guesses were
-wrong, you spent a dozen rounds correcting them, and none of it was written down. Next project,
-same gaps, same dozen rounds.
+AI-assisted projects usually lose the most valuable information they produce:
 
-If you are a product manager with a signed-off requirements document, you do not need this.
+- the user corrects the agent, but the real requirement stays buried in chat;
+- the same error appears again, but nobody can tell whether it is upstream, project-local,
+  personal configuration, or still unknown;
+- a patch is called “fixed” without a frozen baseline or the same after-test;
+- useful feedback never reaches a maintainer, while unsafe raw logs get pasted into public
+  issues.
 
-## You do not have to know what you want
+Requirement Ledger makes that loop explicit:
 
-Skip the spec. Build the thing badly, then let this read your own words back to you.
+```text
+explicit Codex/Claude/text input + test log + read-only Git snapshot
+  -> private evidence
+  -> conservative attribution
+  -> quote-free report + DRAFT repair plan
+  -> host-owned Codex patch
+  -> digest-bound oracle before/after result
+```
 
-Here is the trick it is built on. Every time you told the agent it got something wrong, you
-described what you actually wanted — precisely, in your own vocabulary, without meaning to:
+It works with ordinary software projects. The target does not have to use AI, Python, or this
+Skill; only the evidence collector itself is Python.
 
-> 「不是让你重写 我就想让它别每次都问我一遍」
+## What v0.1 delivers
 
-That one sentence contains the real requirement, the wrong guess the agent made, and how you
-would test it. The message you *opened* that task with was 「优化一下这个流程」.
-
-So the requirement is not extracted from what you asked for. It is extracted from **where you
-had to correct it** — which is the one place in the transcript where you were specific.
-
-## How it works
-
-Three things you can ask for, in plain words: 总结我的真需求 · 总结一下错误 · 哪些能自动化.
-
-**Step 0 always runs a script.** Ask an agent to "summarise the project" and you get numbers
-guessed by eye, the opening message treated as the requirement, and a summary of the last two
-rounds passed off as a summary of the whole thing. So the counting is mechanical:
-`scan_transcript.py` reads the raw session files and reports real user turns, every message you
-typed verbatim, your course corrections, failed tool calls, and repeated commands. The model
-interprets — and may not state a number the script did not produce.
-
-**Step 1 — what you actually needed.** Built from the corrections, as above. Then it walks back
-to the *earliest* thing you asked for and follows each one forward, because the requirements
-most likely to have been quietly abandoned are the ones from the first day. Each ends as done,
-partial, cancelled, blocked, or **silently dropped** — that last one is the finding worth
-having, and it is still owed to you.
-
-**Step 2 — what went wrong, and whether it is fixable.** Not a list of error messages. Each
-mistake gets a layer: no rule existed, a rule existed and did not fire, two rules conflicted,
-a rule sat somewhere read too late, a genuine tool limit, or a one-off. Only the first four can
-be acted on, and mixing up the first two is why "just add another rule" usually makes things
-worse.
-
-**Step 3 — turn the repeated work into a Skill.** You ran the same command by hand fourteen
-times; the script noticed. Most repeats should *not* become a Skill, so there is a filter: is
-the judgement stable, does it already exist, would a plain script do it better, will it happen
-again. What survives gets written as a proposal. It only becomes a real `SKILL.md` when you say
-go — an unreviewed generated Skill is a liability with a trigger attached.
-
-Three labels run through all of it and never merge: `SAID` (your words, quoted, timestamped),
-`INFERRED` (the model's reading, marked as the model's), `UNKNOWN` (the transcript does not
-answer it — so it says so instead of filling it in).
+- A zero-runtime-dependency package and `requirement-ledger` command for Python 3.10–3.13.
+- Explicit Claude Code, Codex JSONL, and plain-text transcript adapters with event-level time
+  filtering and input-mutation checks.
+- A fixed, read-only Git snapshot: HEAD, status digest, dirty count, and tracked-file count;
+  remote URLs are never read or emitted.
+- Versioned `SourceRef`, `EvidenceItem`, `IssueRecord`, `FixProposal`, and `ValidationResult`
+  records.
+- Four attribution fields — `upstream`, `project-local`, `personal`, `unknown` — with
+  `unknown` as the honest default.
+- Physically separate private evidence and quote-free reports, restrictive file modes,
+  non-overwrite writes, and a fail-closed privacy gate.
+- `DRAFT — NOT SENT`, `not-applied` repair plans. No hidden patch, commit, push, Issue, PR,
+  Release, upload, or telemetry.
+- A deterministic, wholly synthetic end-to-end demo.
 
 ## Install
 
-### Claude Code
+Clone the repository, then install the package locally:
 
 ```bash
+git clone https://github.com/adand-91/requirement-ledger
+cd requirement-ledger
+python3 -m pip install .
+requirement-ledger --version
+```
+
+The runtime uses only the Python standard library. Build isolation may fetch build tooling;
+for a prepared offline environment use `python3 -m pip install --no-build-isolation --no-deps .`.
+
+### Install the Codex or Claude Skill
+
+The repository is also a self-contained agent Skill:
+
+```bash
+# Codex
+git clone https://github.com/adand-91/requirement-ledger ~/.codex/skills/requirement-ledger
+
+# Claude Code
 git clone https://github.com/adand-91/requirement-ledger ~/.claude/skills/requirement-ledger
 ```
 
-### Codex
+The Skill tells the host when to gather evidence, when to stop at a proposal, and how to hand a
+reviewed plan back to the ordinary coding workflow. It does not grant new permissions.
+
+## Sixty-second synthetic demo
+
+This command does not inspect a repository, a home directory, or a real conversation:
 
 ```bash
-git clone https://github.com/adand-91/requirement-ledger ~/.codex/skills/requirement-ledger
+requirement-ledger demo --output-dir /tmp/requirement-ledger-demo
+find /tmp/requirement-ledger-demo -maxdepth 1 -type f -print
 ```
 
-### Any other agent
+It writes five files:
 
-`SKILL.md` is a self-contained instruction file, the `references/` load on demand, and the
-scripts are plain Python with no dependencies. Paste it into a system prompt, a `CLAUDE.md`, an
-`AGENTS.md`, or any rules file:
-
-```bash
-cat SKILL.md >> AGENTS.md
+```text
+01-evidence.private.json   raw synthetic evidence; private format
+02-analysis.json           conservative issue candidates
+03-proposals.json          DRAFT — NOT SENT, not-applied plans
+04-report.md               quote-free report; still needs human privacy review
+05-validation.json         synthetic baseline-fail -> after-pass result
 ```
 
-Then just talk to your agent normally: 复盘一下这个项目 / 总结我的真需求 / 哪些能自动化.
+The source fixtures are in [examples/anonymous](examples/anonymous/README.md).
 
-## The scanner
+## Use it on a project
 
-Zero dependencies, standard library only. It can also be run on its own.
+Choose the exact repository and exact evidence files yourself. Storing private evidence outside
+the project is recommended:
 
 ```bash
-python3 scripts/scan_transcript.py --engine both --since 7d
-python3 scripts/scan_transcript.py --engine claude --project myproject --out facts.json
+requirement-ledger doctor --repo /path/to/project
+
+requirement-ledger scan \
+  --repo /path/to/project \
+  --input /path/to/explicit-codex-or-claude-session.jsonl \
+  --test-log /path/to/existing-test-output.log \
+  --output /tmp/project-evidence.private.json
+
+requirement-ledger analyze \
+  --evidence /tmp/project-evidence.private.json \
+  --output /tmp/project-analysis.json
+
+requirement-ledger report \
+  --analysis /tmp/project-analysis.json \
+  --output /tmp/project-report.md
+
+requirement-ledger suggest \
+  --analysis /tmp/project-analysis.json \
+  --output /tmp/project-proposals.json
+```
+
+`scan` never discovers `~/.codex`, `~/.claude`, or other projects. JSONL provider detection is
+automatic; use `--provider codex|claude|text` when a custom filename is ambiguous. Time windows
+are ISO-8601 and apply to individual JSONL events. Plain text has no timestamps, so it rejects
+time-window flags instead of pretending.
+
+### Record validation without running project code
+
+v0.1 deliberately does not execute arbitrary third-party tests. Let Codex or your existing
+sandbox freeze the exact argv, working directory, relevant environment, and fixture digests,
+hash that descriptor with SHA-256, then run it before and after the reviewed intervention.
+Provide the same 64-hex digest in both tiny JSON records and on the command line:
+
+```json
+{"oracle": "unit-regression", "oracle_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "exit_code": 1}
+```
+
+```json
+{"oracle": "unit-regression", "oracle_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "exit_code": 0}
+```
+
+```bash
+requirement-ledger verify \
+  --oracle unit-regression \
+  --oracle-digest aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa \
+  --baseline /tmp/baseline.json \
+  --after /tmp/after.json \
+  --output /tmp/validation.json
+```
+
+Only the same oracle name **and digest** changing from failure to success is `improved`.
+Mismatched identities, boolean/non-integer exit codes, or codes outside 0–255 are
+`inconclusive`; baseline success followed by failure is `regressed`.
+
+## Attribution without pretending
+
+Each issue stores a suspected scope and a final scope separately:
+
+| Scope | What confirmation requires |
+|---|---|
+| `upstream` | independent projects/sessions, same provider/version, clean reproduction, local and personal causes excluded |
+| `project-local` | direct repository evidence plus a clean comparison where the behaviour does not reproduce elsewhere |
+| `personal` | separately authorised personal-configuration evidence or a clean-config comparison |
+| `unknown` | the default when those conditions are not met |
+
+A complaint is not an upstream finding. A failed project test is not proof that a dependency is
+wrong. Incomplete or conflicting evidence blocks confirmation. See the normative
+[v0.1 contract](V0.1_CONTRACT.md).
+
+## Privacy and safety
+
+Private evidence files may contain original user text and must end in `.private.json`; they are
+created with restrictive permissions where the OS supports them. Do not attach them to an
+Issue, PR, email, or chat.
+
+Reports exclude original quotes, local paths, session IDs, command arguments, remotes, and raw
+errors. Before a report is written, the automated gate checks common secret formats, auth and
+cookie headers, email, phone, home paths, credential-bearing remotes, UUIDs, IP addresses, and
+terminal controls. A hit returns `E_PRIVACY_BLOCK` and no report file is created.
+
+**Passing an automated privacy check is not proof that a file is safe to share.** Every report
+says that human review is still required.
+
+The v0.1 CLI contains no project-code runner, patch application, dependency installer, network
+client, telemetry, browser, GitHub writer, or account integration. Its only subprocesses are
+fixed read-only probes through a trusted absolute Git executable with redirecting `GIT_*`
+environment removed. Output parents must already exist; every output ancestor is checked before
+an exclusive write. Read the [threat model](docs/THREAT_MODEL.md) and
+[security policy](SECURITY.md) before using real evidence.
+
+## Legacy retrospective tools
+
+The original Skill workflow remains available for compatibility:
+
+```bash
 python3 scripts/scan_transcript.py path/to/session.jsonl
-python3 scripts/scan_transcript.py --engine both --since 7d --no-text   # share-safe
+python3 scripts/check_retro_report.py path/to/report.md
+python3 scripts/check_translation_sync.py
 ```
 
-Real transcripts are hostile, and it is built around that rather than the happy path. Each of
-these cost a wrong number before it was understood:
+The legacy scanner can still discover local agent directories when explicitly invoked with
+`--engine`. Its `--no-text` option only removes message/error bodies; paths, session metadata,
+and command shapes may remain. It is **not share-safe**. Use the new packaged pipeline for any
+new workflow and treat all legacy output as private.
 
-- Sessions reach 250 MB and single lines reach 1.5 M characters of base64. It streams line by
-  line, measures oversized lines instead of parsing them, and never decodes base64. Roughly
-  1 GB in 3 seconds; `--since` skips stale files by mtime before opening them.
-- **Both engines feed tool output back as user messages.** Counting those turns a 79-turn
-  conversation into 918 "user turns" and floods the requirement extraction with tool logs —
-  measured on a real 105 MB session. The Claude adapter drops `tool_result` blocks; the Codex
-  adapter prefers `event_msg/user_message`, which is what you actually typed.
-- Claude Code names its folders after a slugified working directory, so every non-ASCII
-  character becomes a dash and a project called `接单工作台` lives in `-Users-…-Desktop------`.
-  Matching on the path alone returns zero sessions; `--project` matches the path *or* the
-  working directory recorded inside each file.
-- Corrections are found by keyword, so they are reported as **candidates**, never findings.
-  「这个不错」 contains 不 and is praise. A screenshot with no words can be the sharpest
-  correction in the transcript. The model judges each one.
-
-## Checking the output
+## Development
 
 ```bash
-python3 scripts/check_retro_report.py report.md          # VALID_RETRO, or what is wrong
-python3 scripts/check_retro_report.py report.md --lang zh
-python3 scripts/check_translation_sync.py                # Chinese mirrors not stale
-python3 -m unittest discover -s tests                    # 56 tests
+python3 -m pip install --no-build-isolation --no-deps -e .
+python3 -m unittest discover -s tests -v
+python3 -m compileall -q src scripts tests
+python3 scripts/check_translation_sync.py
 ```
 
-The report checker refuses the things that make a retrospective actively harmful, because it
-will be quoted later as fact: a number with no source, a claim with no label, a missing time
-window or one with no UTC offset, a vague quantity word standing in for a measurement, a
-section padded out to look complete. It checks form, not truth. English and Chinese section
-names and labels are both recognised.
+All fixtures must be synthetic. Never paste a real transcript, secret, private remote, client
+name, session identifier, or personal path into an Issue or test. See
+[CONTRIBUTING.md](CONTRIBUTING.md), [SUPPORT.md](SUPPORT.md), and the
+[project gap ledger](docs/PROJECT_GAPS.md).
 
-## What's inside
+## What is intentionally unfinished
 
-```
-SKILL.md                  the skill itself, ~100 lines, loaded by the agent
-references/               5 docs loaded on demand: evidence rules, real-requirement
-                          extraction, mistake layers, skill extraction, 16 anti-patterns
-templates/                retrospective report, optimisation record
-scripts/                  scan_transcript.py — Claude Code, Codex and plain-text adapters
-                          check_retro_report.py, check_translation_sync.py
-tests/                    56 tests, no third-party dependencies
-```
+v0.1 does not provide safe autonomous modification. Isolation backends, object-bound approval
+tokens, frozen-oracle execution, transactional apply, and rollback fault injection are required
+before that boundary can move. Structured test adapters, clean-room reproduction, daily/weekly
+reports, opt-in adoption evidence, governance, and signed releases also remain open.
 
-Everything exists twice, in English and Chinese. English is normative; each `*.zh-CN.md` carries
-the SHA256 of its English source, so editing the normative file makes its mirror mechanically
-detectable as stale rather than quietly wrong.
-
-## What this is not
-
-- **Not a spec writer.** It does not help you decide what to build. It tells you what you
-  already asked for, once there is a transcript to read.
-- **Not a dashboard.** The counts exist to keep the prose honest, not to be looked at.
-- **Not able to tell you a report is _true_.** The checker validates structure. Only the people
-  who were there can confirm the content.
-- **Not an unattended Skill factory.** It proposes; it writes a real `SKILL.md` only on an
-  explicit go, and "no new Skill" is a normal, common outcome.
-
-## Privacy
-
-The scanner reads your local session files and its output contains your messages verbatim by
-design — those quotes are the evidence. Nothing is uploaded anywhere. Use `--no-text` for any
-output you plan to share, paste, or attach: it keeps every count and drops every quote.
+That list is maintained in [docs/PROJECT_GAPS.md](docs/PROJECT_GAPS.md), so “polished” cannot be
+confused with “finished”.
 
 ## License
 

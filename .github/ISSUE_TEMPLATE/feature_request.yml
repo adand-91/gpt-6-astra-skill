@@ -1,0 +1,45 @@
+name: Feature request
+description: Suggest an improvement with its value and privacy impact.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Privacy first: do not paste real transcripts, credentials, tokens, personal data, customer data, private paths, or other secrets. Describe the use case with synthetic examples.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What problem or limitation would this address? Use a synthetic, non-sensitive example.
+    validations:
+      required: true
+  - type: textarea
+    id: value
+    attributes:
+      label: User value
+      description: Who benefits, and what useful outcome would the feature provide?
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed solution
+      description: Describe the desired behavior or interface without sharing implementation secrets or private data.
+    validations:
+      required: true
+  - type: textarea
+    id: privacy_impact
+    attributes:
+      label: Privacy impact
+      description: Explain what data the feature would handle, why it is necessary, and how collection, retention, and exposure would be minimized. State explicitly if it can work without real transcripts or secrets.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I used synthetic examples only and did not include real transcripts, secrets, credentials, or private paths.
+          required: true

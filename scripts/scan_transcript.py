@@ -18,7 +18,7 @@ Hard limits, because real transcripts are hostile:
     python3 scan_transcript.py --engine claude --since 7d
     python3 scan_transcript.py --engine both --since 7d --format json --out facts.json
     python3 scan_transcript.py path/to/session.jsonl
-    python3 scan_transcript.py --engine claude --since 7d --no-text   # omit verbatim text
+    python3 scan_transcript.py --engine claude --since 7d --no-text   # omit bodies; still private
 
 Exit 0 on success, 2 on usage/IO error.
 """
@@ -464,7 +464,7 @@ def matches_project(path: Path, facts: dict[str, Any], needle: str | None) -> bo
 
     Both are needed.  Claude Code names its directories after a slugified cwd, which turns
     every non-ASCII character into a dash -- so a project called 接单工作台 lives in
-    '-Users-a1-6-Desktop------' and can only be found through the cwd recorded inside.
+    '-Users-example-Desktop------' and can only be found through the cwd recorded inside.
     """
     if not needle:
         return True
@@ -566,7 +566,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--format", choices=("text", "json"), default="text")
     parser.add_argument("--out", type=Path, help="also write the full JSON here")
     parser.add_argument("--no-text", action="store_true",
-                        help="omit verbatim user text (share-safe)")
+                        help="omit message/error bodies; metadata may remain sensitive")
     parser.add_argument("--claude-root", type=Path,
                         default=Path(os.getenv("CLAUDE_PROJECTS", CLAUDE_ROOT)))
     parser.add_argument("--codex-root", type=Path,

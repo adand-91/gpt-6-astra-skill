@@ -1,0 +1,20 @@
+include LICENSE
+include README.md README.zh-CN.md
+include CONTEXT.md CONTEXT.zh-CN.md HANDOFF.md HANDOFF.zh-CN.md
+include SKILL.md SKILL.zh-CN.md
+include CHANGELOG.md CHANGELOG.zh-CN.md
+include CODE_OF_CONDUCT.md CODE_OF_CONDUCT.zh-CN.md
+include CONTRIBUTING.md CONTRIBUTING.zh-CN.md
+include MAINTENANCE.md MAINTENANCE.zh-CN.md
+include SECURITY.md SECURITY.zh-CN.md
+include SUPPORT.md SUPPORT.zh-CN.md
+include V0.1_CONTRACT.md V0.1_CONTRACT.zh-CN.md
+recursive-include docs *.md
+recursive-include examples *
+recursive-include references *.md
+recursive-include scripts *.py
+recursive-include templates *.md
+recursive-include tests *.py
+prune **/__pycache__
+global-exclude *.py[cod]
+global-exclude *.private.json
