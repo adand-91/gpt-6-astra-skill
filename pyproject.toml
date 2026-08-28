@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "requirement-ledger"
-version = "0.1.0"
-description = "Privacy-first evidence and repair planning for any Git project"
+dynamic = ["version"]
+description = "AI project and Skill feedback loop for Codex, Claude Code, and any Git project"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
@@ -24,7 +24,18 @@ classifiers = [
   "Topic :: Software Development :: Quality Assurance",
 ]
 dependencies = []
-keywords = ["codex", "project-improvement", "requirements", "privacy", "retrospective"]
+keywords = [
+  "ai",
+  "agent-skills",
+  "claude-code",
+  "codex",
+  "conversation-analysis",
+  "feedback-loop",
+  "project-optimizer",
+  "requirements-engineering",
+  "skill",
+  "vibe-coding",
+]
 
 [project.scripts]
 requirement-ledger = "requirement_ledger.cli:main"
@@ -39,6 +50,9 @@ Changelog = "https://github.com/adand-91/requirement-ledger/blob/main/CHANGELOG.
 [tool.setuptools]
 package-dir = { "" = "src" }
 include-package-data = true
+
+[tool.setuptools.dynamic]
+version = { attr = "requirement_ledger.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["src"]

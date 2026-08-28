@@ -62,6 +62,20 @@ Use this for every public version. A checked box must point to command output or
 - [ ] Watch the first real user path for parser, privacy, packaging, and error-message findings.
 - [ ] Open follow-up work only for real evidence; do not manufacture activity.
 
+## v0.1.1 pre-release evidence — 2026-08-28
+
+- Unit suite: 97 tests, exit 0; translation checker: `TRANSLATIONS_IN_SYNC`; compile and
+  `git diff --check`: exit 0.
+- The documented synthetic Skill case produced baseline exit `1`, after exit `0`, validation
+  `improved`, conservative scope `unknown`, and no raw failure text in its report.
+- Wheel and sdist both built as `0.1.1`, installed in separate clean virtual environments, and
+  exposed `requirement-ledger 0.1.1`.
+- Two installed Demo outputs were byte-identical.
+- The sdist contains both roadmaps, both Skill-case documents, bilingual README and Skill files,
+  and contains no bytecode, cache directory, or `.private.json` evidence.
+- Final artefact hashes must be regenerated from the release commit. Public CI, tag, Release,
+  public re-download, and publication evidence remain blocked until the release commit is pushed.
+
 ## Public release evidence — 2026-08-28
 
 - Final tagged commit: `ebda35154b0256395d46345e748e2be445241487`.

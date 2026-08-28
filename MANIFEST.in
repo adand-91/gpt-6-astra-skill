@@ -6,6 +6,7 @@ include CHANGELOG.md CHANGELOG.zh-CN.md
 include CODE_OF_CONDUCT.md CODE_OF_CONDUCT.zh-CN.md
 include CONTRIBUTING.md CONTRIBUTING.zh-CN.md
 include MAINTENANCE.md MAINTENANCE.zh-CN.md
+include ROADMAP.md ROADMAP.zh-CN.md
 include SECURITY.md SECURITY.zh-CN.md
 include SUPPORT.md SUPPORT.zh-CN.md
 include V0.1_CONTRACT.md V0.1_CONTRACT.zh-CN.md

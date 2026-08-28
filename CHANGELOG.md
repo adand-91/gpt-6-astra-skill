@@ -7,6 +7,26 @@ All notable changes to this project are documented here. Versions follow
 
 No changes yet.
 
+## [0.1.1] - 2026-08-28
+
+### Added
+
+- Requirement Ledger AI positioning for AI project and Skill improvement workflows.
+- A bilingual fifteen-day roadmap from the evidence prototype to the `v1.0.0` technical launch.
+- A wholly synthetic, reproducible Skill-improvement walkthrough with an externally run,
+  digest-bound before/after oracle.
+
+### Changed
+
+- README discovery metadata, badges, search terms, first-use framing, and links to the Skill case.
+- Package metadata now derives the CLI and record version from one `__version__` source.
+- Source distributions now explicitly include the bilingual roadmap.
+
+### Compatibility
+
+- The repository slug, package name, console command, CLI, schemas, and v0.1 safety boundaries
+  are unchanged.
+
 ## [0.1.0] - 2026-08-28
 
 ### Added

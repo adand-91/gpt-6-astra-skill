@@ -11,6 +11,8 @@ from pathlib import Path
 from unittest import mock
 
 from requirement_ledger.cli import main
+from requirement_ledger import __version__
+from requirement_ledger.models import TOOL_VERSION
 from requirement_ledger.pipeline import analyze_evidence, synthetic_demo_bundle
 
 
@@ -25,6 +27,9 @@ def make_repo(root: Path) -> Path:
 
 
 class TestCLI(unittest.TestCase):
+    def test_cli_and_record_versions_share_one_source(self) -> None:
+        self.assertEqual(__version__, TOOL_VERSION)
+
     def call(self, argv: list[str]) -> tuple[int, str, str]:
         out, err = StringIO(), StringIO()
         with redirect_stdout(out), redirect_stderr(err):

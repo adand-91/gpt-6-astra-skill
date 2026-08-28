@@ -1,4 +1,4 @@
-<!-- translation-of: CONTEXT.md sha256:019b2377b7e14f18 -->
+<!-- translation-of: CONTEXT.md sha256:7c3ad2ce096ea820 -->
 
 # 项目上下文
 
@@ -6,26 +6,29 @@
 
 ## 当前检查点
 
-- 阶段：`v0.1.0` 已公开发布；`main` 进入证据驱动的真实维护阶段。
+- 阶段：`v0.1.1` 已通过本地 Release Candidate 验证；正在等待发布 commit 的公开 CI 门。
+- 品牌：Requirement Ledger AI——面向 Codex、Claude Code 与任意 Git 项目的 AI 项目／Skill
+  反馈闭环。仓库 slug 与 CLI 继续使用 `requirement-ledger`。
 - 产品：显式 Git 项目 + 显式对话／测试证据 → 私有证据 → 保守归因 → 无原话报告和未应用修复计划
   → 外部同一 oracle 验证。
 - 安全：CLI 不发现主目录会话、不运行项目代码、不安装依赖、不联网、不修改工作树、不 commit、
   不 push，也不执行 GitHub／账号动作。
-- 验证：96 项本地测试、编译、翻译、定向安全回归、wheel/sdist 构建与干净安装、确定性 Demo、
-  显式输入冒烟、Git 不变检查和隐私金丝雀均已通过。
-- 发布：annotated tag `v0.1.0` 指向 `ebda351`；GitHub Release 已公开并附 wheel 与 sdist。
-  公开重新下载哈希、干净 wheel 安装、版本命令和 Demo 均已通过。
+- 验证：97 项本地测试、编译、翻译、wheel/sdist 构建与干净安装、确定性 Demo、包内容检查和
+  合成 Skill 案例均已通过。案例得到 oracle `1 -> 0`、`improved`、`unknown` 归因，报告不含
+  原始失败文本。
+- 发布：当前公开版本仍为 `v0.1.0`。`v0.1.1` 尚未打 Tag 或发布；公开 CI 是硬门。
 
 ## 接手文件
 
 - 产品与权限：`V0.1_CONTRACT.zh-CN.md`
 - 架构与威胁模型：`docs/ARCHITECTURE.md`、`docs/THREAT_MODEL.md`
 - 剩余工作：`docs/PROJECT_GAPS.md`
-- 维护与分批：`MAINTENANCE.zh-CN.md`
-- 发布门与说明：`docs/RELEASE_CHECKLIST.md`、`docs/releases/v0.1.0.md`
+- 维护与分批：`MAINTENANCE.zh-CN.md`；15 天路线：`ROADMAP.zh-CN.md`
+- 发布门与说明：`docs/RELEASE_CHECKLIST.md`、`docs/releases/v0.1.1.md`
+- 合成 Skill 案例：`docs/use-cases/improve-an-agent-skill.zh-CN.md`
 - 滚动技术交接：`HANDOFF.md`
 
 ## 下一步
 
-观察真实使用和 Issue。只有出现可复现证据时才发布 `0.1.x` 修复；日报／周报与结构化测试适配器
-作为真实 `0.2.0` 工作规划。
+提交并推送已复核的 `v0.1.1` 候选，要求公开 CI 全绿，再从完全相同的 commit 创建 Tag 与
+Release。发布后从显式证据窗口开始设计 `v0.2.0` 报告；不加入自主修改或 GitHub 动作。

@@ -9,8 +9,10 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from typing import Any, Literal
 
+from . import __version__
+
 SCHEMA_VERSION = "1.0"
-TOOL_VERSION = "0.1.0"
+TOOL_VERSION = __version__
 
 Completeness = Literal["complete", "incomplete", "unstable"]
 EvidenceLabel = Literal["SAID", "INFERRED", "UNKNOWN"]

@@ -27,8 +27,10 @@ The project follows Semantic Versioning while it is pre-1.0:
 - `0.2.0`: structured test adapters, issue grouping, and daily/weekly report outputs;
 - `0.3.0`: only after a proven isolation backend, object-bound approvals, frozen-oracle
   execution, drift checks, and rollback fault injection;
-- `1.0.0`: stable schemas and CLI, documented migration policy, multiple real-project case
-  studies, and a sustained maintenance record.
+- `1.0.0`: stable promised schemas and CLI, a documented migration policy, a reproducible
+  maintainer-owned workflow, and every technical release gate passing on one commit. External
+  adoption and sustained maintenance remain post-launch evidence, not claims manufactured by a
+  fifteen-day engineering sprint.
 
 Security fixes may accelerate this sequence. Feature pressure never weakens a safety gate.
 
@@ -45,7 +47,8 @@ entry points.
 
 Only fixes backed by the first real local uses: provider-format drift, false privacy positives or
 negatives, Windows/macOS/Linux packaging findings, error-message clarity, and regression tests.
-There is no predetermined number of patch releases.
+Coherent discovery and first-use improvements may also ship here when they do not change the v0.1
+contract. There is no predetermined number of patch releases.
 
 ### Batch C — `v0.2.0`: reporting and adapters
 

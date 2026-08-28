@@ -1,14 +1,29 @@
-# requirement-ledger
+# Requirement Ledger AI
 
-**A local, privacy-first evidence loop for improving any Git project with Codex or another
-coding agent.** It turns the conversations, errors, Git state, and test results you explicitly
-give it into traceable issue candidates, repair plans, and before/after evidence.
+**An AI project and Skill feedback loop for Codex, Claude Code, and any Git project.** Turn the
+corrections already buried in Vibe Coding conversations into private evidence, reviewable repair
+plans, and verified improvements.
+
+[![CI](https://github.com/adand-91/requirement-ledger/actions/workflows/ci.yml/badge.svg)](https://github.com/adand-91/requirement-ledger/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/adand-91/requirement-ledger)](https://github.com/adand-91/requirement-ledger/releases/latest)
+[![Python](https://img.shields.io/badge/Python-3.10--3.13-3776AB)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 [中文说明](README.zh-CN.md) · [v0.1 contract](V0.1_CONTRACT.md) ·
-[open gaps](docs/PROJECT_GAPS.md) · [security](SECURITY.md)
+[roadmap](ROADMAP.md) · [open gaps](docs/PROJECT_GAPS.md) · [security](SECURITY.md)
 
 > v0.1 does not autonomously edit your project. The CLI gathers and structures evidence;
 > Codex remains the developer, and every real modification stays visible and reviewable.
+
+## Two jobs, one evidence loop
+
+- **Improve an AI agent Skill:** recover missed triggers, repeated corrections, unsafe defaults,
+  and regression oracles before Codex makes a visible, authorised Skill change.
+- **Improve any Git project:** turn explicit Codex, Claude Code, or plain-text interactions plus
+  existing test output into traceable issue candidates and repair plans.
+
+Requirement Ledger AI is the evidence layer, not a hidden patch bot. See the fully synthetic
+[Skill improvement walkthrough](docs/use-cases/improve-an-agent-skill.md).
 
 ## Why this exists
 

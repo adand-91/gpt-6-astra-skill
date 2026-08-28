@@ -1,15 +1,30 @@
-<!-- translation-of: README.md sha256:1f31d5a3e842eebd -->
+<!-- translation-of: README.md sha256:c1116349c79ceda2 -->
 
-# requirement-ledger
+# Requirement Ledger AI
 
-**一个让 Codex 或其他编程 Agent 持续优化任意 Git 项目的本地、隐私优先证据闭环。**
-它把你明确提供的对话、错误、Git 状态和测试结果变成可追溯的问题候选、修复计划与前后对照证据。
+**一个面向 Codex、Claude Code 和任意 Git 项目的 AI 项目与 Skill 反馈闭环。**
+把埋在 Vibe Coding 对话里的纠正转成私有证据、可审查修复计划和可验证改进。
+
+[![CI](https://github.com/adand-91/requirement-ledger/actions/workflows/ci.yml/badge.svg)](https://github.com/adand-91/requirement-ledger/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/adand-91/requirement-ledger)](https://github.com/adand-91/requirement-ledger/releases/latest)
+[![Python](https://img.shields.io/badge/Python-3.10--3.13-3776AB)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 [English](README.md) · [v0.1 契约](V0.1_CONTRACT.zh-CN.md) ·
-[未完成项](docs/PROJECT_GAPS.md) · [安全政策](SECURITY.zh-CN.md)
+[路线图](ROADMAP.zh-CN.md) · [未完成项](docs/PROJECT_GAPS.md) · [安全政策](SECURITY.zh-CN.md)
 
 > v0.1 不会自动修改项目。CLI 负责采集和组织证据；Codex 仍是开发者，任何真实修改都保持可见、
 > 可审查。
+
+## 两类任务，同一个证据闭环
+
+- **改进 AI Agent Skill：** 在 Codex 进行可见、获授权的 Skill 修改前，恢复漏触发、反复纠正、
+  不安全默认值和回归 oracle。
+- **改进任意 Git 项目：** 把明确提供的 Codex、Claude Code 或纯文本交互与既有测试输出，转成
+  可追溯的问题候选和修复计划。
+
+Requirement Ledger AI 是证据层，不是隐藏补丁机器人。参见完全合成的
+[Skill 改进演示](docs/use-cases/improve-an-agent-skill.zh-CN.md)。
 
 ## 为什么要做这个项目
 
