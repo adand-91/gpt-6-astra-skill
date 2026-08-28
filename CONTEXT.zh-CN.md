@@ -1,4 +1,4 @@
-<!-- translation-of: CONTEXT.md sha256:41eba00d34facd34 -->
+<!-- translation-of: CONTEXT.md sha256:85b7429ad508a108 -->
 
 # 项目上下文
 
@@ -6,15 +6,16 @@
 
 ## 当前检查点
 
-- 阶段：公开 `main` 已包含 `v0.1.0` 发布候选；最终跨平台 CI 全绿前，不创建 tag 和 GitHub Release。
+- 阶段：公开 `main` 已包含 `v0.1.0` 发布候选，完整公开发布门已全绿；剩余动作是创建 tag 和
+  GitHub Release。
 - 产品：显式 Git 项目 + 显式对话／测试证据 → 私有证据 → 保守归因 → 无原话报告和未应用修复计划
   → 外部同一 oracle 验证。
 - 安全：CLI 不发现主目录会话、不运行项目代码、不安装依赖、不联网、不修改工作树、不 commit、
   不 push，也不执行 GitHub／账号动作。
 - 验证：96 项本地测试、编译、翻译、定向安全回归、wheel/sdist 构建与干净安装、确定性 Demo、
   显式输入冒烟、Git 不变检查和隐私金丝雀均已通过。
-- 发布：发布候选提交已 push 至 `ba885c3`；尚无 `v0.1.0` tag 或 GitHub Release。12-job 产品矩阵
-  已全绿；下一提交修复独立 release-smoke job 的源码导入路径。
+- 发布：发布候选提交已 push 至 `97b22f8`；CI run `33154009605` 已全部通过。尚无 `v0.1.0` tag
+  或 GitHub Release。
 
 ## 接手文件
 
@@ -27,5 +28,5 @@
 
 ## 下一步
 
-提交并 push release-smoke 导入路径修复，然后重跑公开 CI。只有整个工作流全绿后，才能创建 tag
-并发布 GitHub Release `v0.1.0`。
+记录全绿发布门，从最终干净 commit 重建 wheel/sdist，创建 `v0.1.0` tag 和 GitHub Release，
+并核验公开安装与 Demo 路径。

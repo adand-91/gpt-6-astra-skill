@@ -5,8 +5,8 @@ evidence do not belong in this repository.
 
 ## Current checkpoint
 
-- Stage: public `main` contains the `v0.1.0` release candidate; the tag and GitHub Release remain
-  blocked until the final cross-platform CI run is green.
+- Stage: public `main` contains the `v0.1.0` release candidate and the full public release gate is
+  green; the tag and GitHub Release are the remaining publication actions.
 - Product: explicit Git project + explicit transcript/test evidence → private evidence →
   conservative attribution → quote-free report and not-applied repair plan → external
   same-oracle validation.
@@ -15,9 +15,8 @@ evidence do not belong in this repository.
 - Verification: 96 local tests, compile, translation, targeted security regressions, wheel/sdist
   build and clean installs, deterministic demo, explicit-input smoke, Git no-change check, and
   privacy canary have passed.
-- Publication: release-candidate commits are pushed through `ba885c3`; no `v0.1.0` tag or GitHub
-  Release exists yet. The 12-job product matrix is green; the next commit fixes the isolated
-  release-smoke job's source import path.
+- Publication: release-candidate commits are pushed through `97b22f8`; CI run `33154009605` is
+  fully green. No `v0.1.0` tag or GitHub Release exists yet.
 
 ## Pickup files
 
@@ -30,5 +29,5 @@ evidence do not belong in this repository.
 
 ## Next action
 
-Commit and push the release-smoke import-path fix, then rerun the public CI. Only a completely
-green workflow may be tagged and published as GitHub Release `v0.1.0`.
+Record the green release gate, rebuild wheel/sdist from the final clean commit, create tag
+`v0.1.0`, publish the GitHub Release, and verify the public install and demo path.

@@ -1,4 +1,4 @@
-<!-- translation-of: HANDOFF.md sha256:eb74ce850db95cf1 -->
+<!-- translation-of: HANDOFF.md sha256:28a5f1c20a221e44 -->
 
 # HANDOFF
 
@@ -18,14 +18,14 @@
 
 ## 卡在哪儿
 
-- 当前阻断：第四次公开 CI 的 12 个 Python/OS job（含 Windows Python 3.13）和构建安装均通过；最后的源码安全子集因独立 job 未设置 `PYTHONPATH=src` 而无法导入包。CI harness 已修复，等待重跑。
-- 尚未验证：CI harness 修复后的完整工作流，以及发布后源码归档和 Release 附件下载路径。
+- 当前阻断：当前无代码或 CI 阻断；GitHub Release 尚未创建。
+- 尚未验证：最终 tag 的源码归档、Release 附件下载、公开安装和 Demo 路径。
 
 ## 下一步计划
 
-1. 提交并 push release-smoke 的 `PYTHONPATH=src` 修复。
-2. 等待公开 CI；任何 job 失败都停止 tag 和 Release。
-3. CI 全绿后创建 `v0.1.0` tag 和 GitHub Release，附上最终 wheel/sdist，并核验公开安装与 Demo。
+1. 提交发布证据并等待同一最终 commit 的公开 CI。
+2. 从最终干净 commit 构建 wheel/sdist，创建 `v0.1.0` tag 和 GitHub Release。
+3. 核验公开源码归档、附件、安装与 Demo。
 4. 发布后只根据真实 Issue、使用反馈和回归测试维护 `0.1.x`；日报／周报与结构化测试适配器进入 `0.2.0`。
 
 ## 踩过哪些坑
@@ -38,9 +38,9 @@
 
 ## 当前任务汇总
 
-- 状态：跨平台产品矩阵已全绿；只剩 release-smoke 的源码导入环境修复等待提交并重跑公开 CI。
+- 状态：CI run `33154009605` 全绿；进入最终证据提交、打包、tag 和 Release 阶段。
 - 当前有效产物：仓库工作树中的 `0.1.0` 源码、文档、测试与 CI；最终发布附件必须从待发布 commit 重新构建。
-- 一句话结论：本地 Go，公开 Release 暂缓到 GitHub CI 全绿。
+- 一句话结论：发布门 Go，可以在最终证据 commit 的 CI 全绿后发布 `v0.1.0`。
 
 ## 当前架构与入口
 

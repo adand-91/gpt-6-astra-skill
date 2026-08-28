@@ -53,6 +53,8 @@ Use this for every public version. A checked box must point to command output or
   3.13, and built and installed both artefacts. Its final source-level security subset could not
   import the `src/` package because that isolated job lacked `PYTHONPATH`; the step now binds
   `PYTHONPATH=src`. This was a CI harness defect, not a product-test failure.
+- Fifth public CI run `33154009605` passed all 12 Python 3.10–3.13 × Ubuntu/macOS/Windows jobs and
+  the complete built-artefact/security smoke. This is the first fully green public release gate.
 
 ## After release — follow-up, not a pre-release gate
 
