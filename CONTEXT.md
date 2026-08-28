@@ -5,8 +5,8 @@ evidence do not belong in this repository.
 
 ## Current checkpoint
 
-- Stage: `v0.1.1` is an approved release candidate; the implementation commit passed public CI
-  run `33158962532`, and the final evidence commit must pass before tagging.
+- Stage: `v0.1.1` is publicly released; `main` is recording publication evidence before the
+  `v0.2.0` report-design batch begins.
 - Brand: Requirement Ledger AI — an AI project and Skill feedback loop for Codex, Claude Code,
   and any Git project. The repository slug and CLI remain `requirement-ledger`.
 - Product: explicit Git project + explicit transcript/test evidence → private evidence →
@@ -18,8 +18,8 @@ evidence do not belong in this repository.
   deterministic Demo, package-content checks, and the synthetic Skill case have passed. The case
   produced oracle exits `1 -> 0`, `improved`, `unknown` attribution, and no raw failure in its
   report.
-- Publication: `v0.1.0` remains the current public release. `v0.1.1` has not yet been tagged or
-  released; the final evidence-only commit and its CI are the remaining pre-tag gates.
+- Publication: annotated tag `v0.1.1` points to `d07c13f`; the GitHub Release contains the wheel
+  and sdist. Public re-download hashes matched, and clean wheel install, version, and Demo passed.
 
 ## Pickup files
 
@@ -33,6 +33,6 @@ evidence do not belong in this repository.
 
 ## Next action
 
-Push the final evidence update, require all public CI jobs to pass again, then create the tag and
-Release from that exact commit. After publication, begin `v0.2.0` report design from explicit
-evidence windows; do not add autonomous editing or GitHub actions.
+Begin `v0.2.0` with the smallest coherent report design: explicit evidence windows, daily and
+weekly outputs, human-confirmed grouping, and the first structured test adapters. Do not add
+autonomous editing or GitHub actions.

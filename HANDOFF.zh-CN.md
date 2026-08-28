@@ -1,4 +1,4 @@
-<!-- translation-of: HANDOFF.md sha256:ee21e4dde51b88f7 -->
+<!-- translation-of: HANDOFF.md sha256:efe91acf964e8f44 -->
 
 # HANDOFF
 
@@ -18,15 +18,14 @@
 
 ## 卡在哪儿
 
-- 当前阻断：无代码阻断；实现 commit 的公开 CI 已全绿，最终证据 commit 仍须通过同一 CI。
-- 尚未验证：最终证据 commit CI、公开 Release 资产重下载与外部真实用户路径。
+- 当前阻断：当前无阻断问题。
+- 尚未验证：外部真实用户路径；公开 Release、资产哈希、安装、版本和 Demo 已验证。
 
 ## 下一步计划
 
-1. 提交并推送最终发布证据更新，等待同一 commit 的完整公开 CI。
-2. CI 再次全绿后创建 annotated tag `v0.1.1` 与 GitHub Release，上传从 release commit 构建的 wheel/sdist。
-3. 重新下载公开资产，核对哈希、安装、版本与 Demo，再记录发布证据。
-4. 发布后进入 `v0.2.0`：日报、周报、人工确认的问题分组与首批结构化测试适配器。
+1. 让本次仅发布证据的 `main` 文档提交通过公开 CI。
+2. 进入 `v0.2.0`：冻结日报、周报、人工确认的问题分组与首批结构化测试适配器的最小契约。
+3. 用维护者自有项目验证一个显式证据窗口，不自动扫描私有历史、不自动发 Issue 或修改项目。
 
 ## 踩过哪些坑
 
@@ -40,9 +39,9 @@
 
 ## 当前任务汇总
 
-- 状态：`v0.1.1` 实现 commit 的公开 CI 已通过；等待最终证据 commit CI 与正式发布。
-- 当前有效产物：英语权威 README／Roadmap／案例／Release Notes、同步中文镜像，以及通过本地验证的 `0.1.1` wheel/sdist。
-- 一句话结论：本批真实增加了可发现定位、Skill 使用闭环和 15 天正式版路线；尚未对外宣称发布。
+- 状态：`v0.1.1` 已公开发布并完成公开侧验收。
+- 当前有效产物：tag `v0.1.1`、GitHub Release、wheel、sdist、英语权威 README／Roadmap／案例／Release Notes，以及同步中文镜像。
+- 一句话结论：本批真实增加了可发现定位、Skill 使用闭环和 15 天正式版路线，现已公开可用。
 
 ## 当前架构与入口
 
@@ -64,8 +63,10 @@
 - 结果：97 tests，exit 0；翻译检查输出 `TRANSLATIONS_IN_SYNC`；编译与 `git diff --check` 均 exit 0。
 - 构建结果：wheel 与 sdist 均在独立环境安装并报告 `requirement-ledger 0.1.1`；sdist 包含双语 Roadmap 与 Skill 案例，不含字节码、缓存或私有 evidence。
 - 行为结果：两次 installed Demo 字节一致；合成 Skill 案例完整通过，基线 `1`、修改后 `0`、validation `improved`、scope `unknown`、报告不含原始失败文本。
-- 公开结果：实现 commit `d4d079cdd680bae707c1a05fa16ecf6e4fe67267` 的 CI run
-  `33158962532` 全绿；Tag、Release、最终资产哈希和重新下载验收仍待补齐。
+- 公开结果：最终 tagged commit `d07c13f91b119acf55135a504b8ba993f6b1aaf9` 的 CI run
+  `33159107505` 全绿；Release 已公开；重新下载的 wheel/sdist 哈希分别为
+  `39ec5c44fe62818d5a8057609d68328e74bf7cb605044bac934f81b96f345477` 与
+  `defde8eceace64ef908176602a9257b14d0aed8ee46b379011b8e76f79bb9f15`；公开 wheel 安装、版本和 Demo 通过。
 - 证据入口：`docs/RELEASE_CHECKLIST.md` 与 `docs/releases/v0.1.1.md`。
 
 ## 授权与禁止动作

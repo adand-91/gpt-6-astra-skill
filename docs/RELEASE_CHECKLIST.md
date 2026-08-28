@@ -88,3 +88,15 @@ Use this for every public version. A checked box must point to command output or
 - Downloaded sdist SHA-256: `3c4836002c1b6660d75897b1e31ca068f87396d848ad28b75db65833a2a125fc`.
 - The downloaded wheel installed with `--no-deps`, reported `requirement-ledger 0.1.0`, and
   completed the synthetic Demo.
+
+## v0.1.1 public release evidence — 2026-08-28
+
+- Final tagged commit: `d07c13f91b119acf55135a504b8ba993f6b1aaf9`; annotated tag object:
+  `d845481c973ab90a7d804db5cb7ea210a78e9224`.
+- Final pre-tag CI run `33159107505`: all 12 Python/OS matrix jobs and the built-artefact/security
+  smoke passed.
+- Release: `https://github.com/adand-91/requirement-ledger/releases/tag/v0.1.1`.
+- Downloaded wheel SHA-256: `39ec5c44fe62818d5a8057609d68328e74bf7cb605044bac934f81b96f345477`.
+- Downloaded sdist SHA-256: `defde8eceace64ef908176602a9257b14d0aed8ee46b379011b8e76f79bb9f15`.
+- The downloaded wheel installed with `--no-deps`, reported `requirement-ledger 0.1.1`, and
+  completed the five-file Demo with validation status `improved`.

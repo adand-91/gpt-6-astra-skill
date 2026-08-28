@@ -1,4 +1,4 @@
-<!-- translation-of: CONTEXT.md sha256:877880b0d86f947b -->
+<!-- translation-of: CONTEXT.md sha256:5efa9f644797df0b -->
 
 # 项目上下文
 
@@ -6,8 +6,7 @@
 
 ## 当前检查点
 
-- 阶段：`v0.1.1` 已获准发布；实现 commit 的公开 CI run `33158962532` 已通过，最终证据 commit
-  仍需在打 Tag 前通过。
+- 阶段：`v0.1.1` 已公开发布；`main` 正在记录发布证据，随后进入 `v0.2.0` 报告设计批次。
 - 品牌：Requirement Ledger AI——面向 Codex、Claude Code 与任意 Git 项目的 AI 项目／Skill
   反馈闭环。仓库 slug 与 CLI 继续使用 `requirement-ledger`。
 - 产品：显式 Git 项目 + 显式对话／测试证据 → 私有证据 → 保守归因 → 无原话报告和未应用修复计划
@@ -17,8 +16,8 @@
 - 验证：97 项本地测试、编译、翻译、wheel/sdist 构建与干净安装、确定性 Demo、包内容检查和
   合成 Skill 案例均已通过。案例得到 oracle `1 -> 0`、`improved`、`unknown` 归因，报告不含
   原始失败文本。
-- 发布：当前公开版本仍为 `v0.1.0`。`v0.1.1` 尚未打 Tag 或发布；最终仅证据 commit 及其 CI
-  是打 Tag 前剩余的门。
+- 发布：annotated tag `v0.1.1` 指向 `d07c13f`；GitHub Release 包含 wheel 与 sdist。公开重新
+  下载哈希一致，干净 wheel 安装、版本和 Demo 均已通过。
 
 ## 接手文件
 
@@ -32,5 +31,5 @@
 
 ## 下一步
 
-推送最终证据更新，要求公开 CI 再次全绿，再从完全相同的 commit 创建 Tag 与 Release。发布后
-从显式证据窗口开始设计 `v0.2.0` 报告；不加入自主修改或 GitHub 动作。
+开始 `v0.2.0` 的最小完整报告设计：显式证据窗口、日报／周报、人工确认的问题分组，以及首批
+结构化测试适配器。不加入自主修改或 GitHub 动作。
