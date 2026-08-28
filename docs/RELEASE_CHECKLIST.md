@@ -75,6 +75,9 @@ Use this for every public version. A checked box must point to command output or
   and contains no bytecode, cache directory, or `.private.json` evidence.
 - Final artefact hashes must be regenerated from the release commit. Public CI, tag, Release,
   public re-download, and publication evidence remain blocked until the release commit is pushed.
+- Implementation commit `d4d079cdd680bae707c1a05fa16ecf6e4fe67267` passed public CI run
+  `33158962532`: all 12 Python/OS matrix jobs and the built-artefact/security smoke succeeded.
+  The final evidence-only commit must pass the same workflow before tagging.
 
 ## Public release evidence — 2026-08-28
 
