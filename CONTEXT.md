@@ -15,8 +15,9 @@ evidence do not belong in this repository.
 - Verification: 96 local tests, compile, translation, targeted security regressions, wheel/sdist
   build and clean installs, deterministic demo, explicit-input smoke, Git no-change check, and
   privacy canary have passed.
-- Publication: release-candidate commits are pushed through `6c0078c`; no `v0.1.0` tag or GitHub
-  Release exists yet. The next commit closes the Windows Python 3.13 test-log stat mismatch.
+- Publication: release-candidate commits are pushed through `ba885c3`; no `v0.1.0` tag or GitHub
+  Release exists yet. The 12-job product matrix is green; the next commit fixes the isolated
+  release-smoke job's source import path.
 
 ## Pickup files
 
@@ -29,5 +30,5 @@ evidence do not belong in this repository.
 
 ## Next action
 
-Commit and push the test-log stability fix, then run the public cross-platform CI. Only a green
-run may be tagged and published as GitHub Release `v0.1.0`.
+Commit and push the release-smoke import-path fix, then rerun the public CI. Only a completely
+green workflow may be tagged and published as GitHub Release `v0.1.0`.

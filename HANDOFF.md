@@ -16,12 +16,12 @@
 
 ## 卡在哪儿
 
-- 当前阻断：第三次公开 CI 已证明 transcript 修复有效，但 Windows Python 3.13 暴露 test-log 读取器中的同类 path-stat/handle-stat 误判；本地修复和回归测试已通过，等待下一次矩阵证明关闭。
-- 尚未验证：test-log 修复提交上的 Python 3.10–3.13 × Ubuntu/macOS/Windows 矩阵，以及发布后源码归档和 Release 附件下载路径。
+- 当前阻断：第四次公开 CI 的 12 个 Python/OS job（含 Windows Python 3.13）和构建安装均通过；最后的源码安全子集因独立 job 未设置 `PYTHONPATH=src` 而无法导入包。CI harness 已修复，等待重跑。
+- 尚未验证：CI harness 修复后的完整工作流，以及发布后源码归档和 Release 附件下载路径。
 
 ## 下一步计划
 
-1. 提交并 push test-log 跨平台稳定性修复。
+1. 提交并 push release-smoke 的 `PYTHONPATH=src` 修复。
 2. 等待公开 CI；任何 job 失败都停止 tag 和 Release。
 3. CI 全绿后创建 `v0.1.0` tag 和 GitHub Release，附上最终 wheel/sdist，并核验公开安装与 Demo。
 4. 发布后只根据真实 Issue、使用反馈和回归测试维护 `0.1.x`；日报／周报与结构化测试适配器进入 `0.2.0`。
@@ -36,7 +36,7 @@
 
 ## 当前任务汇总
 
-- 状态：三个公开 CI 发现均已转成回归证据；Windows Python 3.13 test-log 修复等待提交并重跑公开 CI。
+- 状态：跨平台产品矩阵已全绿；只剩 release-smoke 的源码导入环境修复等待提交并重跑公开 CI。
 - 当前有效产物：仓库工作树中的 `0.1.0` 源码、文档、测试与 CI；最终发布附件必须从待发布 commit 重新构建。
 - 一句话结论：本地 Go，公开 Release 暂缓到 GitHub CI 全绿。
 

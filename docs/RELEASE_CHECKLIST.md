@@ -49,6 +49,10 @@ Use this for every public version. A checked box must point to command output or
   test-log reader now uses same-file identity plus stable size/mtime checks and keeps its single
   descriptor, regular-file, single-link, size-limit, and read-after drift guards. A synthetic
   cross-platform regression covers differing path/handle metadata.
+- Fourth public CI run `33153795367` passed all 12 Python/OS matrix jobs, including Windows Python
+  3.13, and built and installed both artefacts. Its final source-level security subset could not
+  import the `src/` package because that isolated job lacked `PYTHONPATH`; the step now binds
+  `PYTHONPATH=src`. This was a CI harness defect, not a product-test failure.
 
 ## After release — follow-up, not a pre-release gate
 

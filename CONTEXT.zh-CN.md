@@ -1,4 +1,4 @@
-<!-- translation-of: CONTEXT.md sha256:939fa7e9fb535674 -->
+<!-- translation-of: CONTEXT.md sha256:41eba00d34facd34 -->
 
 # 项目上下文
 
@@ -13,8 +13,8 @@
   不 push，也不执行 GitHub／账号动作。
 - 验证：96 项本地测试、编译、翻译、定向安全回归、wheel/sdist 构建与干净安装、确定性 Demo、
   显式输入冒烟、Git 不变检查和隐私金丝雀均已通过。
-- 发布：发布候选提交已 push 至 `6c0078c`；尚无 `v0.1.0` tag 或 GitHub Release。下一提交将关闭
-  Windows Python 3.13 的测试日志 stat 差异问题。
+- 发布：发布候选提交已 push 至 `ba885c3`；尚无 `v0.1.0` tag 或 GitHub Release。12-job 产品矩阵
+  已全绿；下一提交修复独立 release-smoke job 的源码导入路径。
 
 ## 接手文件
 
@@ -27,5 +27,5 @@
 
 ## 下一步
 
-提交并 push 测试日志稳定性修复，然后运行公开跨平台 CI。只有 CI 全绿后，才能创建 tag 并发布
-GitHub Release `v0.1.0`。
+提交并 push release-smoke 导入路径修复，然后重跑公开 CI。只有整个工作流全绿后，才能创建 tag
+并发布 GitHub Release `v0.1.0`。

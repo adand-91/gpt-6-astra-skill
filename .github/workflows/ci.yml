@@ -72,6 +72,8 @@ jobs:
           .sdist-venv/bin/python -m pip install --disable-pip-version-check --no-input --no-deps dist/*.tar.gz
           .sdist-venv/bin/requirement-ledger --version
       - name: Run targeted fail-closed security regressions
+        env:
+          PYTHONPATH: src
         run: >-
           python -m unittest -v
           tests.test_v01_pipeline.TestGitEvidence.test_project_git_and_redirecting_environment_are_never_used
