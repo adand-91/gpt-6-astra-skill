@@ -58,6 +58,16 @@ Use this for every public version. A checked box must point to command output or
 
 ## After release — follow-up, not a pre-release gate
 
-- [ ] Verify the public tag, source archive, README, install path, and demo.
+- [x] Verify the public tag, source archive, README, install path, and demo.
 - [ ] Watch the first real user path for parser, privacy, packaging, and error-message findings.
 - [ ] Open follow-up work only for real evidence; do not manufacture activity.
+
+## Public release evidence — 2026-08-28
+
+- Final tagged commit: `ebda35154b0256395d46345e748e2be445241487`.
+- Final CI run `33154303073`: all matrix and release-smoke jobs passed.
+- Release: `https://github.com/adand-91/requirement-ledger/releases/tag/v0.1.0`.
+- Downloaded wheel SHA-256: `34c9df440d9896c6413d663b266c764649d260975ad2856b31c6de753cbdf050`.
+- Downloaded sdist SHA-256: `3c4836002c1b6660d75897b1e31ca068f87396d848ad28b75db65833a2a125fc`.
+- The downloaded wheel installed with `--no-deps`, reported `requirement-ledger 0.1.0`, and
+  completed the synthetic Demo.

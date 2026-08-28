@@ -1,4 +1,4 @@
-<!-- translation-of: HANDOFF.md sha256:28a5f1c20a221e44 -->
+<!-- translation-of: HANDOFF.md sha256:0117141391e85f69 -->
 
 # HANDOFF
 
@@ -18,15 +18,14 @@
 
 ## 卡在哪儿
 
-- 当前阻断：当前无代码或 CI 阻断；GitHub Release 尚未创建。
-- 尚未验证：最终 tag 的源码归档、Release 附件下载、公开安装和 Demo 路径。
+- 当前阻断：当前无阻断问题。
+- 尚未验证：首个真实外部用户路径；现有发布、安装和合成 Demo 已验证。
 
 ## 下一步计划
 
-1. 提交发布证据并等待同一最终 commit 的公开 CI。
-2. 从最终干净 commit 构建 wheel/sdist，创建 `v0.1.0` tag 和 GitHub Release。
-3. 核验公开源码归档、附件、安装与 Demo。
-4. 发布后只根据真实 Issue、使用反馈和回归测试维护 `0.1.x`；日报／周报与结构化测试适配器进入 `0.2.0`。
+1. 观察首个真实使用路径、Issue 和安装反馈。
+2. 只根据可复现证据维护 `0.1.x`；没有真实变更就不发布。
+3. 日报／周报与结构化测试适配器作为真实 `0.2.0` 功能规划。
 
 ## 踩过哪些坑
 
@@ -38,9 +37,9 @@
 
 ## 当前任务汇总
 
-- 状态：CI run `33154009605` 全绿；进入最终证据提交、打包、tag 和 Release 阶段。
-- 当前有效产物：仓库工作树中的 `0.1.0` 源码、文档、测试与 CI；最终发布附件必须从待发布 commit 重新构建。
-- 一句话结论：发布门 Go，可以在最终证据 commit 的 CI 全绿后发布 `v0.1.0`。
+- 状态：`v0.1.0` 已公开发布并完成公开侧验收。
+- 当前有效产物：tag `v0.1.0`、GitHub Release、wheel、sdist、英语权威文档和同步中文核心镜像。
+- 一句话结论：首版发布完成，项目已进入真实维护阶段。
 
 ## 当前架构与入口
 
@@ -62,7 +61,8 @@
 - 结果：96 tests，exit 0；翻译检查输出 `TRANSLATIONS_IN_SYNC`；编译和 7 个定向 fail-closed 回归均 exit 0。
 - 构建结果：wheel 与 sdist 均可在干净环境安装，两个入口均报告 `requirement-ledger 0.1.0`。
 - 行为结果：两次 installed Demo 字节一致；显式输入 smoke 生成私有 evidence，扫描前后 `git status` 无差异。
-- 证据入口：`docs/RELEASE_CHECKLIST.md` 与 `docs/releases/v0.1.0.md`。
+- 公开结果：CI run `33154303073` 全绿；下载附件哈希与构建哈希一致；公开 wheel 安装、版本和 Demo 通过。
+- 证据入口：`docs/RELEASE_CHECKLIST.md`、`docs/releases/v0.1.0.md` 与 GitHub Release `v0.1.0`。
 
 ## 授权与禁止动作
 
