@@ -100,3 +100,5 @@ Use this for every public version. A checked box must point to command output or
 - Downloaded sdist SHA-256: `defde8eceace64ef908176602a9257b14d0aed8ee46b379011b8e76f79bb9f15`.
 - The downloaded wheel installed with `--no-deps`, reported `requirement-ledger 0.1.1`, and
   completed the five-file Demo with validation status `improved`.
+- Post-release publication-evidence commit `4b8c514a5dc29e7bded1eef2fe310c62e6b52cf3` passed public
+  CI run `33159477520`, leaving `main` green after the release record was added.

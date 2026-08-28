@@ -5,8 +5,8 @@ evidence do not belong in this repository.
 
 ## Current checkpoint
 
-- Stage: `v0.1.1` is publicly released; `main` is recording publication evidence before the
-  `v0.2.0` report-design batch begins.
+- Stage: `v0.1.1` is publicly released and its publication-evidence commit passed public CI run
+  `33159477520`; the `v0.2.0` report-design batch is next.
 - Brand: Requirement Ledger AI — an AI project and Skill feedback loop for Codex, Claude Code,
   and any Git project. The repository slug and CLI remain `requirement-ledger`.
 - Product: explicit Git project + explicit transcript/test evidence → private evidence →

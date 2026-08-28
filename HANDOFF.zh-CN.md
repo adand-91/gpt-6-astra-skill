@@ -1,4 +1,4 @@
-<!-- translation-of: HANDOFF.md sha256:efe91acf964e8f44 -->
+<!-- translation-of: HANDOFF.md sha256:d2d8a290f68bc62d -->
 
 # HANDOFF
 
@@ -23,9 +23,8 @@
 
 ## 下一步计划
 
-1. 让本次仅发布证据的 `main` 文档提交通过公开 CI。
-2. 进入 `v0.2.0`：冻结日报、周报、人工确认的问题分组与首批结构化测试适配器的最小契约。
-3. 用维护者自有项目验证一个显式证据窗口，不自动扫描私有历史、不自动发 Issue 或修改项目。
+1. 进入 `v0.2.0`：冻结日报、周报、人工确认的问题分组与首批结构化测试适配器的最小契约。
+2. 用维护者自有项目验证一个显式证据窗口，不自动扫描私有历史、不自动发 Issue 或修改项目。
 
 ## 踩过哪些坑
 
@@ -66,7 +65,7 @@
 - 公开结果：最终 tagged commit `d07c13f91b119acf55135a504b8ba993f6b1aaf9` 的 CI run
   `33159107505` 全绿；Release 已公开；重新下载的 wheel/sdist 哈希分别为
   `39ec5c44fe62818d5a8057609d68328e74bf7cb605044bac934f81b96f345477` 与
-  `defde8eceace64ef908176602a9257b14d0aed8ee46b379011b8e76f79bb9f15`；公开 wheel 安装、版本和 Demo 通过。
+  `defde8eceace64ef908176602a9257b14d0aed8ee46b379011b8e76f79bb9f15`；公开 wheel 安装、版本和 Demo 通过。发布证据 commit `4b8c514` 的 CI run `33159477520` 也已全绿。
 - 证据入口：`docs/RELEASE_CHECKLIST.md` 与 `docs/releases/v0.1.1.md`。
 
 ## 授权与禁止动作

@@ -1,4 +1,4 @@
-<!-- translation-of: CONTEXT.md sha256:5efa9f644797df0b -->
+<!-- translation-of: CONTEXT.md sha256:1a65764b389e55be -->
 
 # 项目上下文
 
@@ -6,7 +6,8 @@
 
 ## 当前检查点
 
-- 阶段：`v0.1.1` 已公开发布；`main` 正在记录发布证据，随后进入 `v0.2.0` 报告设计批次。
+- 阶段：`v0.1.1` 已公开发布，发布证据 commit 的公开 CI run `33159477520` 已通过；下一批是
+  `v0.2.0` 报告设计。
 - 品牌：Requirement Ledger AI——面向 Codex、Claude Code 与任意 Git 项目的 AI 项目／Skill
   反馈闭环。仓库 slug 与 CLI 继续使用 `requirement-ledger`。
 - 产品：显式 Git 项目 + 显式对话／测试证据 → 私有证据 → 保守归因 → 无原话报告和未应用修复计划
