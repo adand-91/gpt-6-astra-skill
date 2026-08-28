@@ -39,6 +39,8 @@ Use this for every public version. A checked box must point to command output or
 - Two installed demo outputs compared byte-for-byte with no difference.
 - Explicit-input smoke produced private evidence and left `git status` unchanged.
 - Public cross-platform CI remains a post-push gate before the tag and GitHub Release.
+- First public CI run `33152409147` passed Linux/macOS and exposed Windows CRLF hash drift;
+  `.gitattributes` now fixes repository text to LF and the release remains blocked until rerun.
 
 ## After release — follow-up, not a pre-release gate
 

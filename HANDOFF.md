@@ -16,8 +16,8 @@
 
 ## 卡在哪儿
 
-- 当前阻断：本地无阻断；公开 `v0.1.0` 的唯一剩余发布门是 release-candidate commit 推送后的 GitHub 跨平台 CI。
-- 尚未验证：公开 GitHub Actions 的 Python 3.10–3.13 × Ubuntu/macOS/Windows 矩阵，以及发布后源码归档和 Release 附件下载路径。
+- 当前阻断：首次公开 CI 的 Linux/macOS 通过，Windows 因 checkout 将 LF 转成 CRLF，导致双语原始字节哈希失败；已增加 `.gitattributes` 固定 LF，等待重跑证明关闭。
+- 尚未验证：修复提交上的 Python 3.10–3.13 × Ubuntu/macOS/Windows 矩阵，以及发布后源码归档和 Release 附件下载路径。
 
 ## 下一步计划
 
@@ -29,12 +29,13 @@
 ## 踩过哪些坑
 
 - 失败／误判：文档曾声称发布门通过，但根目录没有 Handoff，随后 transcript 加固又引入未闭合 `try` 的语法错误，导致新 CLI 无法导入。
+- 跨平台发现：Windows checkout 的 CRLF 转换会改变双语源文件哈希；仓库现在用 `.gitattributes` 固定文本 LF，并升级 CI Actions 到当前 Node 24 主版本。
 - 以后如何避免：状态文档不能替代当前命令证据；每次程序修改后先跑完整测试与翻译检查，再刷新 Handoff；发布只接受同一 commit 的 CI 结果。
 - 维护边界：不把已经完成的功能拆成虚假版本，也不按日期制造空提交。定时任务只做真实检查，无真实变更就不发布。
 
 ## 当前任务汇总
 
-- 状态：本地 release candidate 已通过发布前验证，等待 commit、push 和公开 CI。
+- 状态：首个 release-candidate commit 已 push；Windows line-ending 修复等待提交并重跑公开 CI。
 - 当前有效产物：仓库工作树中的 `0.1.0` 源码、文档、测试与 CI；最终发布附件必须从待发布 commit 重新构建。
 - 一句话结论：本地 Go，公开 Release 暂缓到 GitHub CI 全绿。
 
