@@ -12,7 +12,7 @@ evidence do not belong in this repository.
   same-oracle validation.
 - Safety: the CLI does not discover home sessions, run project code, install dependencies,
   access a network, edit the worktree, commit, push, or perform GitHub/account actions.
-- Verification: 94 local tests, compile, translation, targeted security regressions, wheel/sdist
+- Verification: 95 local tests, compile, translation, targeted security regressions, wheel/sdist
   build and clean installs, deterministic demo, explicit-input smoke, Git no-change check, and
   privacy canary have passed.
 - Publication: no v0.1 commit, tag, push, or GitHub Release has occurred yet.

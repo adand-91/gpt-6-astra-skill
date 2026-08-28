@@ -1,4 +1,4 @@
-<!-- translation-of: CONTEXT.md sha256:047d56f9a32c7ce2 -->
+<!-- translation-of: CONTEXT.md sha256:aa603d0ab83603af -->
 
 # 项目上下文
 
@@ -11,7 +11,7 @@
   → 外部同一 oracle 验证。
 - 安全：CLI 不发现主目录会话、不运行项目代码、不安装依赖、不联网、不修改工作树、不 commit、
   不 push，也不执行 GitHub／账号动作。
-- 验证：94 项本地测试、编译、翻译、定向安全回归、wheel/sdist 构建与干净安装、确定性 Demo、
+- 验证：95 项本地测试、编译、翻译、定向安全回归、wheel/sdist 构建与干净安装、确定性 Demo、
   显式输入冒烟、Git 不变检查和隐私金丝雀均已通过。
 - 发布：尚未发生 v0.1 commit、tag、push 或 GitHub Release。
 

@@ -1,4 +1,4 @@
-<!-- translation-of: HANDOFF.md sha256:bad5d1e7ef78f948 -->
+<!-- translation-of: HANDOFF.md sha256:de07921a8236b8d7 -->
 
 # HANDOFF
 
@@ -14,11 +14,11 @@
 - 新增：标准 `src/` 包、统一 CLI、零运行时依赖的 `pyproject.toml`、CI、安全与社区文件、匿名样例、威胁模型、范围账本、发布清单和中英文核心文档。
 - 打包：source distribution 显式包含项目 context 与双语 Handoff，且排除私有 evidence、字节码和缓存目录。
 - 质量：暂存文件已完成 EOF 与 `git diff --check` 格式清理，发布提交不包含生成目录。
-- 验证：94 项单元测试、编译、翻译同步、7 个定向安全回归、wheel/sdist 构建、干净安装、确定性 Demo、显式输入 smoke 和 Git 不变检查已通过。
+- 验证：95 项单元测试、编译、翻译同步、7 个定向安全回归、wheel/sdist 构建、干净安装、确定性 Demo、显式输入 smoke 和 Git 不变检查已通过。
 
 ## 卡在哪儿
 
-- 当前阻断：首次公开 CI 的 Linux/macOS 通过，Windows 因 checkout 将 LF 转成 CRLF，导致双语原始字节哈希失败；已增加 `.gitattributes` 固定 LF，等待重跑证明关闭。
+- 当前阻断：第二次公开 CI 已证明 Windows LF 修复，但 Windows Python 3.12 暴露同文件的 path-stat/handle-stat 元数据差异；现已拆分身份与内容稳定性检查，等待第三次矩阵证明关闭。
 - 尚未验证：修复提交上的 Python 3.10–3.13 × Ubuntu/macOS/Windows 矩阵，以及发布后源码归档和 Release 附件下载路径。
 
 ## 下一步计划
@@ -32,12 +32,13 @@
 
 - 失败／误判：文档曾声称发布门通过，但根目录没有 Handoff，随后 transcript 加固又引入未闭合 `try` 的语法错误，导致新 CLI 无法导入。
 - 跨平台发现：Windows checkout 的 CRLF 转换会改变双语源文件哈希；仓库现在用 `.gitattributes` 固定文本 LF，并升级 CI Actions 到当前 Node 24 主版本。
+- Python 3.12 发现：Windows 对同一文件的路径 stat 与句柄 stat 可报告不同的非内容字段；输入绑定现在用 `os.path.samestat` 判断身份，以 size/mtime 判断内容稳定性，并保留读前读后检查。
 - 以后如何避免：状态文档不能替代当前命令证据；每次程序修改后先跑完整测试与翻译检查，再刷新 Handoff；发布只接受同一 commit 的 CI 结果。
 - 维护边界：不把已经完成的功能拆成虚假版本，也不按日期制造空提交。定时任务只做真实检查，无真实变更就不发布。
 
 ## 当前任务汇总
 
-- 状态：首个 release-candidate commit 已 push；Windows line-ending 修复等待提交并重跑公开 CI。
+- 状态：两个公开 CI 失败已转成回归证据；Windows Python 3.12 修复等待提交并重跑公开 CI。
 - 当前有效产物：仓库工作树中的 `0.1.0` 源码、文档、测试与 CI；最终发布附件必须从待发布 commit 重新构建。
 - 一句话结论：本地 Go，公开 Release 暂缓到 GitHub CI 全绿。
 
@@ -58,7 +59,7 @@
 ## 验证证据
 
 - 实际命令：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q`。
-- 结果：94 tests，exit 0；翻译检查输出 `TRANSLATIONS_IN_SYNC`；编译和 7 个定向 fail-closed 回归均 exit 0。
+- 结果：95 tests，exit 0；翻译检查输出 `TRANSLATIONS_IN_SYNC`；编译和 7 个定向 fail-closed 回归均 exit 0。
 - 构建结果：wheel 与 sdist 均可在干净环境安装，两个入口均报告 `requirement-ledger 0.1.0`。
 - 行为结果：两次 installed Demo 字节一致；显式输入 smoke 生成私有 evidence，扫描前后 `git status` 无差异。
 - 证据入口：`docs/RELEASE_CHECKLIST.md` 与 `docs/releases/v0.1.0.md`。

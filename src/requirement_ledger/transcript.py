@@ -388,9 +388,15 @@ def looks_like_error(text: str) -> bool:
     return any(marker in low for marker in ERROR_HINTS)
 
 
-def _transcript_stat_signature(info: os.stat_result) -> tuple[int, int, int, int, int, int, int]:
-    return (info.st_dev, info.st_ino, info.st_mode, info.st_nlink, info.st_size,
-            info.st_mtime_ns, info.st_ctime_ns)
+def _transcript_stat_signature(info: os.stat_result) -> tuple[int, int]:
+    """Return content metadata that is stable across path and handle stats.
+
+    File identity is checked separately with ``os.path.samestat``.  Windows can
+    report different non-content mode/ctime fields for ``lstat`` and ``fstat``
+    on the same file, so combining identity and content metadata caused false
+    ``E_INPUT_CHANGED`` results on Python 3.12.
+    """
+    return (info.st_size, info.st_mtime_ns)
 
 
 def parse_explicit_transcript(
@@ -413,7 +419,7 @@ def parse_explicit_transcript(
             opened = os.fstat(handle.fileno())
             initial_signature = _transcript_stat_signature(opened)
             if (not stat.S_ISREG(opened.st_mode) or opened.st_nlink > 1
-                    or _transcript_stat_signature(path_before) != initial_signature):
+                    or not os.path.samestat(path_before, opened)):
                 raise InputChangedError("transcript changed before it could be bound")
             if opened.st_size > MAX_INPUT_BYTES:
                 raise UnsafePathError("input exceeds the v0.1 512 MiB per-file limit")
@@ -431,7 +437,9 @@ def parse_explicit_transcript(
             events, stats = parser(handle, parse_time(since), parse_time(until))
             final_fd = os.fstat(handle.fileno())
             path_after = os.lstat(path)
-            if (initial_signature != _transcript_stat_signature(final_fd)
+            if (not stat.S_ISREG(path_after.st_mode) or path_after.st_nlink > 1
+                    or not os.path.samestat(opened, path_after)
+                    or initial_signature != _transcript_stat_signature(final_fd)
                     or initial_signature != _transcript_stat_signature(path_after)):
                 raise InputChangedError("input changed while it was being read")
     except (InputChangedError, UnsafePathError):

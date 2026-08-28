@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import json
+import stat
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import requirement_ledger.transcript as transcript
@@ -139,3 +141,25 @@ class TestV01Transcript(unittest.TestCase):
                               side_effect=[stable, stable, changed]):
                 with self.assertRaises(InputChangedError):
                     parse_explicit_transcript(path, provider="text")
+
+    def test_path_and_handle_metadata_use_identity_plus_content(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "transcript.md"
+            path.write_text("# User\nhello\n", encoding="utf-8")
+            real_lstat = transcript.os.lstat
+
+            def lstat_with_different_mode(value: object):
+                info = real_lstat(value)
+                return SimpleNamespace(
+                    st_mode=info.st_mode ^ stat.S_IWGRP,
+                    st_nlink=info.st_nlink,
+                    st_size=info.st_size,
+                    st_mtime_ns=info.st_mtime_ns,
+                    st_dev=info.st_dev,
+                    st_ino=info.st_ino,
+                )
+
+            with patch.object(transcript.os, "lstat", side_effect=lstat_with_different_mode), \
+                    patch.object(transcript.os.path, "samestat", return_value=True):
+                parsed = parse_explicit_transcript(path, provider="text")
+            self.assertEqual(parsed["completeness"], "complete")
