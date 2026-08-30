@@ -9,6 +9,16 @@
 - Improve work efficiency, simplify operation, and reduce mistakes.
 - Preserve the existing Requirement Ledger work instead of starting an unrelated repository.
 - Build a credible, maintainable open-source project rather than a rough draft.
+- Anchor the next product stage on non-experts personalising an existing Agent Skill from real
+  corrections without first learning Vibe Coding, Skill architecture, YAML, or test terminology.
+- Preserve working Skill behaviour, explain the proposed change in plain language, and require
+  visible authorisation and before/after scenarios for implementation.
+- Let the user name a conversation, Skill, Agent, or project instead of diagnosing the problem;
+  the Codex host should recover related authorised history and analyse the full relevant record.
+- Provide three uses in one project: one-time audit, daily review of the previous workday, and
+  weekly review with GitHub or source-bound industry evidence.
+- Adapt the first host layer to Codex. Daily and weekly modes may enumerate projects active only in
+  their explicit window; one-time audit remains scoped to the named target.
 - Publish `v0.1.0` only after all release gates pass. Later batches must be backed by real use;
   do not backdate, create empty commits, or split one change into meaningless releases.
 
@@ -18,8 +28,9 @@
   intentionally broken build.
 - Codex remains the semantic developer; the zero-dependency CLI is an evidence and safety
   substrate, not a replacement for a coding model.
-- “Automatically captures context” is constrained to the current task or files the user or
-  host explicitly supplies. Silent home-directory discovery would violate the privacy goal.
+- In v0.1, “captures context” remains explicit-file only. In v0.2 host modes, naming a target or
+  invoking a time window authorises bounded related-context discovery through Codex host tools or
+  a scoped adapter; it never authorises unrelated or disk-wide discovery.
 - “Fixes the program” means a reviewed proposal and host-owned isolated intervention in v0.1.
   Autonomous application is deferred until isolation, approvals, and rollback are proven.
 
@@ -28,7 +39,10 @@
 - Real patch application and arbitrary test execution: blocked on isolation/rollback design.
 - Automatic upstream Issue/PR and programme application: not authorised. The maintainer has
   authorised this project's gated `v0.1.0` tag, push, and GitHub Release as visible actions.
-- Daily/weekly background automation, GUI, cloud, and multi-user service: deferred.
+- Creation of actual recurring host schedules, notifications, GUI, cloud, and multi-user service:
+  separate from the open-source mode implementation and not authorised in this build.
+- A dedicated packaged history-discovery or `skill-review` CLI remains deferred until the
+  Codex-first Skill modes have real-use evidence; v0.1.1 remains backward compatible and unchanged.
 - Guaranteed external-programme eligibility: outside this project's control.
 
 ## Acceptance evidence

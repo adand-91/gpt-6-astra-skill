@@ -4,6 +4,22 @@ This is a wholly synthetic, public, reproducible example for Requirement Ledger 
 
 Nothing below is a real conversation, repository, customer, session, path, secret, or test result. Replace neither the case inputs nor the output locations with private material when publishing a demonstration.
 
+## Beginner conversational entry
+
+A user does not need to run the advanced evidence commands below. With the Requirement Ledger
+Skill installed, the same case can begin as a normal request:
+
+> Make this retry-helper Skill fit me better. It broadened a narrow change across public
+> functions and added a dependency. Keep the public API and dependencies unchanged. Before you
+> edit it, tell me exactly what you will preserve, change, and use as proof.
+
+The host first produces the change card defined in
+[`personalization-workflow.md`](../../references/personalization-workflow.md): problem, evidence,
+likely layer, preserved behaviour, smallest proposed change, one success case, one boundary case,
+and rollback. Only an explicit follow-up such as “implement that local Skill change” authorises
+the visible edit. The command-line walkthrough later in this document is the advanced,
+reproducible evidence path—not a prerequisite for a beginner.
+
 ## Outcome
 
 The synthetic Skill initially tells an agent to broaden a retry-helper change. Its synthetic user correction says to preserve the public API and dependencies, and to change only the retry limit. The improvement is a narrow, reviewable edit to the Skill that turns that correction into an explicit constraint. A deterministic, externally run oracle fails before the edit and passes after it.

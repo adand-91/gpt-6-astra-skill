@@ -1,30 +1,72 @@
-<!-- translation-of: README.md sha256:c1116349c79ceda2 -->
+<!-- translation-of: README.md sha256:c6b45ecb1e02ff84 -->
 
 # Requirement Ledger AI
 
-**一个面向 Codex、Claude Code 和任意 Git 项目的 AI 项目与 Skill 反馈闭环。**
-把埋在 Vibe Coding 对话里的纠正转成私有证据、可审查修复计划和可验证改进。
+**Requirement Ledger 已有稳定的显式证据 v0.1.1，以及公开的点名目标审查预发布版
+`v0.2.0-alpha.1`。** 宿主能够有界读取任务历史时，用户只需点名一段 Codex 对话、一个 Agent Skill
+或项目，Skill 就能恢复相关上下文、生成具体改动卡，并在获得授权的修改前后比较同一案例。Python
+标准包尚未自带 Codex 历史适配器。
 
 [![CI](https://github.com/adand-91/requirement-ledger/actions/workflows/ci.yml/badge.svg)](https://github.com/adand-91/requirement-ledger/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/adand-91/requirement-ledger)](https://github.com/adand-91/requirement-ledger/releases/latest)
 [![Python](https://img.shields.io/badge/Python-3.10--3.13-3776AB)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-[English](README.md) · [v0.1 契约](V0.1_CONTRACT.zh-CN.md) ·
+[English](README.md) · [v0.1 CLI 契约](V0.1_CONTRACT.zh-CN.md) ·
+[v0.2 宿主契约](V0.2_HOST_CONTRACT.zh-CN.md) ·
+[Alpha 1 更新说明](docs/release-notes/v0.2.0-alpha.1.zh-CN.md) · [更新地图](UPDATE_MAP.zh-CN.md) ·
 [路线图](ROADMAP.zh-CN.md) · [未完成项](docs/PROJECT_GAPS.md) · [安全政策](SECURITY.zh-CN.md)
 
-> v0.1 不会自动修改项目。CLI 负责采集和组织证据；Codex 仍是开发者，任何真实修改都保持可见、
+> Requirement Ledger 不会自动修改项目。CLI 负责采集和组织证据；Codex 仍是开发者，任何真实修改都保持可见、
 > 可审查。
 
-## 两类任务，同一个证据闭环
+## 用一句话开始
 
-- **改进 AI Agent Skill：** 在 Codex 进行可见、获授权的 Skill 修改前，恢复漏触发、反复纠正、
-  不安全默认值和回归 oracle。
-- **改进任意 Git 项目：** 把明确提供的 Codex、Claude Code 或纯文本交互与既有测试输出，转成
-  可追溯的问题候选和修复计划。
+安装 Skill 后，用户只需点名目标，不需要自己诊断：
 
-Requirement Ledger AI 是证据层，不是隐藏补丁机器人。参见完全合成的
-[Skill 改进演示](docs/use-cases/improve-an-agent-skill.zh-CN.md)。
+> 用 Requirement Ledger 审查这个 Skill。找到与它相关的 Codex 历史，告诉我哪里值得改，保留
+> 已经有效的行为，修改前先给我看改动卡。
+
+接下来由 Codex 宿主完成技术工作：定位目标，只查找相关且已获授权的任务和项目记录，重建工作历史，
+用人话解释问题，保留有效能力，生成简短改动卡，并在修改前停下来等待授权。用户不需要自己回忆失败，
+也不需要设计 YAML、提示词、测试或仓库架构。
+
+```text
+一个点名目标
+  -> 相关 Codex 历史
+  -> 重复问题和个人偏好
+  -> 什么必须保留
+  -> 具体改动卡
+  -> 获得授权后的可见修改
+  -> 同一成功案例和边界案例的修改前后对比
+```
+
+参见[三种审查模式](references/review-modes.zh-CN.md)、
+[Codex 上下文发现](references/codex-context-discovery.zh-CN.md)、
+[新手 Skill 个性化工作流](references/personalization-workflow.zh-CN.md)和完整合成
+[演示案例](docs/use-cases/improve-an-agent-skill.zh-CN.md)。
+
+## 三种用法
+
+| 模式 | 直接这样说 | 它会做什么 |
+| --- | --- | --- |
+| 一次性审查 | “审查这段对话／这个 Skill／这个项目。” | 找到相关历史、给问题排序并生成改动卡 |
+| 日报 | “用 Requirement Ledger 回顾昨天。” | 重建上一工作日、检查先前改动并推荐一个优化 |
+| 周报 | “运行本周 Requirement Ledger 周报。” | 给一周问题去重、检查维护健康度，并关联相关 GitHub 或官方行业变化 |
+
+Alpha 1 的安装版只提供一次性审查骨架和检查器。日报、周报目前是宿主契约与参考模板，不是本预发布版
+可初始化的模式。一次性审查只停留在点名目标；未来日报和周报只能枚举显式时间窗口内活跃的 Codex
+项目。宿主无法调取历史时，必须请用户选择任务或有界导出，不能声称覆盖完整。
+
+Requirement Ledger AI 是引导与证据层，不是隐藏补丁机器人。
+
+## v0.2.0-alpha.1 新增了什么
+
+- `review-init --mode audit` 为一个点名目标和显式时间窗口生成私有、只分析的审查骨架。
+- `review-check` 机械拒绝格式不合格的审查契约，避免它们被当作证据或交给修改工作流。
+- 新文件不覆盖已有内容，并在平台支持时默认使用私有权限；初始覆盖诚实标为零来源、不完整。
+- [更新说明](docs/release-notes/v0.2.0-alpha.1.zh-CN.md)解释解决的问题；
+  [更新地图](UPDATE_MAP.zh-CN.md)把已交付能力与十天走向稳定 v0.2 的路径分开。
 
 ## 为什么要做这个项目
 
@@ -73,6 +115,13 @@ requirement-ledger --version
 
 运行时只使用 Python 标准库。构建隔离可能下载构建工具；已经准备好依赖的离线环境可以使用
 `python3 -m pip install --no-build-isolation --no-deps .`。
+
+不克隆仓库，直接安装这个精确预发布版：
+
+```bash
+python3 -m pip install \
+  https://github.com/adand-91/requirement-ledger/releases/download/v0.2.0-alpha.1/requirement_ledger-0.2.0a1-py3-none-any.whl
+```
 
 ### 安装 Codex 或 Claude Skill
 
@@ -226,8 +275,8 @@ Issue 或测试。参见 [CONTRIBUTING.zh-CN.md](CONTRIBUTING.zh-CN.md)、
 ## 哪些部分是刻意没有完成的
 
 v0.1 不提供安全的自主修改。在移动这条边界前，必须先有隔离后端、对象绑定批准令牌、冻结 oracle
-执行、事务性应用与回滚故障注入。结构化测试适配器、清洁复现、日报／周报、可选采用证据、治理
-与签名发布也仍未完成。
+执行、事务性应用与回滚故障注入。结构化测试适配器、清洁复现、标准包 Codex 历史适配器、真实的一次性审查／
+日报／周报验证、可选采用证据、治理与签名发布也仍未完成。
 
 这些事项长期记录在 [docs/PROJECT_GAPS.md](docs/PROJECT_GAPS.md)，不让“看起来完整”冒充“已经完工”。
 

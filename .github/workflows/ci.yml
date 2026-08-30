@@ -62,11 +62,17 @@ jobs:
           .wheel-venv/bin/requirement-ledger demo --output-dir demo-wheel-a
           .wheel-venv/bin/requirement-ledger demo --output-dir demo-wheel-b
           diff -ru demo-wheel-a demo-wheel-b
+          .wheel-venv/bin/requirement-ledger review-init --mode audit --target ci-skill --start 2026-08-29T00:00:00+00:00 --end 2026-08-30T00:00:00+00:00 --timezone UTC --output alpha-audit.md
+          .wheel-venv/bin/requirement-ledger review-check alpha-audit.md
+          test "$(stat -c '%a' alpha-audit.md)" = "600"
+          if .wheel-venv/bin/requirement-ledger review-init --mode audit --target ci-skill --start 2026-08-29T00:00:00+00:00 --end 2026-08-30T00:00:00+00:00 --timezone UTC --output alpha-audit.md; then exit 1; fi
       - name: Inspect and install the built source distribution
         run: |
           tar -tzf dist/*.tar.gz > sdist-files.txt
           grep -q '/SKILL.md$' sdist-files.txt
+          grep -q '/UPDATE_MAP.md$' sdist-files.txt
           grep -q '/tests/test_v01_pipeline.py$' sdist-files.txt
+          grep -q '/tests/test_review_report.py$' sdist-files.txt
           if grep -E '(__pycache__|\.pyc$|\.private\.json$)' sdist-files.txt; then exit 1; fi
           python -m venv .sdist-venv
           .sdist-venv/bin/python -m pip install --disable-pip-version-check --no-input --no-deps dist/*.tar.gz

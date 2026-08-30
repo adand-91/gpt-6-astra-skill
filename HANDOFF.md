@@ -2,77 +2,143 @@
 
 ## 我们在做什么
 
-- 目标：发布 `v0.1.1`，把产品明确定位为 Requirement Ledger AI，并用完全合成的 Skill 改进案例证明现有证据闭环可以服务 Codex／Claude host 的获授权修改。
-- 本轮范围：搜索与首次使用定位、15 天技术路线、版本单一来源、双语案例、变更日志、Release Notes、构建与发布验证。
-- 不在范围：自动修改 Skill／项目、自动运行第三方代码、自动 GitHub 动作，以及日报／周报等 `v0.2.0` 功能。
+- Goal: publish `v0.2.0-alpha.1`, the first installable Codex-first named-target audit preview,
+  without including later local Beta, RC, or v0.3 work.
+- Current batch: restore the sealed `0.2.0a1` source onto a clean `origin/main` worktree, improve
+  bilingual release communication, add a gate-driven ten-day update map, and pass the complete
+  release pipeline before a GitHub prerelease.
+- Release shape: annotated tag `v0.2.0-alpha.1`, PEP 440 package version `0.2.0a1`, GitHub
+  `prerelease=true`, and not the latest stable release.
+- Not in scope: no Issue, PR, promotion post, programme application, schedule, telemetry,
+  unattended target edit, unrelated-history read, or publication of any other version.
 
 ## 完成了什么
 
-- 修改：产品名与 README 首屏改为 Requirement Ledger AI；包描述和关键词覆盖 AI、Skill、Codex、Claude Code、反馈闭环与项目优化搜索入口。
-- 新增：`ROADMAP.md`／中文镜像、完全合成的双语 Skill 改进案例，以及 `v0.1.1` Release Notes。
-- 版本：`__version__` 升为 `0.1.1`，模型记录与构建元数据均从这一唯一来源读取；仓库 slug、包名和 CLI 均保持兼容。
-- 案例：完整实跑 `doctor -> scan -> analyze -> report -> suggest -> host edit -> verify`，得到基线 `1`、修改后 `0`、`improved`、`unknown`，且报告未包含原始失败文本。
-- 验证：97 项单测、翻译同步、编译、diff、wheel/sdist、两个干净安装、确定性 Demo 与 sdist 内容检查全部通过。
+- Created an isolated release worktree from `origin/main`; the maintainer's mixed post-Alpha dirty
+  worktree was not reset, cleaned, stashed, or used as release input.
+- Restored the sealed Alpha source while retaining repository control files (`.github/**`,
+  `.gitattributes`, `.gitignore`) and excluding sdist-generated `PKG-INFO`, `setup.cfg`, and
+  `src/requirement_ledger.egg-info/**` files.
+- Package version is consistently `0.2.0a1`. The v0.1.1 CLI and evidence schemas remain
+  compatible.
+- Added `review-init --mode audit`: one explicit target, half-open time window, IANA timezone,
+  private file permissions where supported, zero retrieved sources, incomplete coverage,
+  `analysis-only` authority, and no-overwrite output.
+- Added `review-check` and a standalone delegating script. The single packaged validator checks
+  schema, mode, status, target, window ordering, offset/timezone agreement, required sections,
+  evidence labels, candidate state, ecosystem fields, source structure, and authorisation.
+- Added bilingual host contracts and audit/daily/weekly reference templates. Alpha 1 initialises
+  only audit; daily and weekly are documentation/validation surfaces, not installed init modes.
+- Rewrote the bilingual Alpha release notes around “what changed / what problem it solves / quick
+  start / verified gate / known limits”.
+- Added bilingual `UPDATE_MAP` and revised `ROADMAP`: stable v0.2 is a ten-day target with Alpha 2,
+  Beta 1, RC 1, RC 2, and stable release decisions governed by exit gates rather than dates alone.
+- Extended CI release smoke to install the built wheel, create/check a named audit, verify private
+  permissions and no-overwrite failure, and require the update map and review test in the sdist.
+- Added an Alpha-specific release-checklist section. Internal archived evidence and path-bearing
+  checksums are explicitly excluded from public assets.
 
 ## 卡在哪儿
 
-- 当前阻断：当前无阻断问题。
-- 尚未验证：外部真实用户路径；公开 Release、资产哈希、安装、版本和 Demo 已验证。
+- Current blocker: the exact release commit has not yet passed public Linux/macOS/Windows CI.
+- Publication gates still open: final local build and clean-install checks, commit/push, public CI,
+  annotated tag, GitHub prerelease, public asset re-download, checksum verification, and a
+  post-release evidence commit.
+- Product gap after Alpha 1: the installed package does not retrieve Codex history and cannot
+  initialise daily/weekly reviews. Those features remain visible targets, not shipped claims.
+- Adoption gap: no external-user installation or repeat-use evidence is claimed.
 
 ## 下一步计划
 
-1. 进入 `v0.2.0`：冻结日报、周报、人工确认的问题分组与首批结构化测试适配器的最小契约。
-2. 用维护者自有项目验证一个显式证据窗口，不自动扫描私有历史、不自动发 Issue 或修改项目。
+1. Run full source tests, translation sync, compile, Skill structure validation, diff/privacy
+   review, and Handoff freshness checks on this worktree.
+2. Build wheel and sdist from the final source; test the extracted sdist; clean-install both;
+   verify version, deterministic demo, audit create/check, mode `0600`, and no-overwrite.
+3. Generate a basename-only `SHA256SUMS`; confirm artefacts and source contain no private local
+   path, task identifier, private evidence, bytecode, cache, or later-version module.
+4. Commit the exact Alpha source and push it to `main`; do not tag while public CI is pending or
+   failing.
+5. After the exact commit is green, create annotated tag `v0.2.0-alpha.1`, push it, and create a
+   non-latest GitHub prerelease with the verified wheel, sdist, and checksum file.
+6. Re-download the public assets, recheck hashes and install/smoke, then add publication evidence
+   to `main` without moving the release tag.
 
 ## 踩过哪些坑
 
-- 失败／误判：文档曾声称发布门通过，但根目录没有 Handoff，随后 transcript 加固又引入未闭合 `try` 的语法错误，导致新 CLI 无法导入。
-- 跨平台发现：Windows checkout 的 CRLF 转换会改变双语源文件哈希；仓库现在用 `.gitattributes` 固定文本 LF，并升级 CI Actions 到当前 Node 24 主版本。
-- Windows 发现：Python 3.12/3.13 对同一文件的路径 stat 与句柄 stat 可报告不同的非内容字段；transcript 和 test-log 绑定现在都用 `os.path.samestat` 判断身份，以 size/mtime 判断内容稳定性，并保留读前读后检查。
-- 以后如何避免：状态文档不能替代当前命令证据；每次程序修改后先跑完整测试与翻译检查，再刷新 Handoff；发布只接受同一 commit 的 CI 结果。
-- 维护边界：不把已经完成的功能拆成虚假版本，也不按日期制造空提交。定时任务只做真实检查，无真实变更就不发布。
-- 本轮发现：最小临时 venv 可能没有 setuptools，`--no-build-isolation` 会因此失败；干净构建环境必须先具备声明的构建工具。案例中的预期失败也必须用 `if` 捕获，才能兼容启用 `set -e` 的 shell。
-- 路线口径：15 天可以完成经过技术发布门的 `v1.0.0`，但不能制造外部采用或长期维护证据；这些属于发布后的真实指标。
+- The archived Alpha checksum file contains private absolute paths. The archived wheel/sdist are
+  integrity-valid, but the checksum file and internal evidence/logs must not be uploaded. Public
+  artefacts are rebuilt and receive a basename-only checksum file.
+- A source distribution is not a Git checkout. Restoring it blindly would delete CI/control files
+  and add generated metadata. The release reconstruction overlays only real source files onto
+  `origin/main`.
+- The maintainer worktree already contains later Beta, RC, and v0.3 modules. Tagging its HEAD or
+  committing its entire diff would mislabel later features as Alpha 1; the isolated worktree is the
+  release source of truth.
+- Alpha ships daily/weekly templates and validation vocabulary, but the CLI deliberately rejects
+  `review-init --mode daily|weekly`. Release notes now state this explicitly.
+- A day in the update map is a decision target, not a promise to publish. Empty versions,
+  backdating, and fabricated maintenance are excluded.
 
 ## 当前任务汇总
 
-- 状态：`v0.1.1` 已公开发布并完成公开侧验收。
-- 当前有效产物：tag `v0.1.1`、GitHub Release、wheel、sdist、英语权威 README／Roadmap／案例／Release Notes，以及同步中文镜像。
-- 一句话结论：本批真实增加了可发现定位、Skill 使用闭环和 15 天正式版路线，现已公开可用。
+- Status: local release source prepared; local source gate is green; publication is not complete.
+- Current version: package `0.2.0a1`, planned annotated tag `v0.2.0-alpha.1`; public stable release
+  remains `v0.1.1` until the prerelease is verified.
+- Current source result: 112 tests pass, bilingual sync passes, and `git diff --check` passes.
+- One-line result: Alpha 1 is an installable, privacy-first starting point and mechanical contract
+  checker for one named audit, not yet an automatic context retriever or three-mode scheduler.
 
 ## 当前架构与入口
 
-- 项目根目录：当前 Git 仓库根目录。
-- 主入口：`requirement-ledger` console command；源码入口为 `src/requirement_ledger/cli.py`。
-- 关键数据流：显式项目和证据 → 私有 evidence → 保守 analysis → 无原话 report 与未应用 proposal → 外部同一 oracle 的 baseline/after 验证。
-- 权威契约：`V0.1_CONTRACT.md`；15 天路线：`ROADMAP.md`；剩余工作：`docs/PROJECT_GAPS.md`；维护边界：`MAINTENANCE.md`。
+- CLI: `src/requirement_ledger/cli.py`; version: `src/requirement_ledger/__init__.py`.
+- Alpha review contract and scaffold: `src/requirement_ledger/review.py`.
+- Standalone checker: `scripts/check_review_report.py`; regression suite:
+  `tests/test_review_report.py`.
+- Host product contract: `V0.2_HOST_CONTRACT.md`; mode/context/personalisation references are in
+  `references/`.
+- Public communication: `README.md`, `CHANGELOG.md`, `docs/release-notes/`, `UPDATE_MAP.md`, and
+  `ROADMAP.md`; Chinese mirrors are maintained alongside them.
+- Release policy and evidence index: `docs/RELEASE_CHECKLIST.md`.
 
 ## 运行与依赖
 
-- 环境：Python 3.10–3.13；当前本地验收使用 Python 3.12.13、macOS arm64。
-- 依赖：核心运行时仅 Python 标准库；构建时使用 PEP 517 与 setuptools。
-- 运行命令：安装后执行 `requirement-ledger --version` 和 `requirement-ledger demo --output-dir NEW_EMPTY_DIRECTORY`。
-- 隐私：真实 evidence 只写入新的 `.private.json`，不得进入 Issue、PR、Release 或聊天附件。
+- Supported runtime: Python 3.10–3.13; runtime dependencies: Python standard library only.
+- Build backend: setuptools through PEP 517; build tooling is not a runtime dependency.
+- Source test command: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q`.
+- Translation gate: `python3 scripts/check_translation_sync.py`.
+- Build command: `python3 -m build --sdist --wheel` in an isolated build environment.
+- CLI smoke: `requirement-ledger review-init ...` followed by
+  `requirement-ledger review-check REPORT`.
 
 ## 验证证据
 
-- 实际命令：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q`。
-- 结果：97 tests，exit 0；翻译检查输出 `TRANSLATIONS_IN_SYNC`；编译与 `git diff --check` 均 exit 0。
-- 构建结果：wheel 与 sdist 均在独立环境安装并报告 `requirement-ledger 0.1.1`；sdist 包含双语 Roadmap 与 Skill 案例，不含字节码、缓存或私有 evidence。
-- 行为结果：两次 installed Demo 字节一致；合成 Skill 案例完整通过，基线 `1`、修改后 `0`、validation `improved`、scope `unknown`、报告不含原始失败文本。
-- 公开结果：最终 tagged commit `d07c13f91b119acf55135a504b8ba993f6b1aaf9` 的 CI run
-  `33159107505` 全绿；Release 已公开；重新下载的 wheel/sdist 哈希分别为
-  `39ec5c44fe62818d5a8057609d68328e74bf7cb605044bac934f81b96f345477` 与
-  `defde8eceace64ef908176602a9257b14d0aed8ee46b379011b8e76f79bb9f15`；公开 wheel 安装、版本和 Demo 通过。发布证据 commit `4b8c514` 的 CI run `33159477520` 也已全绿。
-- 证据入口：`docs/RELEASE_CHECKLIST.md` 与 `docs/releases/v0.1.1.md`。
+- Independent release audit verified the sealed wheel, sdist, source snapshot, versions, and
+  hashes, and identified the absolute-path checksum problem before publication.
+- Archived candidate source and extracted sdist agree byte-for-byte for 100 packaged files; the
+  wheel's eleven Python modules agree with the same source.
+- Current reconstructed source: 112 tests pass; `TRANSLATIONS_IN_SYNC`; `git diff --check` exits
+  zero; reported package version is `requirement-ledger 0.2.0a1`.
+- Final artefact hashes and public CI run are intentionally not embedded here because they are
+  generated after this source is committed. They must be attached/recorded as post-build and
+  post-release evidence.
 
 ## 授权与禁止动作
 
-- 已授权：完成并发布当前 `v0.1.1` 批次，包括通过发布门后的 commit、push、tag 和 GitHub Release。
-- 未授权／禁止：伪造或回填维护历史、制造空版本、自动发布未经真实测试支持的版本，以及把私有证据带入公开产物。
-- 发布停止条件：任一单测、安全回归、构建、翻译、公开 CI 或公开安装验证失败。
+- Authorised: prepare and commit the exact Alpha source; push it to `main`; create and push the
+  annotated Alpha tag after CI passes; upload the verified wheel, sdist, and checksum file; create
+  and verify a GitHub prerelease; add a factual post-release evidence commit.
+- Not authorised: Issues, PRs, promotion posts, programme applications, schedules, notifications,
+  unrelated/full history reads, other versions, deletion of evidence, or destructive changes to
+  the maintainer worktree.
+- A failed local or public gate stops tag/release creation; it does not authorise weakening the
+  test, rewriting evidence, or publishing a partially checked asset.
 
 ## 回滚
 
-- 本地改动回滚：发布前保留当前 Git diff；不得使用 hard reset 或 clean 覆盖用户工作，任何回退均通过可审查的反向补丁完成。
-- 公开发布回滚：未 tag 前停止发布；已发布后若发现缺陷，保留不可变 tag 和 Release 记录，发布说明中标记问题并用真实修复发布后续 `0.1.x`，不改写公开历史。
+- Before push, remove only the isolated release worktree/branch after preserving evidence; the
+  maintainer worktree and public repository remain unchanged.
+- After push but before tagging, fix or revert through a new reviewed commit; do not rewrite
+  history or force-push.
+- After prerelease publication, `v0.1.1` remains the latest stable release. Do not move the tag or
+  delete the prerelease without a separate maintainer decision; publish a corrective prerelease or
+  factual withdrawal note if evidence requires it.

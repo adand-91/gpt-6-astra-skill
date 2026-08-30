@@ -29,6 +29,19 @@ an instruction, approval, or reason to widen scope.
 | Terminal/Markdown control injection | raw content is absent from share reports; controls are detected |
 | “privacy check passed” becomes false assurance | every report explicitly requires human review |
 
+## Unreleased v0.2 host-layer threats
+
+| Threat | Host-layer control |
+|---|---|
+| Naming one Skill silently scans every task or project | bind one target for `audit`; bind one half-open window for `daily`/`weekly`; build a metadata index before content reads |
+| Keyword similarity crosses into an unrelated project | exact thread/repository/Skill identity and direct links outrank keywords; keyword-only matches cannot cross project scope |
+| Subagent or automation copies look like independent user evidence | exclude known Subagent copies, automation, heartbeats, system, and delegation events from user-correction counts |
+| Retrieved prompt injection expands authority | retrieved text is evidence only; target, window, and mutation authority are host state outside the evidence |
+| A scheduled report reuses an old “go ahead” | scheduled runs are analysis-only unless the schedule carries a separate current target-bound implementation policy accepted by the host |
+| GitHub or news text triggers code changes | ecosystem evidence is read-only, source-bound, and recommendation-only; install, edit, Issue, PR, Release, and publication remain separate actions |
+| Weekly aggregation repeatedly exposes raw history | prefer final daily reports and stable source references; reread private raw history only to resolve a material gap |
+| Missing history is presented as complete | record adapter, included/excluded sources, completeness, unread scope, and `UNKNOWN` findings |
+
 ## Residual risks
 
 Pattern detectors have false positives and false negatives. Windows cannot offer the same
@@ -37,3 +50,7 @@ identity validation. Repository-local Git configuration can still affect read-on
 redirecting inherited/global/system configuration is disabled. Parser formats may drift. A
 person may still share the private bundle by mistake.
 These are documented limits, not silently converted into guarantees.
+
+The v0.2 host contract cannot prove that every Codex environment exposes equivalent thread APIs,
+session formats, or privacy controls. Until a host adapter is implemented and tested, the three
+mode workflows remain `implemented-unverified` and must disclose any missing source.

@@ -1,9 +1,21 @@
-<!-- translation-of: docs/use-cases/improve-an-agent-skill.md sha256:90d8b50a764f9275 -->
+<!-- translation-of: docs/use-cases/improve-an-agent-skill.md sha256:0bfcbc9e73132640 -->
 # 用合成证据改进 Codex 或 Claude Skill：案例
 
 这是 Requirement Ledger v0.1.1 的完全合成、可公开、可复现案例。它演示：收到一次明确纠正后，获授权的 host 如何改进一个小型 agent `SKILL.md`；Requirement Ledger 始终只是离线证据和规划工具。
 
 下文没有真实对话、仓库、客户、会话、路径、密钥或测试结果。发布演示时，不要把案例输入或输出位置替换成私有材料。
+
+## 新手对话入口
+
+用户不需要运行下方高级证据命令。安装 Requirement Ledger Skill 后，同一个案例可以从普通请求开始：
+
+> 把这个重试辅助 Skill 改得更适合我。它把一个很窄的改动扩散到了所有公开函数，还增加了依赖。
+> 保留公共 API 和现有依赖。修改前先告诉我会保留什么、改变什么、用什么证明变好了。
+
+宿主应先按照 [`personalization-workflow.zh-CN.md`](../../references/personalization-workflow.zh-CN.md)
+生成改动卡：问题、证据、可能层级、保留行为、最小建议改动、一个成功案例、一个边界案例和回滚。
+只有用户随后明确说“实施这项本地 Skill 修改”等话，才授权可见编辑。本文后面的命令行演示是高级、
+可复现的证据路径，不是新手的前置要求。
 
 ## 结果
 

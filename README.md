@@ -1,29 +1,77 @@
 # Requirement Ledger AI
 
-**An AI project and Skill feedback loop for Codex, Claude Code, and any Git project.** Turn the
-corrections already buried in Vibe Coding conversations into private evidence, reviewable repair
-plans, and verified improvements.
+**Requirement Ledger has a stable explicit-evidence v0.1.1 and a public `v0.2.0-alpha.1`
+prerelease for named-target audits.** When the host exposes bounded task history, name a Codex
+conversation, Agent Skill, or project and the Skill can recover related context, prepare concrete
+change cards, and compare the same case before and after an authorised edit. The Python package
+does not yet ship its own Codex history adapter.
 
 [![CI](https://github.com/adand-91/requirement-ledger/actions/workflows/ci.yml/badge.svg)](https://github.com/adand-91/requirement-ledger/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/adand-91/requirement-ledger)](https://github.com/adand-91/requirement-ledger/releases/latest)
 [![Python](https://img.shields.io/badge/Python-3.10--3.13-3776AB)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-[中文说明](README.zh-CN.md) · [v0.1 contract](V0.1_CONTRACT.md) ·
+[中文说明](README.zh-CN.md) · [v0.1 CLI contract](V0.1_CONTRACT.md) ·
+[v0.2 host contract](V0.2_HOST_CONTRACT.md) ·
+[Alpha 1 notes](docs/release-notes/v0.2.0-alpha.1.md) · [update map](UPDATE_MAP.md) ·
 [roadmap](ROADMAP.md) · [open gaps](docs/PROJECT_GAPS.md) · [security](SECURITY.md)
 
-> v0.1 does not autonomously edit your project. The CLI gathers and structures evidence;
+> Requirement Ledger does not autonomously edit your project. The CLI gathers and structures evidence;
 > Codex remains the developer, and every real modification stays visible and reviewable.
 
-## Two jobs, one evidence loop
+## Start with one sentence
 
-- **Improve an AI agent Skill:** recover missed triggers, repeated corrections, unsafe defaults,
-  and regression oracles before Codex makes a visible, authorised Skill change.
-- **Improve any Git project:** turn explicit Codex, Claude Code, or plain-text interactions plus
-  existing test output into traceable issue candidates and repair plans.
+After installing the Skill, the user names the target rather than diagnosing it:
 
-Requirement Ledger AI is the evidence layer, not a hidden patch bot. See the fully synthetic
-[Skill improvement walkthrough](docs/use-cases/improve-an-agent-skill.md).
+> Use Requirement Ledger to audit this Skill. Find its related Codex history, tell me what should
+> improve, preserve what already works, and show me the change cards before editing anything.
+
+The Codex host should locate the target, find only its related authorised tasks and project
+records, reconstruct the work history, explain the problems without jargon, preserve working
+behaviour, prepare small change cards, and stop for authorisation before editing. The user does not
+need to remember the failures or design YAML, prompts, tests, or repository architecture.
+
+```text
+one named target
+  -> related Codex history
+  -> repeated problems and personal preferences
+  -> what must stay
+  -> concrete change cards
+  -> authorised visible edit
+  -> same success and boundary cases before/after
+```
+
+See the [three review modes](references/review-modes.md),
+[Codex context discovery](references/codex-context-discovery.md), the
+[beginner Skill-personalisation workflow](references/personalization-workflow.md), and the fully
+synthetic [walkthrough](docs/use-cases/improve-an-agent-skill.md).
+
+## Three ways to use it
+
+| Mode | Say this | What it does |
+| --- | --- | --- |
+| One-time audit | “Audit this conversation / Skill / project.” | Finds related history, prioritises problems, and prepares change cards |
+| Daily review | “Review yesterday with Requirement Ledger.” | Reconstructs the previous workday, checks earlier changes, and recommends one improvement |
+| Weekly review | “Run the weekly Requirement Ledger review.” | Deduplicates the week, checks maintenance health, and links relevant GitHub or official industry changes |
+
+Alpha 1 installs the audit scaffold and checker only. Daily and weekly are documented host
+contracts and reference templates, not initialisation modes in this prerelease. A one-time audit
+stays on the named target. Future daily and weekly modes may enumerate Codex projects active only
+in their explicit time window. If the host cannot retrieve history, it must ask the user to select
+a task or bounded export rather than claim complete coverage.
+
+Requirement Ledger AI is the guide and evidence layer, not a hidden patch bot.
+
+## What v0.2.0-alpha.1 adds
+
+- `review-init --mode audit` creates a private, analysis-only scaffold for one named target and
+  explicit time window.
+- `review-check` mechanically rejects malformed review contracts before they are treated as
+  evidence or handed to an editing workflow.
+- New files are no-overwrite and private-by-default where supported; initial coverage is honestly
+  zero-source and incomplete.
+- The [release notes](docs/release-notes/v0.2.0-alpha.1.md) explain the solved problems, while the
+  [update map](UPDATE_MAP.md) separates shipped capability from the ten-day path to stable v0.2.
 
 ## Why this exists
 
@@ -80,6 +128,13 @@ requirement-ledger --version
 
 The runtime uses only the Python standard library. Build isolation may fetch build tooling;
 for a prepared offline environment use `python3 -m pip install --no-build-isolation --no-deps .`.
+
+To install this exact prerelease without cloning:
+
+```bash
+python3 -m pip install \
+  https://github.com/adand-91/requirement-ledger/releases/download/v0.2.0-alpha.1/requirement_ledger-0.2.0a1-py3-none-any.whl
+```
 
 ### Install the Codex or Claude Skill
 
@@ -246,8 +301,9 @@ name, session identifier, or personal path into an Issue or test. See
 
 v0.1 does not provide safe autonomous modification. Isolation backends, object-bound approval
 tokens, frozen-oracle execution, transactional apply, and rollback fault injection are required
-before that boundary can move. Structured test adapters, clean-room reproduction, daily/weekly
-reports, opt-in adoption evidence, governance, and signed releases also remain open.
+before that boundary can move. Structured test adapters, clean-room reproduction, a packaged
+Codex history adapter, real audit/daily/weekly validation, opt-in adoption evidence, governance,
+and signed releases also remain open.
 
 That list is maintained in [docs/PROJECT_GAPS.md](docs/PROJECT_GAPS.md), so “polished” cannot be
 confused with “finished”.

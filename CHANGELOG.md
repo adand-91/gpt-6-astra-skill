@@ -5,7 +5,51 @@ All notable changes to this project are documented here. Versions follow
 
 ## [Unreleased]
 
-No changes yet.
+No changes have been assigned to the next candidate yet.
+
+## [0.2.0a1] - 2026-08-30 (prerelease)
+
+### Added
+
+- A Codex-first host contract for one-time audits, daily improvement reviews, and weekly
+  maintenance/ecosystem reviews. In this Alpha, only audit scaffold initialisation is exposed by
+  the installed CLI; daily and weekly remain documented contracts and templates.
+- Bounded Codex context-discovery rules: the user names a target or time window; the host finds
+  related authorised history without requiring the user to restate the problems.
+- Bilingual mode guidance and report templates for `audit`, `daily`, and `weekly`.
+- A zero-dependency review-report contract validator with real ISO-8601 window ordering, IANA
+  timezone checks, target-bound authorisation references, structured weekly-source fields, and
+  English/Chinese template regression tests.
+- A beginner-first Agent Skill personalisation workflow with a plain-language change card,
+  preserved-behaviour inventory, success scenario, boundary scenario, and rollback.
+- A bilingual, gate-driven ten-day update map from this Alpha to a stable `v0.2.0` decision.
+
+### Changed
+
+- The README and Skill now lead with context-aware personal improvement: name a conversation,
+  Skill, project, or review window, then let Codex recover the related history.
+- The `v0.2.0` roadmap now unifies the three requested uses in one project rather than three
+  duplicate repositories.
+- Scheduled daily and weekly runs are analysis-only by default; implementation and external
+  actions still require current target-bound authority.
+
+### Fixed
+
+- A named target no longer has to be forced into the v0.1 project-evidence report shape before a
+  review can begin: `review-init` creates a dedicated audit scaffold.
+- Review documents no longer rely on visual completeness alone: `review-check` fails on invalid
+  windows, timezones, required sections, evidence labels, candidate states, or authorisation
+  declarations.
+- The standalone checker no longer carries a second copy of the validation rules; it delegates to
+  the packaged implementation.
+- New review scaffolds fail instead of overwriting an existing output and use private file
+  permissions where the platform supports them.
+
+### Compatibility
+
+- The released `v0.1.1`, packaged CLI, v1 schemas, package name, and frozen v0.1 safety contract
+  remain compatible. This prerelease adds opt-in `review-init` and `review-check` commands;
+  it does not discover Codex history or grant implementation authority.
 
 ## [0.1.1] - 2026-08-28
 

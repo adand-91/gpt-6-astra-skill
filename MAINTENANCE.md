@@ -24,7 +24,8 @@ automatically committed. No-change days should produce no Git noise.
 The project follows Semantic Versioning while it is pre-1.0:
 
 - `0.1.x`: compatible bug, privacy, parser, packaging, and documentation fixes;
-- `0.2.0`: structured test adapters, issue grouping, and daily/weekly report outputs;
+- `0.2.0`: Codex-first one-time, daily, and weekly review modes with bounded host context
+  discovery and source-bound ecosystem evidence;
 - `0.3.0`: only after a proven isolation backend, object-bound approvals, frozen-oracle
   execution, drift checks, and rollback fault injection;
 - `1.0.0`: stable promised schemas and CLI, a documented migration policy, a reproducible
@@ -50,11 +51,12 @@ negatives, Windows/macOS/Linux packaging findings, error-message clarity, and re
 Coherent discovery and first-use improvements may also ship here when they do not change the v0.1
 contract. There is no predetermined number of patch releases.
 
-### Batch C — `v0.2.0`: reporting and adapters
+### Batch C — `v0.2.0`: Codex-first review modes
 
-Structured JUnit/pytest/TAP/cargo/Go adapters, issue grouping with human confirmation, daily
-improvement report, weekly project/ecosystem review, and opt-in adoption records without default
-telemetry.
+One-time target audit, daily improvement report, weekly project/ecosystem review, bounded Codex
+context discovery, stable carry-over IDs, plain-language change cards, and before/after cases.
+Scheduled runs remain analysis-only. Structured test adapters and opt-in adoption records follow
+after the three modes have real-use evidence.
 
 ### Batch D — `v0.3.0`: controlled intervention
 

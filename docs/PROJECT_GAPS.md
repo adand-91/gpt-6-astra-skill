@@ -21,15 +21,21 @@ behaviour.
 
 ## Open after v0.1 — product
 
+- Codex-first `audit`, `daily`, and `weekly` host flows are now specified with bilingual templates
+  and a mechanical report validator; they remain `implemented-unverified` until real Codex runs
+  prove context retrieval, relevance, deduplication, and before/after usefulness.
+- A beginner-first Agent Skill personalisation flow is specified; it still needs real
+  external-user evidence and, if warranted, a one-command private handoff.
 - Semantic grouping of many related corrections into one issue with human confirmation.
 - Provider-version compatibility registry and maintained real-format fixtures.
 - A structured adapter for JUnit, pytest JSON, TAP, cargo, Go, Maven, npm, and other test logs.
 - Clean-room reproduction helpers that can actually confirm `project-local` or `upstream`.
 - A user-approved comparison adapter for personal configuration.
 - Cross-session evidence linking without exposing low-entropy identifiers.
-- A Codex-host integration that passes the private evidence reference without placing raw
-  transcript data in prompts unnecessarily.
-- Daily improvement reports and weekly ecosystem/maintenance reports.
+- A concrete Codex-host adapter that can use thread tools or a bounded local session index while
+  keeping raw transcript data out of prompts unnecessarily. The current release provides the
+  host contract and Skill workflow, not a packaged history-discovery daemon.
+- Real daily and weekly runs with stable carry-over IDs and source-bound ecosystem evidence.
 - Adoption records: installs, repeat users, accepted fixes, before/after outcomes, and
   maintainer response — opt-in and never collected as telemetry by default.
 - Internationalisation of generated CLI/report text, not only documentation.
@@ -50,7 +56,8 @@ behaviour.
 
 ## Open after v0.1 — open-source maturity
 
-- Real public Release and signed/tagged artefacts (requires maintainer authorisation).
+- `v0.1.0` and `v0.1.1` public Releases exist with annotated tags and downloadable artefacts;
+  cryptographic signing, provenance, and SBOM remain open.
 - Reproducible release workflow, provenance/SBOM, vulnerability scanning, and dependency bot.
 - Compatibility policy based on real downstream projects rather than only synthetic fixtures.
 - Maintainer triage SLA, governance, contributor roles, decision log, and deprecation policy.
@@ -63,6 +70,7 @@ behaviour.
 - “Perfect” software, infallible attribution, safe autonomous self-modification, or guaranteed
   privacy from pattern matching.
 - Automatic discovery of every relevant conversation or every root cause.
+- Reading unrelated Codex history merely because one target was named.
 - Running arbitrary third-party code safely on a normal host without an isolation substrate.
 - Automatic GitHub activity, marketing, telemetry, account actions, or eligibility for any
   external programme.

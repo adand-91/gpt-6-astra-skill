@@ -1,36 +1,37 @@
-<!-- translation-of: CONTEXT.md sha256:1a65764b389e55be -->
+<!-- translation-of: CONTEXT.md sha256:3880b20b871f479e -->
 
 # 项目上下文
 
-这是 Requirement Ledger 的短接手索引。历史对话和私有证据不应进入本仓库。
+这里只放简短接手索引；私有证据留在仓库外。
 
 ## 当前检查点
 
-- 阶段：`v0.1.1` 已公开发布，发布证据 commit 的公开 CI run `33159477520` 已通过；下一批是
-  `v0.2.0` 报告设计。
-- 品牌：Requirement Ledger AI——面向 Codex、Claude Code 与任意 Git 项目的 AI 项目／Skill
-  反馈闭环。仓库 slug 与 CLI 继续使用 `requirement-ledger`。
-- 产品：显式 Git 项目 + 显式对话／测试证据 → 私有证据 → 保守归因 → 无原话报告和未应用修复计划
-  → 外部同一 oracle 验证。
-- 安全：CLI 不发现主目录会话、不运行项目代码、不安装依赖、不联网、不修改工作树、不 commit、
-  不 push，也不执行 GitHub／账号动作。
-- 验证：97 项本地测试、编译、翻译、wheel/sdist 构建与干净安装、确定性 Demo、包内容检查和
-  合成 Skill 案例均已通过。案例得到 oracle `1 -> 0`、`improved`、`unknown` 归因，报告不含
-  原始失败文本。
-- 发布：annotated tag `v0.1.1` 指向 `d07c13f`；GitHub Release 包含 wheel 与 sdist。公开重新
-  下载哈希一致，干净 wheel 安装、版本和 Demo 均已通过。
+- 正在准备 GitHub 预发布版 `v0.2.0-alpha.1`，包版本为 `0.2.0a1`。精确发布 commit 通过公开
+  CI 之前，公开状态仍为 `v0.1.1`。
+- 本隔离工作树从 `origin/main` 开始，只恢复封存 Alpha 源码；维护者混有 Alpha 后改动的工作树
+  保持原样。
+- Alpha 范围仅包含私有、不覆盖的点名目标 `review-init --mode audit` 骨架、严格
+  `review-check` 和配套双语宿主契约／模板。
+- 日报／周报 CLI 初始化、现代 Codex 导出解析、候选延续、审查包绑定、交接复验、定时任务、自动
+  修改和 Skill 健康扫描均未包含。
+- 双语变更日志、更新说明、十天更新地图、README、路线图、CI 冒烟和发布清单已准确区分本次能力
+  与稳定 `v0.2.0` 路径。
+- 当前源码门禁：112 项测试、双语同步和 diff 检查通过；最终构建、干净安装、隐私／路径冒烟、
+  公开 CI、Tag、预发布和重新下载复验仍待完成。
 
 ## 接手文件
 
-- 产品与权限：`V0.1_CONTRACT.zh-CN.md`
-- 架构与威胁模型：`docs/ARCHITECTURE.md`、`docs/THREAT_MODEL.md`
-- 剩余工作：`docs/PROJECT_GAPS.md`
-- 维护与分批：`MAINTENANCE.zh-CN.md`；15 天路线：`ROADMAP.zh-CN.md`
-- 发布门与说明：`docs/RELEASE_CHECKLIST.md`、`docs/releases/v0.1.1.md`
-- 合成 Skill 案例：`docs/use-cases/improve-an-agent-skill.zh-CN.md`
-- 滚动技术交接：`HANDOFF.md`
+- 发布边界：`docs/release-notes/v0.2.0-alpha.1.zh-CN.md`
+- 十天计划：`UPDATE_MAP.zh-CN.md`；长期产品路径：`ROADMAP.zh-CN.md`
+- 产品契约：`V0.1_CONTRACT.zh-CN.md`、`V0.2_HOST_CONTRACT.zh-CN.md`
+- 发布门禁：`docs/RELEASE_CHECKLIST.md`；技术状态：`HANDOFF.md`
 
 ## 下一步
 
-开始 `v0.2.0` 的最小完整报告设计：显式证据窗口、日报／周报、人工确认的问题分组，以及首批
-结构化测试适配器。不加入自主修改或 GitHub 动作。
+最终确定 `HANDOFF.md`，运行完整本地发布门禁，提交并推送精确 Alpha 源码，等待公开 CI，再创建
+注释 Tag `v0.2.0-alpha.1` 和非 latest 的 GitHub 预发布版。记录发布证据前重新下载并复验所有资产。
+
+## 安全边界
+
+授权覆盖精确 Alpha commit、推送 `main`、注释 Tag、发布资产和 GitHub 预发布；不覆盖 Issue、PR、
+推广、活动申请、定时任务、无关历史读取、其他版本，或清理／回退维护者脏工作树。

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "requirement-ledger"
 dynamic = ["version"]
-description = "AI project and Skill feedback loop for Codex, Claude Code, and any Git project"
+description = "Privacy-aware evidence ledger for Codex project and Agent Skill improvement"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"

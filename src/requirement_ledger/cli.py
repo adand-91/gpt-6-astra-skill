@@ -16,6 +16,8 @@ from .pipeline import (analyze_evidence, build_evidence_bundle, build_fix_propos
                        render_markdown_report, share_report, synthetic_demo_bundle,
                        validate_outcomes)
 from .privacy import finding_counts
+from .review import ReviewInputError, check as check_review_report
+from .review import write_audit_scaffold
 from .safeio import (explicit_regular_file, new_output_directory, private_output_path,
                      read_json_file, share_output_path, write_new_json, write_new_text)
 
@@ -63,6 +65,23 @@ def _parser() -> argparse.ArgumentParser:
 
     privacy = sub.add_parser("privacy-check", help="scan a file; values are never printed")
     privacy.add_argument("path")
+
+    review_init = sub.add_parser(
+        "review-init",
+        help="create a new private, analysis-only audit review scaffold (alpha)",
+    )
+    review_init.add_argument("--mode", default="audit")
+    review_init.add_argument("--target", required=True,
+                             help="explicit conversation, Skill, or project target")
+    review_init.add_argument("--start", required=True,
+                             help="explicit offset-aware ISO-8601 window start")
+    review_init.add_argument("--end", required=True,
+                             help="explicit offset-aware ISO-8601 window end")
+    review_init.add_argument("--timezone", required=True, help="explicit IANA timezone")
+    review_init.add_argument("--output", required=True, help="new private Markdown output path")
+
+    review_check = sub.add_parser("review-check", help="mechanically validate one explicit review report")
+    review_check.add_argument("report", help="explicit Markdown report path")
 
     demo = sub.add_parser("demo", help="write a complete synthetic, offline v0.1 walkthrough")
     demo.add_argument("--output-dir", required=True)
@@ -152,6 +171,23 @@ def run(args: argparse.Namespace) -> int:
         _print({"status": "BLOCK" if findings else "AUTOMATED_CHECK_PASSED_REVIEW_REQUIRED",
                 "findings": findings, "matched_values_printed": False})
         return 3 if findings else 0
+
+    if args.command == "review-init":
+        if args.mode != "audit":
+            raise ReviewInputError("review-init alpha supports only mode=audit")
+        output = write_audit_scaffold(args.output, args.target, args.start, args.end, args.timezone)
+        print(f"WROTE_PRIVATE_AUDIT_SCAFFOLD {output}")
+        return 0
+
+    if args.command == "review-check":
+        findings = check_review_report(Path(args.report))
+        if findings:
+            print("REVIEW_REPORT_INVALID")
+            for finding in findings:
+                print(f"  - {finding}")
+            return 1
+        print("REVIEW_REPORT_VALID")
+        return 0
 
     if args.command == "demo":
         root = new_output_directory(args.output_dir)

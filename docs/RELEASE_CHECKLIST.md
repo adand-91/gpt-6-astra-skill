@@ -102,3 +102,25 @@ Use this for every public version. A checked box must point to command output or
   completed the five-file Demo with validation status `improved`.
 - Post-release publication-evidence commit `4b8c514a5dc29e7bded1eef2fe310c62e6b52cf3` passed public
   CI run `33159477520`, leaving `main` green after the release record was added.
+
+## v0.2.0-alpha.1 pre-release evidence — 2026-08-30
+
+- The frozen `0.2.0a1` source snapshot and its source distribution agree byte-for-byte for all
+  100 packaged files; the wheel's eleven Python modules agree with the same snapshot.
+- A clean release worktree was created from `origin/main`. It preserves `.github/**`,
+  `.gitattributes`, and `.gitignore`, and excludes sdist-generated `PKG-INFO`, `setup.cfg`, and
+  `src/requirement_ledger.egg-info/**` files.
+- The Alpha contains only the named-target audit scaffold, strict review checker, and supporting
+  host contracts/templates. Later Codex-export, candidate-ledger, report-pack, report-binding,
+  handoff-verification, and Skill-health implementations are excluded.
+- The source suite passes 112 tests; translation sync and `git diff --check` pass. Final compile,
+  build, extracted-sdist tests, dual clean installs, deterministic demo, audit permission and
+  no-overwrite smokes must run again after the release handoff is finalised.
+- The archived candidate checksum file used private absolute paths and is internal evidence only.
+  Public artefacts must be rebuilt from the release commit and accompanied by a newly generated
+  basename-only `SHA256SUMS`.
+- Current maintainer authority covers the exact release commit, annotated tag
+  `v0.2.0-alpha.1`, assets, and a GitHub prerelease. It does not cover Issues, PRs, promotion,
+  programme applications, or other versions.
+- Public CI on the exact release commit, annotated tag creation, GitHub prerelease publication,
+  and public re-download verification remain blocking gates.

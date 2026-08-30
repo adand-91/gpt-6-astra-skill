@@ -1,38 +1,37 @@
 # Project context
 
-This is the short pickup index for Requirement Ledger. Historical conversations and private
-evidence do not belong in this repository.
+Short pickup index; private evidence stays outside the repository.
 
 ## Current checkpoint
 
-- Stage: `v0.1.1` is publicly released and its publication-evidence commit passed public CI run
-  `33159477520`; the `v0.2.0` report-design batch is next.
-- Brand: Requirement Ledger AI — an AI project and Skill feedback loop for Codex, Claude Code,
-  and any Git project. The repository slug and CLI remain `requirement-ledger`.
-- Product: explicit Git project + explicit transcript/test evidence → private evidence →
-  conservative attribution → quote-free report and not-applied repair plan → external
-  same-oracle validation.
-- Safety: the CLI does not discover home sessions, run project code, install dependencies,
-  access a network, edit the worktree, commit, push, or perform GitHub/account actions.
-- Verification: 97 local tests, compile, translation, wheel/sdist build and clean installs,
-  deterministic Demo, package-content checks, and the synthetic Skill case have passed. The case
-  produced oracle exits `1 -> 0`, `improved`, `unknown` attribution, and no raw failure in its
-  report.
-- Publication: annotated tag `v0.1.1` points to `d07c13f`; the GitHub Release contains the wheel
-  and sdist. Public re-download hashes matched, and clean wheel install, version, and Demo passed.
+- Preparing GitHub prerelease `v0.2.0-alpha.1`; package version is `0.2.0a1`. Public state remains
+  `v0.1.1` until the exact release commit passes public CI.
+- This isolated worktree starts at `origin/main` and restores only the sealed Alpha source. The
+  maintainer's mixed post-Alpha worktree remains untouched.
+- Alpha scope is limited to a private, no-overwrite named-target `review-init --mode audit`
+  scaffold, strict `review-check`, and supporting bilingual host contracts/templates.
+- Daily/weekly CLI initialisation, modern Codex export parsing, candidate carry-over, report-pack
+  binding, handoff verification, scheduling, autonomous edits, and Skill-health are not included.
+- Bilingual changelog, release notes, ten-day update map, README, roadmap, CI smoke, and release
+  checklist now state the shipped boundary and path to stable `v0.2.0`.
+- Current source gate: 112 tests, translation sync, and diff check pass. Final build, clean
+  installs, privacy/path smokes, public CI, tag, prerelease, and re-download checks remain.
 
 ## Pickup files
 
-- Product and permissions: `V0.1_CONTRACT.md`
-- Architecture and threat model: `docs/ARCHITECTURE.md`, `docs/THREAT_MODEL.md`
-- Remaining work: `docs/PROJECT_GAPS.md`
-- Maintenance and batches: `MAINTENANCE.md`; fifteen-day track: `ROADMAP.md`
-- Release gate and notes: `docs/RELEASE_CHECKLIST.md`, `docs/releases/v0.1.1.md`
-- Synthetic Skill case: `docs/use-cases/improve-an-agent-skill.md`
-- Rolling technical handoff: `HANDOFF.md`
+- Release boundary: `docs/release-notes/v0.2.0-alpha.1.md`
+- Ten-day plan: `UPDATE_MAP.md`; longer product path: `ROADMAP.md`
+- Product contracts: `V0.1_CONTRACT.md`, `V0.2_HOST_CONTRACT.md`
+- Release gate: `docs/RELEASE_CHECKLIST.md`; technical state: `HANDOFF.md`
 
 ## Next action
 
-Begin `v0.2.0` with the smallest coherent report design: explicit evidence windows, daily and
-weekly outputs, human-confirmed grouping, and the first structured test adapters. Do not add
-autonomous editing or GitHub actions.
+Finalise `HANDOFF.md`, run the complete local release gate, commit and push the exact Alpha source,
+wait for public CI, then create annotated tag `v0.2.0-alpha.1` and a non-latest GitHub prerelease.
+Re-download every public asset before recording publication evidence.
+
+## Safety boundary
+
+Authority covers the exact Alpha commit, push to `main`, annotated tag, release assets, and GitHub
+prerelease. It does not cover Issues, PRs, promotion, programme applications, schedules, unrelated
+history reads, other versions, or cleaning/resetting the maintainer's dirty worktree.

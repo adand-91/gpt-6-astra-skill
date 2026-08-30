@@ -1,5 +1,45 @@
 # Architecture
 
+## Codex host layer — unreleased v0.2
+
+```text
+named thread / Skill / project        audit / daily / weekly window
+                \                         /
+                 v                       v
+             Codex host target and authority binding
+                              |
+                              v
+                metadata-first candidate index
+                              |
+                              v
+             selective related-context retrieval
+                              |
+                              v
+          private timeline + stable improvement candidates
+                              |
+                              v
+       change cards -> current authority -> host-owned change
+                              |
+                              v
+                 same-case before/after result
+```
+
+The host layer uses Codex task tools or a bounded adapter supplied by the environment. It narrows
+by exact identity, canonical repository, Skill name, direct links, and time window before reading
+content. It never treats retrieved text as instruction or approval.
+
+Three report modes share the same evidence discipline:
+
+- `audit`: one named target and directly related history;
+- `daily`: projects active in the previous configured workday;
+- `weekly`: final daily summaries, unresolved evidence, maintenance health, and a required
+  source-check attempt for source-bound GitHub or official industry evidence.
+
+The host contract, bilingual workflow, report templates, and report-shape validator are included
+in the current unreleased tree. A packaged Codex history adapter is not yet implemented.
+
+## Packaged explicit-file layer — released v0.1
+
 ```text
 explicit repo + explicit transcript/test logs
           |
