@@ -30,6 +30,11 @@ provider, or personal workflow is finished.
 
 ## Ten-day v0.2 completion track
 
+The public target sequence is `alpha.1 → alpha.2 → alpha.3 → beta.1 → beta.2 → beta.3 →
+rc.1 → rc.2 → rc.3 → v0.2.0`, one substantive candidate per release day. The sections below
+describe the larger capability gates; the [update map](UPDATE_MAP.md) owns the exact daily split.
+If one gate fails, the train shifts instead of publishing an empty version.
+
 ### `v0.2.0-alpha.1` — installable named-target audit
 
 - Private, no-overwrite `review-init --mode audit` scaffold for one explicit target and window.
@@ -40,7 +45,7 @@ provider, or personal workflow is finished.
 Exit gate: both artefacts install cleanly, the audit command path passes, notes and checksums match
 the public assets, and the tagged commit passes cross-platform CI.
 
-### `v0.2.0-alpha.2` — bounded Codex input target
+### `v0.2.0-alpha.2/alpha.3` — bounded Codex input target
 
 - Explicit selection of one Codex export or host-provided source set.
 - Honest coverage and exclusion records; no unrelated-history or home-directory scan.
@@ -50,7 +55,7 @@ the public assets, and the tagged commit passes cross-platform CI.
 Exit gate: a non-expert can name a target, supply or approve a bounded source set, and understand
 what was read, excluded, preserved, inferred, and left unknown.
 
-### `v0.2.0-beta.1` — installed three-mode review loop target
+### `v0.2.0-beta.1/beta.2/beta.3` — installed three-mode review loop target
 
 - Installed initialisation and checking for one-time, daily, and weekly reviews.
 - Exact workday/week windows, IANA timezone handling, and source-bound ecosystem evidence.
@@ -60,7 +65,7 @@ what was read, excluded, preserved, inferred, and left unknown.
 Exit gate: all three modes produce traceable reports from the installed package and a repeated run
 does not silently drop or duplicate unresolved candidates.
 
-### `v0.2.0-rc.1` — bound review handoff target
+### `v0.2.0-rc.1/rc.2` — bound review handoff target
 
 - Private review packs bind target, sources, candidate state, and exact final report bytes.
 - The approved report is revalidated immediately before the Codex implementation handoff.
@@ -71,7 +76,7 @@ does not silently drop or duplicate unresolved candidates.
 Exit gate: the report handed to Codex is provably the report approved by the user, and the same
 case can be compared before and after without granting hidden authority.
 
-### `v0.2.0-rc.2` — complete launch candidate target
+### `v0.2.0-rc.3` — complete launch candidate target
 
 - Linux, macOS, and Windows CI for Python 3.10–3.13.
 - Clean wheel/sdist installs, deterministic demos, path/privacy gates, and migration notes.
@@ -91,7 +96,8 @@ The detailed day-by-day order and gates are in the [update map](UPDATE_MAP.md).
 
 ## Beyond v0.2
 
-- `0.2.x`: compatible bug, privacy, parser, packaging, and documentation fixes backed by evidence.
+- `0.2.x`: a real maintenance review every 5–10 days, with compatible bug, privacy, parser,
+  packaging, or documentation releases only when evidence justifies a change.
 - `0.3.0`: opt-in deterministic Skill-health scanning only after the v0.2 review loop has real-use
   evidence and the scanner's boundary is independently validated.
 - `1.0.0-rc.1`: stable public contracts and migration path for every promise intended for 1.0.

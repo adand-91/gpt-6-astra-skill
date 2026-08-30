@@ -1,4 +1,4 @@
-<!-- translation-of: CONTEXT.md sha256:2cd6d8a76bd24385 -->
+<!-- translation-of: CONTEXT.md sha256:f4fd79c8e1f0fd22 -->
 
 # 项目上下文
 
@@ -6,30 +6,31 @@
 
 ## 当前检查点
 
-- 正在准备 `v0.2.0-alpha.1`（`0.2.0a1`）。CI commit `a880e9b` 在类 Unix 通过、Windows
-  因缺 IANA 数据失败；没有 Tag／Release。修正增加条件依赖 `tzdata` 和可执行错误。
-- 本隔离工作树只含封存 Alpha 源码；混有 Alpha 后改动的维护者工作树保持原样。
-- Alpha 范围仅包含私有、不覆盖的点名目标 `review-init --mode audit` 骨架、严格
-  `review-check` 和配套双语宿主契约／模板。
-- 日报／周报 CLI 初始化、现代 Codex 导出解析、候选延续、审查包绑定、交接复验、定时任务、自动
-  修改和 Skill 健康扫描均未包含。
-- 双语说明、更新地图、路线图、CI 冒烟和发布清单已定义 v0.2 路径。
-- 修正后源码门禁：113 项测试、双语同步和 diff 检查；重新构建、干净安装、隐私／路径冒烟、修正后
-  公开 CI、Tag、预发布和重新下载复验仍待完成。
+- `v0.2.0-alpha.1`（`0.2.0a1`）已作为非 latest 的 GitHub 预发布公开。Tag 所在 commit：
+  `243b01ac5be88825ec4a1f4f9c5cec3b2841a90e`；注释 Tag 对象：
+  `856f4d0fd198a74825f134289af3b0475042ec85`。最新稳定版仍是 `v0.1.1`。
+- CI run `33291029715` 已通过 Python 3.10–3.13 × Linux／macOS／Windows 和构建产物／安全
+  冒烟。三项公开资产均已重新下载、核对哈希、干净安装，并通过 Demo 与审查创建／校验。
+- Alpha 1 交付私有、不覆盖的点名目标 `review-init --mode audit` 骨架、严格
+  `review-check`、双语说明和更新地图；尚不会读取 Codex 历史或初始化日报／周报。
+- 更新地图以每个成功发布日一个有真实增量的候选版为目标：
+  `alpha.1 → alpha.2 → alpha.3 → beta.1 → beta.2 → beta.3 → rc.1 → rc.2 → rc.3 → v0.2.0`。
+  门禁失败就顺延，不发布空版本。
+- 本隔离工作树是 Alpha 发布权威源；维护者混有 Alpha 后改动的脏工作树保持原样。
 
 ## 接手文件
 
-- 发布边界：`docs/release-notes/v0.2.0-alpha.1.zh-CN.md`
-- 十天计划：`UPDATE_MAP.zh-CN.md`；长期产品路径：`ROADMAP.zh-CN.md`
-- 产品契约：`V0.1_CONTRACT.zh-CN.md`、`V0.2_HOST_CONTRACT.zh-CN.md`
-- 发布门禁：`docs/RELEASE_CHECKLIST.md`；技术状态：`HANDOFF.md`
+- Release：<https://github.com/adand-91/requirement-ledger/releases/tag/v0.2.0-alpha.1>
+- 变更：`CHANGELOG.zh-CN.md`；更新说明：`docs/release-notes/v0.2.0-alpha.1.zh-CN.md`
+- 每日发布列车：`UPDATE_MAP.zh-CN.md`；产品路线：`ROADMAP.zh-CN.md`
+- 发布证据：`docs/RELEASE_CHECKLIST.md`；技术状态：`HANDOFF.md`
 
 ## 下一步
 
-重复全部本地门禁，提交／推送 Windows 修正并等待 CI。只有全绿后才创建注释 Tag
-`v0.2.0-alpha.1` 和非 latest 预发布；记录证据前重新下载全部资产。
+把本次事实性发布／更新地图记录提交到 `main` 并核验 CI。下一个产品候选版是 Alpha 2：为用户
+点名的一份 Codex task／导出增加显式有界输入信封。
 
 ## 安全边界
 
-授权覆盖精确 Alpha commit、推送 `main`、注释 Tag、发布资产和 GitHub 预发布；不覆盖 Issue、PR、
-推广、活动申请、定时任务、无关历史读取、其他版本，或清理／回退维护者脏工作树。
+不移动 Alpha Tag，不替换其资产。候选日期不能绕过发布门禁。Issue、PR、推广、活动申请、定时
+任务、无关历史读取和破坏性修改维护者工作树仍不在本批范围。

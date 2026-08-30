@@ -2,15 +2,14 @@
 
 ## 我们在做什么
 
-- Goal: publish `v0.2.0-alpha.1`, the first installable Codex-first named-target audit preview,
-  without including later local Beta, RC, or v0.3 work.
-- Current batch: restore the sealed `0.2.0a1` source onto a clean `origin/main` worktree, improve
-  bilingual release communication, add a gate-driven ten-day update map, and pass the complete
-  release pipeline before a GitHub prerelease.
-- Release shape: annotated tag `v0.2.0-alpha.1`, PEP 440 package version `0.2.0a1`, GitHub
-  `prerelease=true`, and not the latest stable release.
-- Not in scope: no Issue, PR, promotion post, programme application, schedule, telemetry,
-  unattended target edit, unrelated-history read, or publication of any other version.
+- Goal: publish and verify `v0.2.0-alpha.1`, then record a ten-release-day path to stable
+  `v0.2.0`.
+- Release result: annotated tag `v0.2.0-alpha.1`, PEP 440 package `0.2.0a1`, a non-latest
+  GitHub prerelease, and three publicly re-downloaded/verified assets.
+- Current batch: land factual publication evidence and the maintainer-requested daily candidate
+  sequence without moving the released tag or mixing in later local Beta, RC, or v0.3 drafts.
+- Not in scope: no Issue, PR, promotion post, programme application, automatic schedule,
+  telemetry, unattended target edit, unrelated-history read, or empty/backdated release.
 
 ## 完成了什么
 
@@ -31,8 +30,9 @@
   only audit; daily and weekly are documentation/validation surfaces, not installed init modes.
 - Rewrote the bilingual Alpha release notes around “what changed / what problem it solves / quick
   start / verified gate / known limits”.
-- Added bilingual `UPDATE_MAP` and revised `ROADMAP`: stable v0.2 is a ten-day target with Alpha 2,
-  Beta 1, RC 1, RC 2, and stable release decisions governed by exit gates rather than dates alone.
+- Added bilingual `UPDATE_MAP` and revised `ROADMAP`. The final release train targets one
+  substantive candidate per successful release day:
+  `alpha.1 → alpha.2 → alpha.3 → beta.1 → beta.2 → beta.3 → rc.1 → rc.2 → rc.3 → v0.2.0`.
 - Extended CI release smoke to install the built wheel, create/check a named audit, verify private
   permissions and no-overwrite failure, and require the update map and review test in the sdist.
 - The first public CI run passed Linux and macOS but proved that Windows Python has no system IANA
@@ -40,33 +40,30 @@
   installs platform dependencies, and a regression makes a no-dependency Windows error actionable.
 - Added an Alpha-specific release-checklist section. Internal archived evidence and path-bearing
   checksums are explicitly excluded from public assets.
+- Corrected commit `243b01ac5be88825ec4a1f4f9c5cec3b2841a90e` passed public CI run
+  `33291029715`: Python 3.10–3.13 on Linux, macOS, and Windows plus built-artefact/security smoke.
+- Created annotated tag object `856f4d0fd198a74825f134289af3b0475042ec85` and the public
+  non-latest [prerelease](https://github.com/adand-91/requirement-ledger/releases/tag/v0.2.0-alpha.1).
+- Re-downloaded `requirement_ledger-0.2.0a1-py3-none-any.whl`,
+  `requirement_ledger-0.2.0a1.tar.gz`, and `SHA256SUMS`; all matched the approved local files.
+  Both archives clean-installed and passed version, Demo, audit initialisation, and report checks.
 
 ## 卡在哪儿
 
-- Current blocker: initial CI run `33290681748` failed all four Windows jobs because `tzdata` was
-  absent; Linux and macOS passed. The conditional dependency fix has not yet passed its new public
-  CI run, so no tag or Release exists.
-- Publication gates still open: final local build and clean-install checks, commit/push, public CI,
-  annotated tag, GitHub prerelease, public asset re-download, checksum verification, and a
-  post-release evidence commit.
+- Current blocker: no Alpha publication blocker remains. This factual evidence/map commit must
+  still reach `main` and pass its own CI before the isolated release worktree is considered closed.
 - Product gap after Alpha 1: the installed package does not retrieve Codex history and cannot
   initialise daily/weekly reviews. Those features remain visible targets, not shipped claims.
 - Adoption gap: no external-user installation or repeat-use evidence is claimed.
 
 ## 下一步计划
 
-1. Run full source tests, translation sync, compile, Skill structure validation, diff/privacy
-   review, and Handoff freshness checks on this worktree.
-2. Build wheel and sdist from the final source; test the extracted sdist; clean-install both;
-   verify version, deterministic demo, audit create/check, mode `0600`, and no-overwrite.
-3. Generate a basename-only `SHA256SUMS`; confirm artefacts and source contain no private local
-   path, task identifier, private evidence, bytecode, cache, or later-version module.
-4. Commit the exact Alpha source and push it to `main`; do not tag while public CI is pending or
-   failing.
-5. After the exact commit is green, create annotated tag `v0.2.0-alpha.1`, push it, and create a
-   non-latest GitHub prerelease with the verified wheel, sdist, and checksum file.
-6. Re-download the public assets, recheck hashes and install/smoke, then add publication evidence
-   to `main` without moving the release tag.
+1. Run translation sync, all 113 tests, diff checks, and Handoff freshness on this documentation
+   record; commit/push it to `main` without moving the Alpha tag and verify public CI.
+2. Build Alpha 2 in a new exact candidate boundary: one explicit bounded Codex input envelope with
+   identity/digest, target/window, included/excluded coverage, and fail-closed path/size/drift rules.
+3. Continue only through the daily sequence in `UPDATE_MAP.md`; a failed candidate gate shifts
+   every dependent target rather than producing an empty Release.
 
 ## 踩过哪些坑
 
@@ -81,20 +78,21 @@
   release source of truth.
 - Alpha ships daily/weekly templates and validation vocabulary, but the CLI deliberately rejects
   `review-init --mode daily|weekly`. Release notes now state this explicitly.
-- A day in the update map is a decision target, not a promise to publish. Empty versions,
-  backdating, and fabricated maintenance are excluded.
+- A day in the update map is the next successful release day, not unconditional calendar
+  permission. Empty versions, backdating, failed-gate bypass, and fabricated maintenance are
+  excluded.
 - Standard-library `zoneinfo` is not self-contained on Windows. Calling the package “zero runtime
   dependency everywhere” hid a real portability requirement; docs now distinguish Unix-like
   systems from Windows and CI installs the conditional database.
 
 ## 当前任务汇总
 
-- Status: the first public CI attempt failed on Windows; a bounded portability correction is
-  implemented locally, and publication remains stopped until its full local and public gates pass.
-- Current version: package `0.2.0a1`, planned annotated tag `v0.2.0-alpha.1`; public stable release
-  remains `v0.1.1` until the prerelease is verified.
-- Corrected source result: 113 tests after translation restamping; full rebuild and public CI must
-  be repeated before publication.
+- Status: `v0.2.0-alpha.1` is published and independently re-downloaded/verified; only its
+  post-release evidence/map commit and CI remain as repository housekeeping.
+- Current version: package `0.2.0a1`, published annotated tag `v0.2.0-alpha.1`; `v0.1.1`
+  remains the latest stable Release.
+- Verified source result: 113 tests, full cross-platform CI, clean wheel/sdist installs,
+  deterministic Demo, private/no-overwrite audit scaffold, and strict report check.
 - One-line result: Alpha 1 is an installable, privacy-first starting point and mechanical contract
   checker for one named audit, not yet an automatic context retriever or three-mode scheduler.
 
@@ -130,30 +128,33 @@
 - Initial commit `a880e9b48c921f5c32c9e362f5848de420eb9f52`: CI run `33290681748`
   passed all Linux/macOS jobs and failed all Windows jobs at IANA timezone loading; release smoke
   was skipped. No tag or Release was created.
-- Corrected source adds the conditional Windows dependency and one missing-database regression,
-  bringing the suite to 113 tests. Translation sync and final rebuild gates must be rerun after
-  this Handoff update.
-- Final artefact hashes and public CI run are intentionally not embedded here because they are
-  generated after this source is committed. They must be attached/recorded as post-build and
-  post-release evidence.
+- Corrected tagged commit `243b01ac5be88825ec4a1f4f9c5cec3b2841a90e`: CI run
+  `33291029715` passed all 12 Python/OS matrix jobs and built-artefact/security smoke.
+- Public wheel SHA-256:
+  `3123b30db1610e0b930c0d0f26a3a24ec3dbe47917d5da7d1f7c3b800dac615b`.
+- Public sdist SHA-256:
+  `1e5407f5f48d8bdd19f18749aa6bc978002415a90061426cf5bef9b40103ae05`.
+- Public `SHA256SUMS` SHA-256:
+  `c7f4789bc5d26fc686f49194f3da48d3426fd75c8326a1163b73edd627406011`.
+- The public downloads matched local approved assets byte-for-byte; checksum verification, dual
+  clean installation, version, deterministic Demo, `review-init`, and `review-check` passed.
 
 ## 授权与禁止动作
 
-- Authorised: prepare and commit the exact Alpha source; push it to `main`; create and push the
-  annotated Alpha tag after CI passes; upload the verified wheel, sdist, and checksum file; create
-  and verify a GitHub prerelease; add a factual post-release evidence commit.
+- Authorised in this batch: add/push this factual post-release evidence and daily update map.
+  The maintainer requested the ten-release-day direction; each exact candidate still requires its
+  own coherent increment, passing gate, accurate notes, and exact-commit publication decision.
 - Not authorised: Issues, PRs, promotion posts, programme applications, schedules, notifications,
-  unrelated/full history reads, other versions, deletion of evidence, or destructive changes to
-  the maintainer worktree.
+  unrelated/full history reads, deletion of evidence, or destructive changes to the maintainer
+  worktree.
 - A failed local or public gate stops tag/release creation; it does not authorise weakening the
   test, rewriting evidence, or publishing a partially checked asset.
 
 ## 回滚
 
-- Before push, remove only the isolated release worktree/branch after preserving evidence; the
-  maintainer worktree and public repository remain unchanged.
-- After push but before tagging, fix or revert through a new reviewed commit; do not rewrite
-  history or force-push.
-- After prerelease publication, `v0.1.1` remains the latest stable release. Do not move the tag or
-  delete the prerelease without a separate maintainer decision; publish a corrective prerelease or
-  factual withdrawal note if evidence requires it.
+- Revert an incorrect evidence/map change with a new reviewed commit; do not rewrite history.
+- The published Alpha tag and assets are immutable for this batch. If release evidence becomes
+  invalid, preserve the record and publish a corrective prerelease or factual withdrawal under a
+  separate maintainer decision; never move the tag silently.
+- The original dirty maintainer worktree remains the recovery source for post-Alpha drafts and must
+  not be reset, cleaned, stashed, or wholesale overwritten.

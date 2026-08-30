@@ -113,20 +113,42 @@ Use this for every public version. A checked box must point to command output or
 - The Alpha contains only the named-target audit scaffold, strict review checker, and supporting
   host contracts/templates. Later Codex-export, candidate-ledger, report-pack, report-binding,
   handoff-verification, and Skill-health implementations are excluded.
-- The source suite passes 112 tests; translation sync and `git diff --check` pass. Final compile,
-  build, extracted-sdist tests, dual clean installs, deterministic demo, audit permission and
-  no-overwrite smokes must run again after the release handoff is finalised.
+- The initial sealed source passed 112 tests. The bounded Windows timezone correction added one
+  regression, bringing the final source and extracted-sdist suites to 113 tests; translation sync,
+  compile, `git diff --check`, dual clean installs, deterministic Demo, audit permission, and
+  no-overwrite smokes all passed.
 - The archived candidate checksum file used private absolute paths and is internal evidence only.
   Public artefacts must be rebuilt from the release commit and accompanied by a newly generated
   basename-only `SHA256SUMS`.
-- Current maintainer authority covers the exact release commit, annotated tag
-  `v0.2.0-alpha.1`, assets, and a GitHub prerelease. It does not cover Issues, PRs, promotion,
-  programme applications, or other versions.
-- Public CI on the exact release commit, annotated tag creation, GitHub prerelease publication,
-  and public re-download verification remain blocking gates.
+- Maintainer authority covered the exact release commit, annotated tag
+  `v0.2.0-alpha.1`, three assets, GitHub prerelease, public re-download verification, and this
+  factual evidence record. It did not cover Issues, PRs, promotion, programme applications, or
+  another version.
 - Initial public CI run `33290681748` passed all Linux and macOS jobs but failed all four Windows
   jobs because Windows does not provide an IANA timezone database for standard-library `zoneinfo`.
   The run is retained as failure evidence; no tag or Release was created.
 - The correction declares `tzdata>=2024.1` only on Windows, installs platform dependencies in the
-  matrix, and adds an actionable missing-database regression. The corrected commit must repeat all
-  local artefact gates and receive its own green public CI run before publication.
+  matrix, and adds an actionable missing-database regression. Corrected commit `243b01a` repeated
+  every local artefact gate and passed public CI run `33291029715` before publication.
+
+## v0.2.0-alpha.1 public prerelease evidence — 2026-08-30
+
+- Tagged commit: `243b01ac5be88825ec4a1f4f9c5cec3b2841a90e`; annotated tag object:
+  `856f4d0fd198a74825f134289af3b0475042ec85`.
+- Final pre-tag CI run
+  [`33291029715`](https://github.com/adand-91/requirement-ledger/actions/runs/33291029715)
+  passed Python 3.10–3.13 on Linux, macOS, and Windows plus the built-artefact/security smoke.
+- GitHub Release:
+  [`v0.2.0-alpha.1`](https://github.com/adand-91/requirement-ledger/releases/tag/v0.2.0-alpha.1).
+  It is a non-draft prerelease and is not the latest stable release; `v0.1.1` remains latest.
+- Public wheel SHA-256:
+  `3123b30db1610e0b930c0d0f26a3a24ec3dbe47917d5da7d1f7c3b800dac615b`.
+- Public sdist SHA-256:
+  `1e5407f5f48d8bdd19f18749aa6bc978002415a90061426cf5bef9b40103ae05`.
+- Public `SHA256SUMS` SHA-256:
+  `c7f4789bc5d26fc686f49194f3da48d3426fd75c8326a1163b73edd627406011`.
+- All three assets were re-downloaded from GitHub and matched the locally approved artefacts
+  byte-for-byte. The downloaded checksum file verified both archives.
+- The downloaded wheel and sdist installed in separate clean environments, reported
+  `requirement-ledger 0.2.0a1`, and passed the deterministic Demo plus
+  `review-init --mode audit` / `review-check` command chain.
