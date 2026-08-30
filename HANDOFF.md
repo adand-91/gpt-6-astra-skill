@@ -35,12 +35,17 @@
   Beta 1, RC 1, RC 2, and stable release decisions governed by exit gates rather than dates alone.
 - Extended CI release smoke to install the built wheel, create/check a named audit, verify private
   permissions and no-overwrite failure, and require the update map and review test in the sdist.
+- The first public CI run passed Linux and macOS but proved that Windows Python has no system IANA
+  timezone database. The corrected package declares `tzdata>=2024.1` only on Windows, the matrix
+  installs platform dependencies, and a regression makes a no-dependency Windows error actionable.
 - Added an Alpha-specific release-checklist section. Internal archived evidence and path-bearing
   checksums are explicitly excluded from public assets.
 
 ## 卡在哪儿
 
-- Current blocker: the exact release commit has not yet passed public Linux/macOS/Windows CI.
+- Current blocker: initial CI run `33290681748` failed all four Windows jobs because `tzdata` was
+  absent; Linux and macOS passed. The conditional dependency fix has not yet passed its new public
+  CI run, so no tag or Release exists.
 - Publication gates still open: final local build and clean-install checks, commit/push, public CI,
   annotated tag, GitHub prerelease, public asset re-download, checksum verification, and a
   post-release evidence commit.
@@ -78,13 +83,18 @@
   `review-init --mode daily|weekly`. Release notes now state this explicitly.
 - A day in the update map is a decision target, not a promise to publish. Empty versions,
   backdating, and fabricated maintenance are excluded.
+- Standard-library `zoneinfo` is not self-contained on Windows. Calling the package “zero runtime
+  dependency everywhere” hid a real portability requirement; docs now distinguish Unix-like
+  systems from Windows and CI installs the conditional database.
 
 ## 当前任务汇总
 
-- Status: local release source prepared; local source gate is green; publication is not complete.
+- Status: the first public CI attempt failed on Windows; a bounded portability correction is
+  implemented locally, and publication remains stopped until its full local and public gates pass.
 - Current version: package `0.2.0a1`, planned annotated tag `v0.2.0-alpha.1`; public stable release
   remains `v0.1.1` until the prerelease is verified.
-- Current source result: 112 tests pass, bilingual sync passes, and `git diff --check` passes.
+- Corrected source result: 113 tests after translation restamping; full rebuild and public CI must
+  be repeated before publication.
 - One-line result: Alpha 1 is an installable, privacy-first starting point and mechanical contract
   checker for one named audit, not yet an automatic context retriever or three-mode scheduler.
 
@@ -102,7 +112,8 @@
 
 ## 运行与依赖
 
-- Supported runtime: Python 3.10–3.13; runtime dependencies: Python standard library only.
+- Supported runtime: Python 3.10–3.13. Unix-like systems use the standard library only; Windows
+  conditionally installs `tzdata>=2024.1` because the OS has no IANA timezone database.
 - Build backend: setuptools through PEP 517; build tooling is not a runtime dependency.
 - Source test command: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q`.
 - Translation gate: `python3 scripts/check_translation_sync.py`.
@@ -116,8 +127,12 @@
   hashes, and identified the absolute-path checksum problem before publication.
 - Archived candidate source and extracted sdist agree byte-for-byte for 100 packaged files; the
   wheel's eleven Python modules agree with the same source.
-- Current reconstructed source: 112 tests pass; `TRANSLATIONS_IN_SYNC`; `git diff --check` exits
-  zero; reported package version is `requirement-ledger 0.2.0a1`.
+- Initial commit `a880e9b48c921f5c32c9e362f5848de420eb9f52`: CI run `33290681748`
+  passed all Linux/macOS jobs and failed all Windows jobs at IANA timezone loading; release smoke
+  was skipped. No tag or Release was created.
+- Corrected source adds the conditional Windows dependency and one missing-database regression,
+  bringing the suite to 113 tests. Translation sync and final rebuild gates must be rerun after
+  this Handoff update.
 - Final artefact hashes and public CI run are intentionally not embedded here because they are
   generated after this source is committed. They must be attached/recorded as post-build and
   post-release evidence.

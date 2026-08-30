@@ -24,8 +24,8 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install package without runtime dependencies
-        run: python -m pip install --disable-pip-version-check --no-input --no-deps .
+      - name: Install package with platform dependencies
+        run: python -m pip install --disable-pip-version-check --no-input .
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
       - name: Compile Python sources

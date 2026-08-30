@@ -1,4 +1,4 @@
-<!-- translation-of: README.md sha256:c6b45ecb1e02ff84 -->
+<!-- translation-of: README.md sha256:b2affe9c646e0a36 -->
 
 # Requirement Ledger AI
 
@@ -113,8 +113,9 @@ python3 -m pip install .
 requirement-ledger --version
 ```
 
-运行时只使用 Python 标准库。构建隔离可能下载构建工具；已经准备好依赖的离线环境可以使用
-`python3 -m pip install --no-build-isolation --no-deps .`。
+系统已有 IANA 时区数据库时，运行时只使用 Python 标准库。Windows 不自带该数据库，因此会按平台
+条件安装标准 `tzdata` 包。构建隔离可能下载构建工具；Windows 离线环境使用
+`python3 -m pip install --no-build-isolation --no-deps .` 前必须先准备 `tzdata`。
 
 不克隆仓库，直接安装这个精确预发布版：
 

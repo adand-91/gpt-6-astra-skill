@@ -126,8 +126,10 @@ python3 -m pip install .
 requirement-ledger --version
 ```
 
-The runtime uses only the Python standard library. Build isolation may fetch build tooling;
-for a prepared offline environment use `python3 -m pip install --no-build-isolation --no-deps .`.
+The runtime uses only the Python standard library on systems with an IANA timezone database.
+Windows installs the standard `tzdata` package conditionally because Windows does not ship that
+database. Build isolation may fetch build tooling; a prepared offline Windows environment must
+include `tzdata` before using `python3 -m pip install --no-build-isolation --no-deps .`.
 
 To install this exact prerelease without cloning:
 

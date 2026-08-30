@@ -1,4 +1,4 @@
-<!-- translation-of: CHANGELOG.md sha256:c29791fed648ebe8 -->
+<!-- translation-of: CHANGELOG.md sha256:8e9fea81a3e04a9c -->
 
 # 变更日志
 
@@ -37,11 +37,16 @@
   不合格时，`review-check` 会失败。
 - 独立检查脚本不再维护第二份校验规则，而是调用包内唯一实现。
 - 新审查骨架不会覆盖已有输出；平台支持时使用私有文件权限。
+- Windows 现在按平台条件安装标准 `tzdata` 数据库，使同一个显式 IANA 时区在 Linux、macOS、
+  Windows 上都能校验。Windows 未安装依赖时会返回可执行错误，不再把“缺时区数据库”误报成
+  “时区无效”。
 
 ### 兼容性
 
 - 已发布的 `v0.1.1`、标准包 CLI、v1 Schema、包名和冻结 v0.1 安全契约保持兼容。本预发布版
   新增可选的 `review-init` 与 `review-check` 命令；它不会发现 Codex 历史，也不会赋予实施授权。
+  类 Unix 系统继续保持零运行时依赖；Windows 使用 Python 标准库 `zoneinfo` 所需的条件依赖
+  `tzdata`。
 
 ## [0.1.1] - 2026-08-28
 

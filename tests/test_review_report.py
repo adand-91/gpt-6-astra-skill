@@ -72,6 +72,18 @@ class TestReviewReportContract(unittest.TestCase):
         findings = MODULE.check_text(text)
         self.assertTrue(any("does not match timezone" in finding for finding in findings))
 
+    def test_missing_windows_timezone_database_has_actionable_error(self) -> None:
+        missing = review.ZoneInfoNotFoundError("missing timezone database")
+        with (
+            patch.object(review.sys, "platform", "win32"),
+            patch.object(review.importlib.util, "find_spec", return_value=None),
+            patch.object(review, "ZoneInfo", side_effect=missing),
+        ):
+            zone, finding = review._load_timezone("Asia/Shanghai")
+        self.assertIsNone(zone)
+        self.assertIn("install requirement-ledger with dependencies", finding or "")
+        self.assertIn("tzdata", finding or "")
+
     def test_implementation_authority_requires_reference(self) -> None:
         text = (ROOT / "templates" / "audit-review.md").read_text(encoding="utf-8")
         text = text.replace("authorization: analysis-only", "authorization: implementation-authorized")

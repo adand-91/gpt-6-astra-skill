@@ -4,18 +4,16 @@ Short pickup index; private evidence stays outside the repository.
 
 ## Current checkpoint
 
-- Preparing GitHub prerelease `v0.2.0-alpha.1`; package version is `0.2.0a1`. Public state remains
-  `v0.1.1` until the exact release commit passes public CI.
-- This isolated worktree starts at `origin/main` and restores only the sealed Alpha source. The
-  maintainer's mixed post-Alpha worktree remains untouched.
+- Preparing `v0.2.0-alpha.1` (`0.2.0a1`). CI commit `a880e9b` passed Unix but failed Windows for
+  missing IANA data; no tag/Release exists. The fix adds conditional `tzdata` and an actionable error.
+- This isolated worktree contains only sealed Alpha source; the mixed maintainer tree is untouched.
 - Alpha scope is limited to a private, no-overwrite named-target `review-init --mode audit`
   scaffold, strict `review-check`, and supporting bilingual host contracts/templates.
 - Daily/weekly CLI initialisation, modern Codex export parsing, candidate carry-over, report-pack
   binding, handoff verification, scheduling, autonomous edits, and Skill-health are not included.
-- Bilingual changelog, release notes, ten-day update map, README, roadmap, CI smoke, and release
-  checklist now state the shipped boundary and path to stable `v0.2.0`.
-- Current source gate: 112 tests, translation sync, and diff check pass. Final build, clean
-  installs, privacy/path smokes, public CI, tag, prerelease, and re-download checks remain.
+- Bilingual notes, update map, roadmap, CI smoke, and release checklist define the v0.2 path.
+- Corrected source gate: 113 tests, translation sync, and diff check. Rebuild, clean installs,
+  privacy/path smokes, corrected public CI, tag, prerelease, and re-download checks remain.
 
 ## Pickup files
 
@@ -26,9 +24,8 @@ Short pickup index; private evidence stays outside the repository.
 
 ## Next action
 
-Finalise `HANDOFF.md`, run the complete local release gate, commit and push the exact Alpha source,
-wait for public CI, then create annotated tag `v0.2.0-alpha.1` and a non-latest GitHub prerelease.
-Re-download every public asset before recording publication evidence.
+Repeat all local gates, commit/push the Windows fix, and wait for CI. Only then create annotated tag
+`v0.2.0-alpha.1` and a non-latest prerelease; re-download every asset before recording evidence.
 
 ## Safety boundary
 

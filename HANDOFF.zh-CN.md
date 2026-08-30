@@ -1,4 +1,4 @@
-<!-- translation-of: HANDOFF.md sha256:ec1c17643a9c1ce1 -->
+<!-- translation-of: HANDOFF.md sha256:b83b4c758a020268 -->
 
 # 交接
 
@@ -31,11 +31,14 @@
   RC 2 和稳定版都由退出门决定，不由日期单独决定。
 - 扩展 CI 发布冒烟：安装构建 wheel，创建／校验点名审查，检查私有权限和不覆盖失败，并要求 sdist
   包含更新地图与审查测试。
+- 首次公开 CI 在 Linux、macOS 通过，但证明 Windows Python 没有系统 IANA 时区数据库。修正后
+  只在 Windows 声明 `tzdata>=2024.1`，矩阵安装平台依赖，并用回归让未装依赖时的错误可执行。
 - 发布清单新增 Alpha 专节；内部封存证据和含路径校验文件明确排除在公开资产之外。
 
 ## 卡在哪儿
 
-- 当前阻断：精确发布 commit 尚未通过公开 Linux／macOS／Windows CI。
+- 当前阻断：初始 CI run `33290681748` 的四个 Windows job 因缺少 `tzdata` 全部失败；Linux、
+  macOS 通过。条件依赖修正尚未通过新的公开 CI，因此没有 Tag 或 Release。
 - 尚未关闭的发布门禁：最终本地构建与干净安装、commit／push、公开 CI、注释 Tag、GitHub
   预发布、公开资产重新下载、校验和复验，以及发布后证据 commit。
 - Alpha 1 之后的产品缺口：安装包不会读取 Codex 历史，也不能初始化日报／周报；这些是可见目标，
@@ -65,13 +68,16 @@
 - Alpha 带有日报／周报模板和校验词汇，但 CLI 会有意拒绝 `review-init --mode daily|weekly`；更新
   说明已明确写出。
 - 更新地图中的天数是决策目标，不是发布承诺；空版本、回填日期和虚构维护均被排除。
+- 标准库 `zoneinfo` 在 Windows 上并非自带完整数据。“所有平台零运行时依赖”的说法掩盖了真实
+  兼容要求；文档现已区分类 Unix 与 Windows，CI 也安装条件时区数据库。
 
 ## 当前任务汇总
 
-- 状态：本地发布源码已准备，源码门禁全绿；公开发布尚未完成。
+- 状态：首次公开 CI 在 Windows 失败；有界兼容修正已在本地实现，完整本地与公开门禁通过前继续
+  停止发布。
 - 当前版本：包 `0.2.0a1`，计划注释 Tag `v0.2.0-alpha.1`；预发布复验前，公开稳定版仍为
   `v0.1.1`。
-- 当前源码结果：112 项测试通过，双语同步通过，`git diff --check` 通过。
+- 修正后源码结果：双语重新盖章后共有 113 项测试；发布前必须重跑完整构建和公开 CI。
 - 一句话结论：Alpha 1 是面向一个点名审查的可安装、隐私优先起点和机械契约检查器，尚不是自动
   上下文读取器或三模式调度器。
 
@@ -87,7 +93,8 @@
 
 ## 运行与依赖
 
-- 支持运行环境：Python 3.10–3.13；运行时依赖：仅 Python 标准库。
+- 支持运行环境：Python 3.10–3.13。类 Unix 系统仅使用标准库；Windows 因操作系统没有 IANA
+  时区数据库，按条件安装 `tzdata>=2024.1`。
 - 构建后端：通过 PEP 517 使用 setuptools；构建工具不是运行时依赖。
 - 源码测试命令：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q`。
 - 双语门禁：`python3 scripts/check_translation_sync.py`。
@@ -99,8 +106,11 @@
 
 - 独立发布审计核验了封存 wheel、sdist、源码快照、版本和哈希，并在发布前发现绝对路径校验文件问题。
 - 封存候选源码与解压 sdist 的 100 个打包文件逐字节一致；wheel 的 11 个 Python 模块与同一源码一致。
-- 当前重建源码：112 项测试通过；`TRANSLATIONS_IN_SYNC`；`git diff --check` 退出 0；包版本报告
-  `requirement-ledger 0.2.0a1`。
+- 初始 commit `a880e9b48c921f5c32c9e362f5848de420eb9f52`：CI run `33290681748` 的
+  Linux／macOS 全部通过，Windows 全部在 IANA 时区加载失败，release-smoke 跳过；没有创建 Tag
+  或 Release。
+- 修正源码增加 Windows 条件依赖和一个缺数据库回归，测试数变为 113。此 Handoff 更新后必须重跑
+  双语同步和最终构建门禁。
 - 最终资产哈希和公开 CI 不写进本文件，因为它们只能在源码提交后产生；必须作为构建后与发布后
   证据附加／记录。
 

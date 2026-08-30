@@ -44,12 +44,17 @@ No changes have been assigned to the next candidate yet.
   the packaged implementation.
 - New review scaffolds fail instead of overwriting an existing output and use private file
   permissions where the platform supports them.
+- Windows installs the standard `tzdata` database conditionally, so the same explicit IANA
+  timezones validate on Linux, macOS, and Windows. A no-dependency Windows install now returns an
+  actionable error instead of misreporting the missing database as an invalid timezone.
 
 ### Compatibility
 
 - The released `v0.1.1`, packaged CLI, v1 schemas, package name, and frozen v0.1 safety contract
   remain compatible. This prerelease adds opt-in `review-init` and `review-check` commands;
-  it does not discover Codex history or grant implementation authority.
+  it does not discover Codex history or grant implementation authority. Unix-like systems keep
+  zero runtime dependencies; Windows uses the conditional `tzdata` dependency required by
+  Python's standard-library `zoneinfo` implementation.
 
 ## [0.1.1] - 2026-08-28
 

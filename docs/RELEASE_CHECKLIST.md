@@ -124,3 +124,9 @@ Use this for every public version. A checked box must point to command output or
   programme applications, or other versions.
 - Public CI on the exact release commit, annotated tag creation, GitHub prerelease publication,
   and public re-download verification remain blocking gates.
+- Initial public CI run `33290681748` passed all Linux and macOS jobs but failed all four Windows
+  jobs because Windows does not provide an IANA timezone database for standard-library `zoneinfo`.
+  The run is retained as failure evidence; no tag or Release was created.
+- The correction declares `tzdata>=2024.1` only on Windows, installs platform dependencies in the
+  matrix, and adds an actionable missing-database regression. The corrected commit must repeat all
+  local artefact gates and receive its own green public CI run before publication.

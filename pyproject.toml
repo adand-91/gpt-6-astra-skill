@@ -23,7 +23,9 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Topic :: Software Development :: Quality Assurance",
 ]
-dependencies = []
+dependencies = [
+  "tzdata>=2024.1; sys_platform == 'win32'",
+]
 keywords = [
   "ai",
   "agent-skills",

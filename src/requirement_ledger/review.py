@@ -8,8 +8,10 @@ whose authority is permanently ``analysis-only``.
 from __future__ import annotations
 
 from datetime import date, datetime
+import importlib.util
 from pathlib import Path
 import re
+import sys
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from .errors import InputChangedError, LedgerError, SchemaError
@@ -99,6 +101,19 @@ def _parse_datetime(value: str) -> datetime | None:
     if parsed.tzinfo is None or parsed.utcoffset() is None:
         return None
     return parsed
+
+
+def _load_timezone(value: str) -> tuple[ZoneInfo | None, str | None]:
+    """Load one IANA timezone and distinguish a missing Windows database."""
+    try:
+        return ZoneInfo(value), None
+    except (ZoneInfoNotFoundError, ValueError):
+        if sys.platform == "win32" and importlib.util.find_spec("tzdata") is None:
+            return None, (
+                "timezone database unavailable; install requirement-ledger with dependencies "
+                "(tzdata is required on Windows)"
+            )
+        return None, "timezone must be a valid explicit IANA timezone"
 
 
 def _field_value(text: str, labels: tuple[str, ...]) -> str | None:
@@ -217,11 +232,9 @@ def check_text(text: str) -> list[str]:
             findings.append("coverage start must be earlier than coverage end")
 
     timezone = values.get("timezone", "")
-    zone = None
-    try:
-        zone = ZoneInfo(timezone)
-    except (ZoneInfoNotFoundError, ValueError):
-        findings.append("timezone must be a valid explicit IANA timezone")
+    zone, timezone_finding = _load_timezone(timezone)
+    if timezone_finding:
+        findings.append(timezone_finding)
     if zone is not None:
         for label, moment in (("coverage start", start), ("coverage end", end)):
             if moment is not None and moment.utcoffset() != moment.astimezone(zone).utcoffset():
@@ -285,10 +298,11 @@ def check(path: Path) -> list[str]:
 
 
 def _review_window(start: str, end: str, timezone: str) -> tuple[datetime, datetime, ZoneInfo]:
-    try:
-        zone = ZoneInfo(timezone)
-    except (ZoneInfoNotFoundError, ValueError) as exc:
-        raise ReviewInputError("timezone must be a valid explicit IANA timezone") from exc
+    zone, timezone_finding = _load_timezone(timezone)
+    if zone is None:
+        raise ReviewInputError(
+            timezone_finding or "timezone must be a valid explicit IANA timezone"
+        )
     start_at = _parse_datetime(start)
     end_at = _parse_datetime(end)
     if start_at is None or end_at is None:
