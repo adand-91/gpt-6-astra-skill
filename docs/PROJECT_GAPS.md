@@ -19,6 +19,22 @@ behaviour.
 - Synthetic end-to-end demo, anonymous fixtures, CI matrix, release/community documentation.
 - Compatibility retention for the original three scripts and retrospective Skill workflow.
 
+## Closed in the local v0.2.0-alpha.2 candidate
+
+- One installed `codex-scan` path binds a single explicit Codex export to a non-home scope root,
+  non-path target/task references, IANA timezone, and half-open window without enumerating files.
+- The captured source is limited to 64 MiB; the exact same bytes are hashed and parsed, and
+  path-component identity is rechecked around the read.
+- A text/path-free `codex-input-envelope/v1` records balanced physical-record accounting and
+  explicitly partial/unknown semantic and target-history coverage.
+- Root/home scope, directory input, traversal, scope escape, ordinary symlink/reparse boundary,
+  hard link, drift, oversize, and overwrite cases fail closed in candidate tests. macOS fixed root
+  compatibility aliases and non-atomic source metadata checks remain documented residuals.
+- Target/task SHA-256 bindings are deterministic and therefore linkable or guessable for
+  low-entropy references; the envelope is private metadata, not an anonymity format.
+
+This is local implementation evidence, not a public Alpha 2 release or external-user adoption.
+
 ## Open after v0.1 — product
 
 - Codex-first `audit`, `daily`, and `weekly` host flows are now specified with bilingual templates
@@ -34,7 +50,8 @@ behaviour.
 - Cross-session evidence linking without exposing low-entropy identifiers.
 - A concrete Codex-host adapter that can use thread tools or a bounded local session index while
   keeping raw transcript data out of prompts unnecessarily. The current release provides the
-  host contract and Skill workflow, not a packaged history-discovery daemon.
+  host contract and Skill workflow; the Alpha 2 `codex-scan` bridge consumes a selected export but
+  is not a packaged history-discovery daemon.
 - Real daily and weekly runs with stable carry-over IDs and source-bound ecosystem evidence.
 - Adoption records: installs, repeat users, accepted fixes, before/after outcomes, and
   maintainer response — opt-in and never collected as telemetry by default.

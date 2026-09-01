@@ -66,6 +66,12 @@ jobs:
           .wheel-venv/bin/requirement-ledger review-check alpha-audit.md
           test "$(stat -c '%a' alpha-audit.md)" = "600"
           if .wheel-venv/bin/requirement-ledger review-init --mode audit --target ci-skill --start 2026-08-29T00:00:00+00:00 --end 2026-08-30T00:00:00+00:00 --timezone UTC --output alpha-audit.md; then exit 1; fi
+          mkdir ci-codex-input
+          .wheel-venv/bin/python -c "from pathlib import Path; Path('ci-codex-input/task.jsonl').write_text('{\"type\":\"event_msg\",\"timestamp\":\"2026-08-29T00:30:00Z\",\"payload\":{\"type\":\"user_message\",\"message\":\"synthetic\"}}\\n', encoding='utf-8')"
+          .wheel-venv/bin/requirement-ledger codex-scan --repo . --input ci-codex-input/task.jsonl --scope-root ci-codex-input --target conversation:ci --task-ref task:ci --since 2026-08-29T00:00:00+00:00 --until 2026-08-30T00:00:00+00:00 --timezone UTC --exclude unrelated --output alpha2.private.json
+          test "$(stat -c '%a' alpha2.private.json)" = "600"
+          .wheel-venv/bin/python -c "import json; value=json.load(open('alpha2.private.json', encoding='utf-8')); envelope=value['codex_input_envelope']; assert envelope['schema']=='codex-input-envelope/v1'; assert envelope['source']['summary']['included_events']==1; assert envelope['coverage']['overall']=='partial'; assert envelope['source']['path_stored'] is False"
+          if .wheel-venv/bin/requirement-ledger codex-scan --repo . --input ci-codex-input/task.jsonl --scope-root ci-codex-input --target conversation:ci --task-ref task:ci --since 2026-08-29T00:00:00+00:00 --until 2026-08-30T00:00:00+00:00 --timezone UTC --output alpha2.private.json; then exit 1; fi
       - name: Inspect and install the built source distribution
         run: |
           tar -tzf dist/*.tar.gz > sdist-files.txt
@@ -73,6 +79,8 @@ jobs:
           grep -q '/UPDATE_MAP.md$' sdist-files.txt
           grep -q '/tests/test_v01_pipeline.py$' sdist-files.txt
           grep -q '/tests/test_review_report.py$' sdist-files.txt
+          grep -q '/tests/test_codex_input_envelope.py$' sdist-files.txt
+          grep -q '/docs/CODEX_ALIGNMENT_RESEARCH.md$' sdist-files.txt
           if grep -E '(__pycache__|\.pyc$|\.private\.json$)' sdist-files.txt; then exit 1; fi
           python -m venv .sdist-venv
           .sdist-venv/bin/python -m pip install --disable-pip-version-check --no-input --no-deps dist/*.tar.gz
@@ -89,3 +97,5 @@ jobs:
           tests.test_v01_privacy.TestSafeIO.test_output_ancestor_symlink_is_blocked
           tests.test_v01_privacy.TestSafeIO.test_parent_replacement_before_write_is_blocked
           tests.test_v01_cli.TestCLI.test_report_privacy_block_happens_before_output_creation
+          tests.test_codex_input_envelope.TestCodexInputEnvelope.test_single_source_window_accounting_and_envelope_privacy
+          tests.test_codex_input_envelope.TestCodexInputEnvelope.test_source_or_scope_drift_fails_before_cli_output_exists

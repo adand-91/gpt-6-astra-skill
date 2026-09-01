@@ -4,35 +4,32 @@ Short pickup index; private evidence stays outside the repository.
 
 ## Current checkpoint
 
-- `v0.2.0-alpha.1` (`0.2.0a1`) is publicly available as a non-latest GitHub prerelease.
-  Tagged commit: `243b01ac5be88825ec4a1f4f9c5cec3b2841a90e`; annotated tag object:
-  `856f4d0fd198a74825f134289af3b0475042ec85`. Stable `v0.1.1` remains latest.
-- CI run `33291029715` passed Python 3.10–3.13 on Linux/macOS/Windows and the
-  built-artefact/security smoke. All three public assets were re-downloaded, hash-verified, clean
-  installed, and exercised through Demo plus audit create/check.
-- Alpha 1 ships a private, no-overwrite named-target `review-init --mode audit` scaffold, strict
-  `review-check`, bilingual notes, and an update map. It does not retrieve Codex history or
-  initialise daily/weekly reviews.
-- The update map targets one substantive candidate per successful release day:
-  `alpha.1 → alpha.2 → alpha.3 → beta.1 → beta.2 → beta.3 → rc.1 → rc.2 → rc.3 → v0.2.0`.
-  A failed gate shifts the train; no empty version is published.
-- This isolated worktree is the Alpha publication source. The maintainer's dirty post-Alpha
+- `v0.2.0-alpha.2` (`0.2.0a2`) has been restored from the sealed final-candidate snapshot into an
+  isolated release worktree based on `origin/main`. The maintainer's cumulative post-Alpha dirty
   worktree remains untouched.
+- Alpha 2 adds an explicit bounded `codex-scan` input envelope: task/target digests, a half-open
+  time window, record accounting, and honest partial/unknown coverage. It does not retain raw
+  target text or local paths.
+- The restored source passes 122 Python 3.12 tests, translation sync, and `git diff --check`.
+  The sealed wheel and sdist match their recorded SHA-256 hashes.
+- Public CI, the annotated tag, GitHub prerelease, public asset download, and clean-install checks
+  are still pending. No later queued version is included in this boundary.
 
 ## Pickup files
 
-- Release: <https://github.com/adand-91/requirement-ledger/releases/tag/v0.2.0-alpha.1>
-- Changes: `CHANGELOG.md`; release notes: `docs/release-notes/v0.2.0-alpha.1.md`
-- Daily train: `UPDATE_MAP.md`; product path: `ROADMAP.md`
-- Publication evidence: `docs/RELEASE_CHECKLIST.md`; technical state: `HANDOFF.md`
+- Changes: `CHANGELOG.md`; candidate notes: `docs/release-notes/v0.2.0-alpha.2.md`
+- Input implementation: `src/requirement_ledger/codex_input.py`; CLI: `src/requirement_ledger/cli.py`
+- Regression: `tests/test_codex_input_envelope.py`; publication gate: `docs/RELEASE_CHECKLIST.md`
+- Daily train: `UPDATE_MAP.md`; technical state: `HANDOFF.md`
 
 ## Next action
 
-Land this factual publication/map record on `main` and verify its CI. The next product candidate
-is Alpha 2: one explicit bounded input envelope for a user-selected Codex task/export.
+Commit and push this exact Alpha 2 boundary to `main`, then wait for public CI. A failed gate stops
+tag and Release creation; a green gate permits only the Alpha 2 annotated tag, prerelease, assets,
+and independent download verification.
 
 ## Safety boundary
 
-Do not move the Alpha tag or replace its assets. Candidate dates do not bypass release gates.
-Issues, PRs, promotion, programme applications, schedules, unrelated-history reads, and destructive
-changes to the maintainer worktree remain outside this batch.
+This batch authorises only `v0.2.0-alpha.2` commit, push, tag, prerelease, assets, and verification.
+Later versions, Issues, PRs, promotion, repository rename, plugin submission, programme application,
+unrelated-history reads, and destructive changes to the maintainer worktree remain out of scope.

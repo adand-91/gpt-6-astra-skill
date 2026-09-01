@@ -35,8 +35,24 @@ Three report modes share the same evidence discipline:
 - `weekly`: final daily summaries, unresolved evidence, maintenance health, and a required
   source-check attempt for source-bound GitHub or official industry evidence.
 
-The host contract, bilingual workflow, report templates, and report-shape validator are included
-in the current unreleased tree. A packaged Codex history adapter is not yet implemented.
+The host contract, bilingual workflow, report templates, and report-shape validator are included.
+The Alpha 2 candidate also ships a narrower offline bridge:
+
+```text
+one explicit Codex JSONL + non-home scope root + target/task/window/timezone
+                              |
+                              v
+       ordinary-link rejecting, single-capture 64 MiB binding
+                              |
+                              v
+          private evidence + text/path-free input envelope
+```
+
+This bridge does not discover history. It classifies every physical input record into recognised,
+outside-window, missing/invalid timestamp, malformed, unsupported, or oversized counts. Modern
+Codex semantic normalisation remains partial until the next parser candidate. Digest and parsing
+bind to the same captured bytes; concurrent source-path stability is metadata-checked best effort,
+not an atomic snapshot guarantee.
 
 ## Packaged explicit-file layer — released v0.1
 
@@ -69,6 +85,7 @@ share report   DRAFT repair proposals
 The package has no network client and does not execute project code.
 
 - `transcript.py`: explicit, streaming Claude/Codex/text normalisation.
+- `codex_input.py`: strict path-free input-envelope metadata and fixed declared exclusions.
 - `git_evidence.py`: fixed read-only Git snapshot without remotes.
 - `models.py`: the versioned domain model.
 - `pipeline.py`: deterministic evidence, analysis, plan, report, and validation stages.

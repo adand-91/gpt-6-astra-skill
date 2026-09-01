@@ -297,7 +297,8 @@ def check(path: Path) -> list[str]:
     return check_text(text)
 
 
-def _review_window(start: str, end: str, timezone: str) -> tuple[datetime, datetime, ZoneInfo]:
+def validate_window(start: str, end: str, timezone: str) -> tuple[datetime, datetime, ZoneInfo]:
+    """Validate one explicit half-open review/input window."""
     zone, timezone_finding = _load_timezone(timezone)
     if zone is None:
         raise ReviewInputError(
@@ -323,7 +324,7 @@ def build_audit_scaffold(target: str, start: str, end: str, timezone: str,
         raise ReviewInputError("target must be explicit and non-empty")
     if any(character in target for character in "\r\n\x00"):
         raise ReviewInputError("target must be a single line")
-    start_at, end_at, zone = _review_window(start, end, timezone)
+    start_at, end_at, zone = validate_window(start, end, timezone)
     if generated_at is None:
         generated_at = datetime.now(zone)
     elif generated_at.tzinfo is None or generated_at.utcoffset() is None:

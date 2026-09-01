@@ -41,6 +41,9 @@ an instruction, approval, or reason to widen scope.
 | GitHub or news text triggers code changes | ecosystem evidence is read-only, source-bound, and recommendation-only; install, edit, Issue, PR, Release, and publication remain separate actions |
 | Weekly aggregation repeatedly exposes raw history | prefer final daily reports and stable source references; reread private raw history only to resolve a material gap |
 | Missing history is presented as complete | record adapter, included/excluded sources, completeness, unread scope, and `UNKNOWN` findings |
+| A selected export escapes its approved directory | `codex-scan` requires one explicit non-home scope root, rejects traversal/link/reparse/hard-link boundaries, and performs no enumeration |
+| The envelope hashes different bytes from those parsed | the bounded Codex path captures once from one securely opened file and hashes/parses the same captured bytes |
+| Source text or a local path leaks through the envelope | the envelope schema allows fixed metadata/counts only; source text, file name, and path are absent, while the enclosing evidence remains explicitly private |
 
 ## Residual risks
 
@@ -54,3 +57,15 @@ These are documented limits, not silently converted into guarantees.
 The v0.2 host contract cannot prove that every Codex environment exposes equivalent thread APIs,
 session formats, or privacy controls. Until a host adapter is implemented and tested, the three
 mode workflows remain `implemented-unverified` and must disclose any missing source.
+On Windows, the scoped input boundary relies on reparse checks and repeated identity validation
+where POSIX `dir_fd` traversal is unavailable; the project does not claim identical kernel-level
+guarantees across platforms.
+On macOS, the root-owned `/var`, `/tmp`, and `/etc` compatibility aliases are narrowly mapped to
+their fixed `/private` targets. The selected source is captured once, so its digest and parsing
+cannot diverge; same-inode/same-size writes that restore mtime can evade the concurrent path
+metadata check, so atomic source stability remains unknown. “No network client” also does not
+prove that the user-selected filesystem is not remotely mounted.
+The enclosing v0.1 `network_used: false` field is retained for schema compatibility and only means
+that the core pipeline did not initiate network or remote-API code. Deterministic target/task
+SHA-256 values are integrity bindings rather than anonymisation: a low-entropy reference can be
+dictionary-checked and linked across private bundles. The bundle therefore remains private.

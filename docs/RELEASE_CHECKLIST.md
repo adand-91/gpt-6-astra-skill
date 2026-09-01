@@ -152,3 +152,25 @@ Use this for every public version. A checked box must point to command output or
 - The downloaded wheel and sdist installed in separate clean environments, reported
   `requirement-ledger 0.2.0a1`, and passed the deterministic Demo plus
   `review-init --mode audit` / `review-check` command chain.
+
+## v0.2.0-alpha.2 local candidate evidence — 2026-08-30
+
+- Scope is the one-file, bounded `codex-scan` increment only. The version train stops after this
+  candidate; Alpha 3, Beta, RC, stable, and publication actions are outside the current authority.
+- The source suite passed all 122 tests; the dedicated envelope suite passed all nine tests.
+  Compile, translation sync, and `git diff --check` also passed on macOS arm64 with Python 3.12.
+- An independent security re-review closed both prior P1 findings: unaccounted records now make
+  the bundle incomplete and block issue confirmation, while target/task text is absent from the
+  envelope and only deterministic SHA-256 bindings remain.
+- The candidate explicitly reports same-captured-byte binding as complete, concurrent path
+  identity checking as metadata-best-effort, and atomic snapshot coverage as unknown. It also
+  documents macOS fixed compatibility aliases, Windows' weaker reparse/identity boundary, remote
+  filesystem ambiguity, and low-entropy reference linkability.
+- A clean wheel install must report `requirement-ledger 0.2.0a2` and pass deterministic Demo,
+  `review-init` / `review-check`, installed `codex-scan`, `0600`, privacy/canary, incomplete-source,
+  and no-overwrite smokes. The extracted sdist must pass the same 122-test source suite.
+- Candidate archives are built from the frozen post-checklist source snapshot. Basename-only
+  SHA-256 values and command evidence live outside the source tree to avoid self-referential
+  archive hashes.
+- No Linux/Windows Alpha 2 CI has run, and no commit, push, tag, Release, programme application,
+  promotion, or external-user adoption is claimed.

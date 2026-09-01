@@ -12,7 +12,7 @@ from typing import Any
 from . import __version__
 from .errors import LedgerError
 from .git_evidence import bind_repo
-from .pipeline import (analyze_evidence, build_evidence_bundle, build_fix_proposals,
+from .pipeline import (analyze_evidence, build_codex_scan_bundle, build_evidence_bundle, build_fix_proposals,
                        render_markdown_report, share_report, synthetic_demo_bundle,
                        validate_outcomes)
 from .privacy import finding_counts
@@ -42,6 +42,27 @@ def _parser() -> argparse.ArgumentParser:
     scan.add_argument("--since")
     scan.add_argument("--until")
     scan.add_argument("--output", required=True, help="new path ending in .private.json")
+
+    codex_scan = sub.add_parser(
+        "codex-scan",
+        help="bind and scan one explicit Codex export inside an approved scope",
+    )
+    codex_scan.add_argument("--repo", required=True)
+    codex_scan.add_argument("--input", required=True)
+    codex_scan.add_argument("--scope-root", required=True)
+    codex_scan.add_argument("--target", required=True, help="single-line non-path target reference")
+    codex_scan.add_argument("--task-ref", required=True, help="single-line non-path Codex task reference")
+    codex_scan.add_argument("--since", required=True)
+    codex_scan.add_argument("--until", required=True)
+    codex_scan.add_argument("--timezone", required=True, help="explicit IANA timezone")
+    codex_scan.add_argument(
+        "--exclude",
+        action="append",
+        default=[],
+        choices=("automation", "delegation", "subagent", "system", "unrelated", "not-provided"),
+        help="declare a fixed class that was not selected; repeat as needed",
+    )
+    codex_scan.add_argument("--output", required=True, help="new path ending in .private.json")
 
     analyze = sub.add_parser("analyze", help="conservatively classify a private evidence bundle")
     analyze.add_argument("--evidence", required=True)
@@ -125,6 +146,23 @@ def run(args: argparse.Namespace) -> int:
                                        args.since, args.until)
         write_new_json(out, bundle, private=True)
         print(f"WROTE_PRIVATE_EVIDENCE {out}")
+        return 0
+
+    if args.command == "codex-scan":
+        out = private_output_path(args.output)
+        bundle = build_codex_scan_bundle(
+            args.repo,
+            args.input,
+            scope_root=args.scope_root,
+            target=args.target,
+            task_ref=args.task_ref,
+            since=args.since,
+            until=args.until,
+            timezone_name=args.timezone,
+            declared_exclusions=args.exclude,
+        )
+        write_new_json(out, bundle, private=True)
+        print(f"WROTE_PRIVATE_CODEX_EVIDENCE {out}")
         return 0
 
     if args.command == "analyze":

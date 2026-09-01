@@ -13,12 +13,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from .codex_input import build_codex_input_envelope, validate_codex_request
 from .git_evidence import bind_repo
 from .models import (EvidenceItem, FixProposal, IssueRecord, SourceRef, ValidationResult,
                      dataclass_dict, envelope)
 from .privacy import assert_automated_privacy_check, manifest_for_private_texts
 from .safeio import explicit_regular_file
-from .transcript import parse_explicit_transcript
+from .review import validate_window
+from .transcript import parse_explicit_transcript, parse_scoped_codex_transcript
 
 MAX_EXPLICIT_INPUTS = 20
 MAX_TEST_LOG_BYTES = 10 * 1024 * 1024
@@ -135,6 +137,9 @@ def build_evidence_bundle(
     since: str | None = None,
     until: str | None = None,
     deterministic_key: bytes | None = None,
+    *,
+    _parsed_inputs: list[dict[str, Any]] | None = None,
+    _codex_input_envelope: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if not inputs:
         from .errors import UnsafePathError
@@ -158,8 +163,14 @@ def build_evidence_bundle(
         parser="fixed-read-only-git",
     ))
 
-    for raw in inputs:
-        parsed = parse_explicit_transcript(raw, provider=provider, since=since, until=until)
+    if _parsed_inputs is not None and len(_parsed_inputs) != len(inputs):
+        from .errors import SchemaError
+        raise SchemaError("preparsed input count does not match the explicit input count")
+    parsed_inputs = _parsed_inputs or [
+        parse_explicit_transcript(raw, provider=provider, since=since, until=until)
+        for raw in inputs
+    ]
+    for parsed in parsed_inputs:
         source_id = _opaque(key, "src", parsed["digest"])
         sources.append(SourceRef(
             id=source_id,
@@ -223,7 +234,7 @@ def build_evidence_bundle(
         metadata=git_snapshot,
     ))
     source_dicts = [dataclass_dict(item) for item in sources]
-    return envelope("private-evidence", {
+    payload = {
         "run_id": run_id,
         "created_at": _now(),
         "privacy": "private-local-evidence",
@@ -236,7 +247,54 @@ def build_evidence_bundle(
         "commands_executed": ["read-only git probes"],
         "repo_path_stored": False,
         "private_note": "May contain raw user text. Do not share this file.",
-    })
+    }
+    if _codex_input_envelope is not None:
+        payload["codex_input_envelope"] = _codex_input_envelope
+    return envelope("private-evidence", payload)
+
+
+def build_codex_scan_bundle(
+    repo: str | Path,
+    source: str | Path,
+    *,
+    scope_root: str | Path,
+    target: str,
+    task_ref: str,
+    since: str,
+    until: str,
+    timezone_name: str,
+    declared_exclusions: list[str] | None = None,
+    deterministic_key: bytes | None = None,
+) -> dict[str, Any]:
+    """Build private evidence plus a non-textual envelope for one bounded Codex export."""
+
+    target, task_ref, exclusions = validate_codex_request(
+        target, task_ref, declared_exclusions
+    )
+    start_at, end_at, _ = validate_window(since, until, timezone_name)
+    parsed = parse_scoped_codex_transcript(
+        source, scope_root, since=start_at, until=end_at
+    )
+    input_envelope = build_codex_input_envelope(
+        parsed,
+        target=target,
+        task_ref=task_ref,
+        start=start_at,
+        end=end_at,
+        timezone_name=timezone_name,
+        declared_exclusions=exclusions,
+    )
+    return build_evidence_bundle(
+        repo,
+        [source],
+        provider="codex",
+        test_logs=[],
+        since=since,
+        until=until,
+        deterministic_key=deterministic_key,
+        _parsed_inputs=[parsed],
+        _codex_input_envelope=input_envelope,
+    )
 
 
 def _issue_for(item: dict[str, Any], completeness: str, index: int) -> IssueRecord:

@@ -42,7 +42,8 @@
 - Creation of actual recurring host schedules, notifications, GUI, cloud, and multi-user service:
   separate from the open-source mode implementation and not authorised in this build.
 - A dedicated packaged history-discovery or `skill-review` CLI remains deferred until the
-  Codex-first Skill modes have real-use evidence; v0.1.1 remains backward compatible and unchanged.
+  Codex-first Skill modes have real-use evidence. The Alpha 2 `codex-scan` command binds one file
+  selected by the user and does not discover history; the v0.1 command surface remains available.
 - Guaranteed external-programme eligibility: outside this project's control.
 
 ## Acceptance evidence

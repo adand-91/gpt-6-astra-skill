@@ -1,7 +1,7 @@
 # Requirement Ledger AI
 
-**Requirement Ledger has a stable explicit-evidence v0.1.1 and a public `v0.2.0-alpha.1`
-prerelease for named-target audits.** When the host exposes bounded task history, name a Codex
+**Requirement Ledger has a stable explicit-evidence v0.1.1, a public `v0.2.0-alpha.1`
+prerelease, and a local `v0.2.0-alpha.2` candidate for bounded Codex inputs.** When the host exposes bounded task history, name a Codex
 conversation, Agent Skill, or project and the Skill can recover related context, prepare concrete
 change cards, and compare the same case before and after an authorised edit. The Python package
 does not yet ship its own Codex history adapter.
@@ -13,7 +13,8 @@ does not yet ship its own Codex history adapter.
 
 [中文说明](README.zh-CN.md) · [v0.1 CLI contract](V0.1_CONTRACT.md) ·
 [v0.2 host contract](V0.2_HOST_CONTRACT.md) ·
-[Alpha 1 notes](docs/release-notes/v0.2.0-alpha.1.md) · [update map](UPDATE_MAP.md) ·
+[Alpha 2 candidate notes](docs/release-notes/v0.2.0-alpha.2.md) ·
+[Codex alignment research](docs/CODEX_ALIGNMENT_RESEARCH.md) · [update map](UPDATE_MAP.md) ·
 [roadmap](ROADMAP.md) · [open gaps](docs/PROJECT_GAPS.md) · [security](SECURITY.md)
 
 > Requirement Ledger does not autonomously edit your project. The CLI gathers and structures evidence;
@@ -54,24 +55,28 @@ synthetic [walkthrough](docs/use-cases/improve-an-agent-skill.md).
 | Daily review | “Review yesterday with Requirement Ledger.” | Reconstructs the previous workday, checks earlier changes, and recommends one improvement |
 | Weekly review | “Run the weekly Requirement Ledger review.” | Deduplicates the week, checks maintenance health, and links relevant GitHub or official industry changes |
 
-Alpha 1 installs the audit scaffold and checker only. Daily and weekly are documented host
-contracts and reference templates, not initialisation modes in this prerelease. A one-time audit
+The local Alpha 2 candidate keeps the Alpha 1 audit scaffold and checker, and adds one installed
+`codex-scan` path for an explicitly selected export. Daily and weekly are documented host
+contracts and reference templates, not initialisation modes in this candidate. A one-time audit
 stays on the named target. Future daily and weekly modes may enumerate Codex projects active only
 in their explicit time window. If the host cannot retrieve history, it must ask the user to select
 a task or bounded export rather than claim complete coverage.
 
 Requirement Ledger AI is the guide and evidence layer, not a hidden patch bot.
 
-## What v0.2.0-alpha.1 adds
+## What the v0.2.0-alpha.2 candidate adds
 
-- `review-init --mode audit` creates a private, analysis-only scaffold for one named target and
-  explicit time window.
-- `review-check` mechanically rejects malformed review contracts before they are treated as
-  evidence or handed to an editing workflow.
-- New files are no-overwrite and private-by-default where supported; initial coverage is honestly
-  zero-source and incomplete.
-- The [release notes](docs/release-notes/v0.2.0-alpha.1.md) explain the solved problems, while the
-  [update map](UPDATE_MAP.md) separates shipped capability from the ten-day path to stable v0.2.
+- `codex-scan` binds exactly one selected Codex JSONL export to a non-home scope root, non-path
+  target/task references, an explicit IANA timezone, and a half-open `[start,end)` window.
+- The input is opened without accepting ordinary symlink/reparse boundaries or hard links, captured once,
+  limited to 64 MiB, and hashed from the same bytes that are parsed.
+- The private evidence embeds a path-free, text-free `codex-input-envelope/v1` with exact source
+  digest/size, hashed target/task bindings, physical record accounting, fixed exclusions, and
+  deliberately partial target-history coverage. It never claims that one export is the complete
+  Codex history.
+- Alpha 1's `review-init` and `review-check` remain available and compatible. The
+  [candidate notes](docs/release-notes/v0.2.0-alpha.2.md) distinguish implemented local evidence
+  from a public release; no Alpha 2 tag or GitHub Release is implied.
 
 ## Why this exists
 
@@ -205,6 +210,37 @@ requirement-ledger suggest \
 automatic; use `--provider codex|claude|text` when a custom filename is ambiguous. Time windows
 are ISO-8601 and apply to individual JSONL events. Plain text has no timestamps, so it rejects
 time-window flags instead of pretending.
+
+For a Codex export that needs an auditable input boundary, use the Alpha 2 candidate path instead
+of provider auto-detection:
+
+```bash
+requirement-ledger codex-scan \
+  --repo /path/to/project \
+  --input /approved/exports/selected-task.jsonl \
+  --scope-root /approved/exports \
+  --target conversation:project-audit \
+  --task-ref task:opaque-reference \
+  --since 2026-08-29T08:00:00+08:00 \
+  --until 2026-08-30T08:00:00+08:00 \
+  --timezone Asia/Shanghai \
+  --exclude unrelated \
+  --output /private/location/codex-evidence.private.json
+```
+
+`scope-root` is a containment boundary, never a discovery request. Filesystem roots, the user home
+itself, directories, paths outside the boundary, ordinary symlink/reparse components, hard links, changing
+inputs, and oversized inputs fail without creating the output. Target/task references are bound by
+SHA-256 and not retained verbatim. The envelope contains no source text, file name, or path; the
+surrounding private evidence intentionally may contain selected user text and must not be shared.
+On macOS only, Apple's root-owned `/var`, `/tmp`, and `/etc` compatibility aliases are mapped to
+their fixed `/private` targets. Same-captured-byte hashing/parsing is exact; concurrent source-path
+stability is metadata-checked best effort, not an atomic snapshot guarantee. `network_client_used`
+means this command starts no network client; it does not classify whether the selected filesystem
+is locally or remotely mounted. The enclosing v0.1 private-evidence schema still has its legacy
+`network_used: false` field with the same narrow meaning. Deterministic target/task SHA-256 values
+are bindings, not anonymisation: low-entropy references can be guessed and linked across bundles.
+Keep the bundle private and prefer an opaque, high-entropy task reference when linkability matters.
 
 ### Record validation without running project code
 

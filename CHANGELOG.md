@@ -5,7 +5,45 @@ All notable changes to this project are documented here. Versions follow
 
 ## [Unreleased]
 
-No changes have been assigned to the next candidate yet.
+Current local version source: `0.2.0a2`. This is a tested candidate, not a tag or GitHub Release.
+
+### Added
+
+- `codex-scan`, an opt-in command that binds exactly one explicit Codex JSONL export to a
+  user-selected non-home scope root, target/task references, IANA timezone, and half-open window.
+- A private `codex-input-envelope/v1` embedded in the evidence bundle. It records the exact source
+  digest and byte size, hashed target/task bindings, physical record accounting, fixed
+  inclusion/exclusion codes, and honest partial/unknown history coverage without retaining source
+  text, file names, or paths.
+- A strict scoped-input opener with ordinary component-level symlink/reparse rejection, hard-link
+  rejection, POSIX `dir_fd`/`O_NOFOLLOW` traversal, and repeated identity checks. On macOS only,
+  Apple's fixed root compatibility aliases are canonicalised to their root-owned `/private`
+  targets.
+- Official-source Codex alignment research covering Codex for OSS, Skills, `AGENTS.md`, approvals,
+  plugins, and current compatibility implications.
+
+### Changed
+
+- The dedicated Codex path captures at most 64 MiB once and hashes/parses the same bytes; it does
+  not enumerate the scope root or discover other history.
+- Codex candidate windows now use the documented half-open `[start,end)` boundary, so an event
+  exactly at `until` is excluded.
+
+### Security
+
+- Filesystem roots, the user home itself, directories, parent traversal, scope escape,
+  symlink/reparse components, hard links, input-boundary drift, and oversized Codex inputs stop
+  before output creation.
+- The envelope never upgrades one selected export into a claim of complete Codex task history;
+  semantic normalization remains explicitly `partial-alpha.2` pending the next parser candidate.
+- Missing/invalid timestamps, malformed records, unsupported records, and oversized records make
+  the selected source and full evidence incomplete, so downstream analysis cannot confirm a
+  candidate from partially normalised evidence.
+- Hashing and parsing are bound to one captured byte buffer. Concurrent source-path stability is
+  explicitly metadata-checked best effort rather than an atomic-snapshot claim; no network client
+  is started, while remote-filesystem classification remains outside the envelope.
+- Existing v0.1 `scan` behaviour remains available; the stronger Codex contract is an explicit new
+  command and does not silently change the frozen v0.1 CLI path.
 
 ## [0.2.0a1] - 2026-08-30 (prerelease)
 

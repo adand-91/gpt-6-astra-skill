@@ -8,13 +8,15 @@ import os
 import re
 import stat
 from datetime import datetime, timezone
+from io import BytesIO
 from pathlib import Path
 from typing import Any, BinaryIO, Iterator
 
-from .errors import InputChangedError, UnsafePathError
-from .safeio import explicit_regular_file
+from .errors import InputChangedError, InputLimitError, UnsafePathError
+from .safeio import explicit_regular_file, open_scoped_regular_input
 
 MAX_INPUT_BYTES = 512 * 1024 * 1024
+MAX_CODEX_INPUT_BYTES = 64 * 1024 * 1024
 MAX_LINE_BYTES = 200_000
 MAX_PRIVATE_TEXT = 8_000
 MAX_EVENTS_PER_INPUT = 10_000
@@ -98,6 +100,24 @@ def _inside(stamp: datetime | None, since: datetime | None, until: datetime | No
     utc = stamp.astimezone(timezone.utc)
     return not ((since and utc < since.astimezone(timezone.utc)) or
                 (until and utc > until.astimezone(timezone.utc)))
+
+
+def _inside_half_open(stamp: datetime | None, since: datetime, until: datetime) -> bool:
+    if stamp is None:
+        return False
+    utc = stamp.astimezone(timezone.utc)
+    return not (utc < since.astimezone(timezone.utc)
+                or utc >= until.astimezone(timezone.utc))
+
+
+def _strict_stamp(value: Any) -> datetime | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        got = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return got if got.tzinfo is not None and got.utcoffset() is not None else None
 
 
 def _text(content: Any) -> str:
@@ -261,7 +281,9 @@ def _claude(handle: BinaryIO, since: datetime | None,
 
 
 def _codex(handle: BinaryIO, since: datetime | None,
-           until: datetime | None) -> tuple[list[dict[str, Any]], dict[str, int]]:
+           until: datetime | None, *,
+           require_offset: bool = False,
+           half_open: bool = False) -> tuple[list[dict[str, Any]], dict[str, int]]:
     events = _LimitedEvents()
     stats = {"oversized_lines": 0, "unparsable_or_unknown_lines": 0}
     calls = _LimitedToolNames()
@@ -272,8 +294,12 @@ def _codex(handle: BinaryIO, since: datetime | None,
             key = "oversized_lines" if size > MAX_LINE_BYTES else "unparsable_or_unknown_lines"
             stats[key] += 1
             continue
-        at = _stamp(row.get("timestamp"))
-        if not _inside(at, since, until):
+        at = (_strict_stamp(row.get("timestamp")) if require_offset
+              else _stamp(row.get("timestamp")))
+        inside = (_inside_half_open(at, since, until)
+                  if half_open and since is not None and until is not None
+                  else _inside(at, since, until))
+        if not inside:
             continue
         payload = row.get("payload")
         if not isinstance(payload, dict):
@@ -307,6 +333,60 @@ def _codex(handle: BinaryIO, since: datetime | None,
         events.extend(fallback)
     _finalize_stats(stats, events, fallback, calls)
     return list(events), stats
+
+
+def _codex_accounting(
+    handle: BinaryIO,
+    since: datetime,
+    until: datetime,
+    included_events: int,
+) -> dict[str, int]:
+    counts = {
+        "physical_records": 0,
+        "recognized_records": 0,
+        "included_events": included_events,
+        "outside_window_records": 0,
+        "missing_or_invalid_timestamp_records": 0,
+        "malformed_records": 0,
+        "unsupported_records": 0,
+        "oversized_records": 0,
+    }
+    event_types = {"user_message", "agent_message", "patch_apply_end"}
+    response_types = {
+        "function_call", "custom_tool_call", "function_call_output",
+        "custom_tool_call_output", "message",
+    }
+    for size, raw in _input_lines(handle):
+        counts["physical_records"] += 1
+        if raw is None:
+            counts["oversized_records" if size > MAX_LINE_BYTES else "malformed_records"] += 1
+            continue
+        try:
+            row = json.loads(raw)
+        except ValueError:
+            counts["malformed_records"] += 1
+            continue
+        if not isinstance(row, dict):
+            counts["unsupported_records"] += 1
+            continue
+        at = _strict_stamp(row.get("timestamp"))
+        if at is None:
+            counts["missing_or_invalid_timestamp_records"] += 1
+            continue
+        if not _inside_half_open(at, since, until):
+            counts["outside_window_records"] += 1
+            continue
+        payload = row.get("payload")
+        if not isinstance(payload, dict):
+            counts["unsupported_records"] += 1
+            continue
+        kind, payload_type = row.get("type"), payload.get("type")
+        recognized = (
+            (kind == "event_msg" and payload_type in event_types)
+            or (kind == "response_item" and payload_type in response_types)
+        )
+        counts["recognized_records" if recognized else "unsupported_records"] += 1
+    return counts
 
 
 def _plain(handle: BinaryIO, since: datetime | None,
@@ -454,5 +534,53 @@ def parse_explicit_transcript(
         "provider": chosen,
         "events": events,
         "stats": stats,
+        "completeness": completeness,
+    }
+
+
+def parse_scoped_codex_transcript(
+    raw: str | Path,
+    scope_root: str | Path,
+    *,
+    since: datetime,
+    until: datetime,
+) -> dict[str, Any]:
+    """Read, bind, and parse one Codex export from the exact same captured bytes."""
+
+    digest = hashlib.sha256()
+    payload = bytearray()
+    with open_scoped_regular_input(raw, scope_root) as bound:
+        initial_signature = _transcript_stat_signature(bound.opened_stat)
+        if bound.opened_stat.st_size > MAX_CODEX_INPUT_BYTES:
+            raise InputLimitError("Codex input exceeds the 64 MiB limit")
+        while chunk := bound.handle.read(1024 * 1024):
+            payload.extend(chunk)
+            if len(payload) > MAX_CODEX_INPUT_BYTES:
+                raise InputLimitError("Codex input exceeded the 64 MiB limit while reading")
+            digest.update(chunk)
+        final_fd = os.fstat(bound.handle.fileno())
+        if initial_signature != _transcript_stat_signature(final_fd):
+            raise InputChangedError("Codex input changed while it was being read")
+
+    buffer = BytesIO(payload)
+    events, stats = _codex(
+        buffer, since, until, require_offset=True, half_open=True
+    )
+    buffer.seek(0)
+    accounting = _codex_accounting(buffer, since, until, len(events))
+    unaccounted_semantics = sum(accounting[key] for key in (
+        "missing_or_invalid_timestamp_records", "malformed_records",
+        "unsupported_records", "oversized_records",
+    ))
+    completeness = (
+        "incomplete" if any(stats.values()) or unaccounted_semantics else "complete"
+    )
+    return {
+        "digest": digest.hexdigest(),
+        "bytes": len(payload),
+        "provider": "codex",
+        "events": events,
+        "stats": stats,
+        "accounting": accounting,
         "completeness": completeness,
     }
