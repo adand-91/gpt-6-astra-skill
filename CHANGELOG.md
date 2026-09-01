@@ -5,7 +5,9 @@ All notable changes to this project are documented here. Versions follow
 
 ## [Unreleased]
 
-Current local version source: `0.2.0a2`. This is a tested candidate, not a tag or GitHub Release.
+No changes yet.
+
+## [0.2.0a2] - 2026-09-01 (prerelease)
 
 ### Added
 

@@ -1,7 +1,7 @@
 # Requirement Ledger AI
 
-**Requirement Ledger has a stable explicit-evidence v0.1.1, a public `v0.2.0-alpha.1`
-prerelease, and a local `v0.2.0-alpha.2` candidate for bounded Codex inputs.** When the host exposes bounded task history, name a Codex
+**Requirement Ledger has a stable explicit-evidence v0.1.1 and a `v0.2.0-alpha.2`
+prerelease for bounded Codex inputs.** When the host exposes bounded task history, name a Codex
 conversation, Agent Skill, or project and the Skill can recover related context, prepare concrete
 change cards, and compare the same case before and after an authorised edit. The Python package
 does not yet ship its own Codex history adapter.
@@ -13,7 +13,7 @@ does not yet ship its own Codex history adapter.
 
 [中文说明](README.zh-CN.md) · [v0.1 CLI contract](V0.1_CONTRACT.md) ·
 [v0.2 host contract](V0.2_HOST_CONTRACT.md) ·
-[Alpha 2 candidate notes](docs/release-notes/v0.2.0-alpha.2.md) ·
+[Alpha 2 release notes](docs/release-notes/v0.2.0-alpha.2.md) ·
 [Codex alignment research](docs/CODEX_ALIGNMENT_RESEARCH.md) · [update map](UPDATE_MAP.md) ·
 [roadmap](ROADMAP.md) · [open gaps](docs/PROJECT_GAPS.md) · [security](SECURITY.md)
 
@@ -55,16 +55,16 @@ synthetic [walkthrough](docs/use-cases/improve-an-agent-skill.md).
 | Daily review | “Review yesterday with Requirement Ledger.” | Reconstructs the previous workday, checks earlier changes, and recommends one improvement |
 | Weekly review | “Run the weekly Requirement Ledger review.” | Deduplicates the week, checks maintenance health, and links relevant GitHub or official industry changes |
 
-The local Alpha 2 candidate keeps the Alpha 1 audit scaffold and checker, and adds one installed
+Alpha 2 keeps the Alpha 1 audit scaffold and checker, and adds one installed
 `codex-scan` path for an explicitly selected export. Daily and weekly are documented host
-contracts and reference templates, not initialisation modes in this candidate. A one-time audit
+contracts and reference templates, not initialisation modes in this prerelease. A one-time audit
 stays on the named target. Future daily and weekly modes may enumerate Codex projects active only
 in their explicit time window. If the host cannot retrieve history, it must ask the user to select
 a task or bounded export rather than claim complete coverage.
 
 Requirement Ledger AI is the guide and evidence layer, not a hidden patch bot.
 
-## What the v0.2.0-alpha.2 candidate adds
+## What v0.2.0-alpha.2 adds
 
 - `codex-scan` binds exactly one selected Codex JSONL export to a non-home scope root, non-path
   target/task references, an explicit IANA timezone, and a half-open `[start,end)` window.
@@ -74,9 +74,8 @@ Requirement Ledger AI is the guide and evidence layer, not a hidden patch bot.
   digest/size, hashed target/task bindings, physical record accounting, fixed exclusions, and
   deliberately partial target-history coverage. It never claims that one export is the complete
   Codex history.
-- Alpha 1's `review-init` and `review-check` remain available and compatible. The
-  [candidate notes](docs/release-notes/v0.2.0-alpha.2.md) distinguish implemented local evidence
-  from a public release; no Alpha 2 tag or GitHub Release is implied.
+- Alpha 1's `review-init` and `review-check` remain available and compatible. See the
+  [Alpha 2 release notes](docs/release-notes/v0.2.0-alpha.2.md) for the exact limits and gates.
 
 ## Why this exists
 

@@ -1,4 +1,4 @@
-<!-- translation-of: CONTEXT.md sha256:7395ac94bdd5ecfd -->
+<!-- translation-of: CONTEXT.md sha256:2152348592ca8f24 -->
 
 # 项目上下文
 
@@ -12,7 +12,9 @@
   标记的 partial／unknown 覆盖；不保留原始目标文字或本地路径。
 - 恢复源码已通过 Python 3.12 下的 122 项测试、双语同步和 `git diff --check`；封存 wheel 与
   sdist 的 SHA-256 与记录一致。
-- 公开 CI、注释 Tag、GitHub 预发布、公开资产重下载和干净安装尚未进行；本边界不含后续待发版本。
+- 候选 commit `c556704d19d813a9a414d011045d794dce06ef0d` 已通过公开 CI run
+  `33468431105`：Python 3.10–3.13 × Linux／macOS／Windows 及构建产物／安全冒烟。最终发布
+  文档 CI、注释 Tag、GitHub 预发布和公开下载复验仍待完成。
 
 ## 接手文件
 
@@ -23,7 +25,7 @@
 
 ## 下一步
 
-把这个精确的 Alpha 2 边界提交并推送到 `main`，再等待公开 CI。门禁失败就停止创建 Tag 和
+提交发布说明，在精确的发布分支 commit 上运行公开 CI，再快进 `main`。门禁失败就停止创建 Tag 和
 Release；全绿后只允许创建 Alpha 2 注释 Tag、预发布、资产及独立下载复验。
 
 ## 安全边界

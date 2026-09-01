@@ -1,4 +1,4 @@
-<!-- translation-of: HANDOFF.md sha256:d3806446fdf9ebd3 -->
+<!-- translation-of: HANDOFF.md sha256:16c94bc0e1a5077c -->
 
 # 交接
 
@@ -26,10 +26,10 @@
 
 ## 卡在哪儿
 
-- 当前没有已知本地产品阻断；但精确待打 Tag commit 尚未经过公开 CI，所以 Tag 与 GitHub Release
-  在该 CI 全绿前保持阻断。
+- 当前没有已知本地产品阻断。候选 commit `c556704d19d813a9a414d011045d794dce06ef0d`
+  已通过公开 CI；发布说明 commit 仍需自己的全绿 CI 才能打 Tag。
 - 如果第一次 CI 后修改了会打包进分发物的发布文档，就必须从最终 Tag 源码重新构建公开资产。
-- Windows 原生覆盖必须由公开 CI 给出，不能从本地 macOS 结果推断。
+- 候选 commit 的 Windows 原生覆盖已通过；最终精确 commit 的 CI 仍为硬门禁。
 - 不声称已有外部用户采用、重复使用或 OpenAI 项目资格。
 
 ## 下一步计划
@@ -54,10 +54,10 @@
 
 ## 当前任务汇总
 
-- 状态：Alpha 2 源码已恢复并完成本地复验；尚待提交、推送、公开 CI、Tag、Release、公开下载复验
-  和最终状态汇报。
+- 状态：Alpha 2 候选 commit 已进入 `main` 并通过公开 CI run `33468431105`；尚待最终发布说明
+  commit／CI、Tag、Release、公开下载复验和最终汇报。
 - 版本边界：包 `0.2.0a2`；目标注释 Tag `v0.2.0-alpha.2`；没有包含或授权后续版本。
-- 本地门禁：刷新本 Handoff 前，Python 3.12 下 122 项测试、双语同步和 diff 检查通过；推送前会
+- 本地门禁：Python 3.12 下 122 项测试、双语同步和 diff 检查通过；本次发布说明刷新后、推送前会
   重跑全部门禁。
 - 发布前 GitHub 快照：47 Stars、1 Fork、0 Watchers；最新稳定版仍为 `v0.1.1`。
 - 一句话结果：Alpha 2 把显式 Codex 导出变成有边界的证据信封，不假装读取完整历史，也不保留用户
@@ -88,8 +88,10 @@
   `0190c7902e64ab8e8c98363421274d92343b974edf7bf53462ae2077d1d246cd`。
 - 封存 sdist：`requirement_ledger-0.2.0-alpha.2.tar.gz`，SHA-256
   `ad888a21b17408d02a8a17120bc84cb9f9b0e2c53c7b57b4e906d31b4b95de6e`。
-- 发布前本地结果：Python 3.12.13 下 122 项测试通过，双语与空白检查通过；公开 CI 和 Release
-  下载证据要在真实产生后补记。
+- 候选 commit `c556704d19d813a9a414d011045d794dce06ef0d` 已通过公开 CI run
+  `33468431105`：Python 3.10–3.13 × Linux／macOS／Windows，以及构建产物／安全冒烟。
+- 发布前本地结果：Python 3.12.13 下 122 项测试通过，双语与空白检查通过；最终 commit CI 和
+  Release 下载证据要在真实产生后补记。
 
 ## 授权与禁止动作
 

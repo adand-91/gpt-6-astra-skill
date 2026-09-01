@@ -1,9 +1,9 @@
-<!-- translation-of: README.md sha256:f59cc5c0050f38ba -->
+<!-- translation-of: README.md sha256:f0cf80077759f1ed -->
 
 # Requirement Ledger AI
 
-**Requirement Ledger 已有稳定的显式证据 v0.1.1、公开的 `v0.2.0-alpha.1` 预发布版，以及用于
-有界 Codex 输入的本地 `v0.2.0-alpha.2` 候选。** 宿主能够有界读取任务历史时，用户只需点名一段 Codex 对话、一个 Agent Skill
+**Requirement Ledger 已有稳定的显式证据 v0.1.1，以及用于有界 Codex 输入的
+`v0.2.0-alpha.2` 预发布版。** 宿主能够有界读取任务历史时，用户只需点名一段 Codex 对话、一个 Agent Skill
 或项目，Skill 就能恢复相关上下文、生成具体改动卡，并在获得授权的修改前后比较同一案例。Python
 标准包尚未自带 Codex 历史适配器。
 
@@ -14,7 +14,7 @@
 
 [English](README.md) · [v0.1 CLI 契约](V0.1_CONTRACT.zh-CN.md) ·
 [v0.2 宿主契约](V0.2_HOST_CONTRACT.zh-CN.md) ·
-[Alpha 2 候选说明](docs/release-notes/v0.2.0-alpha.2.zh-CN.md) ·
+[Alpha 2 发布说明](docs/release-notes/v0.2.0-alpha.2.zh-CN.md) ·
 [Codex 对齐调研](docs/CODEX_ALIGNMENT_RESEARCH.zh-CN.md) · [更新地图](UPDATE_MAP.zh-CN.md) ·
 [路线图](ROADMAP.zh-CN.md) · [未完成项](docs/PROJECT_GAPS.md) · [安全政策](SECURITY.zh-CN.md)
 
@@ -55,13 +55,13 @@
 | 日报 | “用 Requirement Ledger 回顾昨天。” | 重建上一工作日、检查先前改动并推荐一个优化 |
 | 周报 | “运行本周 Requirement Ledger 周报。” | 给一周问题去重、检查维护健康度，并关联相关 GitHub 或官方行业变化 |
 
-本地 Alpha 2 候选保留 Alpha 1 的审查骨架和检查器，并新增一条安装版 `codex-scan` 路径，只处理
-用户显式选中的导出。日报、周报目前是宿主契约与参考模板，不是本候选可初始化的模式。一次性审查只停留在点名目标；未来日报和周报只能枚举显式时间窗口内活跃的 Codex
+Alpha 2 保留 Alpha 1 的审查骨架和检查器，并新增一条安装版 `codex-scan` 路径，只处理
+用户显式选中的导出。日报、周报目前是宿主契约与参考模板，不是本预发布版可初始化的模式。一次性审查只停留在点名目标；未来日报和周报只能枚举显式时间窗口内活跃的 Codex
 项目。宿主无法调取历史时，必须请用户选择任务或有界导出，不能声称覆盖完整。
 
 Requirement Ledger AI 是引导与证据层，不是隐藏补丁机器人。
 
-## v0.2.0-alpha.2 候选新增了什么
+## v0.2.0-alpha.2 新增了什么
 
 - `codex-scan` 把唯一选中的 Codex JSONL 导出绑定到非主目录的范围根、非路径目标／任务引用、显式
   IANA 时区和半开 `[start,end)` 窗口。
@@ -70,9 +70,8 @@ Requirement Ledger AI 是引导与证据层，不是隐藏补丁机器人。
 - 私有证据内嵌不含路径和原文的 `codex-input-envelope/v1`：记录准确来源摘要／大小、哈希后的目标／
   任务绑定、物理记录核算、固定排除项，并明确把目标历史覆盖标为部分；绝不把一份导出说成完整
   Codex 历史。
-- Alpha 1 的 `review-init` 与 `review-check` 继续可用且兼容。
-  [候选说明](docs/release-notes/v0.2.0-alpha.2.zh-CN.md)会区分本地实现证据与公开发布；它不表示
-  已有 Alpha 2 Tag 或 GitHub Release。
+- Alpha 1 的 `review-init` 与 `review-check` 继续可用且兼容。准确限制与门禁见
+  [Alpha 2 发布说明](docs/release-notes/v0.2.0-alpha.2.zh-CN.md)。
 
 ## 为什么要做这个项目
 

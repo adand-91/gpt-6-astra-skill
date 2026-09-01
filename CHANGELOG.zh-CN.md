@@ -1,4 +1,4 @@
-<!-- translation-of: CHANGELOG.md sha256:3dcc52ea06343e27 -->
+<!-- translation-of: CHANGELOG.md sha256:47ca8b7016678e63 -->
 
 # 变更日志
 
@@ -7,7 +7,9 @@
 
 ## [未发布]
 
-当前本地版本源为 `0.2.0a2`。这是通过测试的候选，不是 Tag 或 GitHub Release。
+暂无变更。
+
+## [0.2.0a2] - 2026-09-01（预发布版）
 
 ### 新增
 

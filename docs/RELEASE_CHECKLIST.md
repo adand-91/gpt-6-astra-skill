@@ -153,10 +153,10 @@ Use this for every public version. A checked box must point to command output or
   `requirement-ledger 0.2.0a1`, and passed the deterministic Demo plus
   `review-init --mode audit` / `review-check` command chain.
 
-## v0.2.0-alpha.2 local candidate evidence — 2026-08-30
+## v0.2.0-alpha.2 release evidence — 2026-09-01
 
 - Scope is the one-file, bounded `codex-scan` increment only. The version train stops after this
-  candidate; Alpha 3, Beta, RC, stable, and publication actions are outside the current authority.
+  release; Alpha 3, Beta, RC, and stable remain outside the current authority.
 - The source suite passed all 122 tests; the dedicated envelope suite passed all nine tests.
   Compile, translation sync, and `git diff --check` also passed on macOS arm64 with Python 3.12.
 - An independent security re-review closed both prior P1 findings: unaccounted records now make
@@ -172,5 +172,7 @@ Use this for every public version. A checked box must point to command output or
 - Candidate archives are built from the frozen post-checklist source snapshot. Basename-only
   SHA-256 values and command evidence live outside the source tree to avoid self-referential
   archive hashes.
-- No Linux/Windows Alpha 2 CI has run, and no commit, push, tag, Release, programme application,
-  promotion, or external-user adoption is claimed.
+- Candidate commit `c556704d19d813a9a414d011045d794dce06ef0d` passed public CI run
+  `33468431105`: Python 3.10–3.13 on Linux, macOS, and Windows plus built-artefact/security smoke.
+  Final release-doc commit CI, tag, Release, public-download verification, and adoption evidence
+  remain pending; no programme application or promotion is claimed.

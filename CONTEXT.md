@@ -12,8 +12,9 @@ Short pickup index; private evidence stays outside the repository.
   target text or local paths.
 - The restored source passes 122 Python 3.12 tests, translation sync, and `git diff --check`.
   The sealed wheel and sdist match their recorded SHA-256 hashes.
-- Public CI, the annotated tag, GitHub prerelease, public asset download, and clean-install checks
-  are still pending. No later queued version is included in this boundary.
+- Candidate commit `c556704d19d813a9a414d011045d794dce06ef0d` passed public CI run
+  `33468431105` across Python 3.10–3.13 on Linux/macOS/Windows plus built-artefact/security smoke.
+  Final release-doc CI, the annotated tag, GitHub prerelease, and public-download checks remain.
 
 ## Pickup files
 
@@ -24,9 +25,9 @@ Short pickup index; private evidence stays outside the repository.
 
 ## Next action
 
-Commit and push this exact Alpha 2 boundary to `main`, then wait for public CI. A failed gate stops
-tag and Release creation; a green gate permits only the Alpha 2 annotated tag, prerelease, assets,
-and independent download verification.
+Commit the release-facing documentation, run public CI on the exact release branch commit, then
+fast-forward `main`. A failed gate stops tag and Release creation; a green gate permits only the
+Alpha 2 annotated tag, prerelease, assets, and independent download verification.
 
 ## Safety boundary
 

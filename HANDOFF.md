@@ -30,11 +30,12 @@
 
 ## 卡在哪儿
 
-- No local product blocker is known. Public CI has not yet validated the exact commit that will be
-  tagged, so tag and GitHub Release creation remain blocked until that run is green.
+- No local product blocker is known. Candidate commit `c556704d19d813a9a414d011045d794dce06ef0d`
+  passed public CI; the release-facing documentation commit still needs its own green run before
+  it can be tagged.
 - Public release assets must be rebuilt from the final tagged source if publication-only docs
   change after the first CI gate, because README files are included in the distribution.
-- Windows-native coverage is expected from public CI; it is not inferred from the local macOS run.
+- Windows-native coverage passed on the candidate commit; final exact-commit CI remains mandatory.
 - No external-user adoption, repeat-use, or OpenAI programme eligibility is claimed.
 
 ## 下一步计划
@@ -62,12 +63,12 @@
 
 ## 当前任务汇总
 
-- Status: Alpha 2 source restored and locally reverified; commit, push, public CI, tag, Release,
-  public-download verification, and final status report remain.
+- Status: Alpha 2 candidate commit is on `main` and passed public CI run `33468431105`; final
+  release-doc commit/CI, tag, Release, public-download verification, and final report remain.
 - Version boundary: package `0.2.0a2`; intended annotated tag `v0.2.0-alpha.2`; no later version is
   included or authorised.
-- Local gate: 122 tests on Python 3.12, translation sync, and diff check passed before this Handoff
-  refresh; all gates will be rerun before push.
+- Local gate: 122 tests on Python 3.12, translation sync, and diff check passed; all gates will be
+  rerun after this release-doc refresh and before push.
 - GitHub snapshot before publication: 47 Stars, 1 Fork, 0 Watchers; stable `v0.1.1` remains latest.
 - One-line result: Alpha 2 turns an explicit Codex export into a bounded evidence envelope without
   pretending to retrieve complete history or retaining user-selected target/path text.
@@ -100,8 +101,10 @@
   `0190c7902e64ab8e8c98363421274d92343b974edf7bf53462ae2077d1d246cd`.
 - Frozen sdist: `requirement_ledger-0.2.0-alpha.2.tar.gz`, SHA-256
   `ad888a21b17408d02a8a17120bc84cb9f9b0e2c53c7b57b4e906d31b4b95de6e`.
+- Candidate commit `c556704d19d813a9a414d011045d794dce06ef0d` passed public CI run
+  `33468431105`: Python 3.10–3.13 on Linux, macOS, and Windows plus built-artefact/security smoke.
 - Pre-publication local result: 122 tests passed on Python 3.12.13; translations and whitespace
-  checks passed. Public CI and release-download evidence must be appended after they exist.
+  checks passed. Final commit CI and release-download evidence must be appended after they exist.
 
 ## 授权与禁止动作
 
