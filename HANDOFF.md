@@ -27,26 +27,27 @@
 - Verified sealed assets against the frozen record:
   - wheel SHA-256: `0190c7902e64ab8e8c98363421274d92343b974edf7bf53462ae2077d1d246cd`
   - sdist SHA-256: `ad888a21b17408d02a8a17120bc84cb9f9b0e2c53c7b57b4e906d31b4b95de6e`
+- Published annotated tag object `00fb12747e93f9c48f24c434b5d329fbdad57bf4` at commit
+  `fb49947627516bca463094becde16a63d047e2d6` as the non-latest
+  [GitHub prerelease](https://github.com/adand-91/requirement-ledger/releases/tag/v0.2.0-alpha.2).
+- Re-downloaded all three public assets. Their hashes matched, both archives clean-installed as
+  `0.2.0a2`, and Demo, audit init/check, `codex-scan`, private permissions, envelope assertions,
+  and no-overwrite behaviour passed.
 
 ## 卡在哪儿
 
-- No local product blocker is known. Candidate commit `c556704d19d813a9a414d011045d794dce06ef0d`
-  passed public CI; the release-facing documentation commit still needs its own green run before
-  it can be tagged.
-- Public release assets must be rebuilt from the final tagged source if publication-only docs
-  change after the first CI gate, because README files are included in the distribution.
-- Windows-native coverage passed on the candidate commit; final exact-commit CI remains mandatory.
+- No Alpha 2 publication blocker remains. The post-release factual record is the only repository
+  housekeeping still pending.
 - No external-user adoption, repeat-use, or OpenAI programme eligibility is claimed.
 
 ## 下一步计划
 
-1. Restamp bilingual files and rerun all 122 tests, diff checks, and Handoff freshness.
-2. Commit and push only this Alpha 2 boundary to `main`; wait for its public cross-platform CI.
-3. If green, make only factual publication-state updates, rebuild wheel/sdist and a basename-only
-   `SHA256SUMS`, rerun the gates, push, and wait for the final exact-commit CI.
-4. Create annotated tag `v0.2.0-alpha.2`, publish it as a non-latest GitHub prerelease, then
-   re-download and verify all assets plus clean wheel/sdist installation.
-5. Stop after Alpha 2 and report the release URL, evidence, and fresh GitHub Stars/Forks/Watchers.
+1. Restamp bilingual files, run diff and Handoff checks, and commit/push this factual post-release
+   record to `main` without moving the immutable Alpha 2 tag.
+2. Verify that record's CI, then stop and report the Release URL, evidence, and fresh GitHub
+   Stars/Forks/Watchers.
+3. Treat Alpha 3 as a future mapped candidate only; do not implement or publish it without a new
+   user instruction.
 
 ## 踩过哪些坑
 
@@ -63,12 +64,12 @@
 
 ## 当前任务汇总
 
-- Status: Alpha 2 candidate commit is on `main` and passed public CI run `33468431105`; final
-  release-doc commit/CI, tag, Release, public-download verification, and final report remain.
+- Status: `v0.2.0-alpha.2` is published and independently re-downloaded/verified; only this factual
+  post-release record and its CI remain.
 - Version boundary: package `0.2.0a2`; intended annotated tag `v0.2.0-alpha.2`; no later version is
   included or authorised.
-- Local gate: 122 tests on Python 3.12, translation sync, and diff check passed; all gates will be
-  rerun after this release-doc refresh and before push.
+- Verified gate: 122 local tests plus full public Python 3.10–3.13 Linux/macOS/Windows CI and
+  built-artefact/security smoke passed on the tagged commit.
 - GitHub snapshot before publication: 47 Stars, 1 Fork, 0 Watchers; stable `v0.1.1` remains latest.
 - One-line result: Alpha 2 turns an explicit Codex export into a bounded evidence envelope without
   pretending to retrieve complete history or retaining user-selected target/path text.
@@ -101,20 +102,24 @@
   `0190c7902e64ab8e8c98363421274d92343b974edf7bf53462ae2077d1d246cd`.
 - Frozen sdist: `requirement_ledger-0.2.0-alpha.2.tar.gz`, SHA-256
   `ad888a21b17408d02a8a17120bc84cb9f9b0e2c53c7b57b4e906d31b4b95de6e`.
-- Candidate commit `c556704d19d813a9a414d011045d794dce06ef0d` passed public CI run
-  `33468431105`: Python 3.10–3.13 on Linux, macOS, and Windows plus built-artefact/security smoke.
-- Pre-publication local result: 122 tests passed on Python 3.12.13; translations and whitespace
-  checks passed. Final commit CI and release-download evidence must be appended after they exist.
+- Tagged commit `fb49947627516bca463094becde16a63d047e2d6` passed public CI runs
+  `33468720368` and `33468928114`: Python 3.10–3.13 on Linux, macOS, and Windows plus
+  built-artefact/security smoke.
+- Public wheel SHA-256:
+  `6dbb7b104a4a094138b87a0931d60030f58b3f8cfd6188f575fad9cae9c9094c`; public sdist:
+  `d50b607a18e910d4c4be1d0d9658fd58ad33330da9b7191cc063efc30e188d62`; public checksum file:
+  `b19d5981b643bbcc5c929b28a852aa73a26eaad09098f83c55d29809907275f0`.
+- Public downloads matched the approved files byte-for-byte and passed clean install plus the
+  Alpha 2 command and privacy smokes.
 
 ## 授权与禁止动作
 
-- Authorised: commit/push the exact Alpha 2 boundary, wait for CI, create the annotated Alpha 2
-  tag and non-latest prerelease, upload its three public assets, and verify public downloads.
+- Authorised batch completed: Alpha 2 exact boundary, CI, annotated tag, non-latest prerelease,
+  three public assets, independent download verification, and this factual repository record.
 - Not authorised: publish later queued versions, move existing tags, create Issues/PRs, promote,
   rename the repository, submit a plugin, apply to an OpenAI programme, send external messages, or
   reset/clean/stash the maintainer's cumulative worktree.
-- Any source mismatch, failing local/public gate, tag/release conflict, or suspected private data
-  stops publication and requires diagnosis within this same Alpha 2 boundary.
+- Do not move the published Alpha 2 tag or replace its public assets.
 
 ## 回滚
 

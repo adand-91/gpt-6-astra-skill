@@ -1,4 +1,4 @@
-<!-- translation-of: HANDOFF.md sha256:16c94bc0e1a5077c -->
+<!-- translation-of: HANDOFF.md sha256:9599ea17b22a59d9 -->
 
 # 交接
 
@@ -23,24 +23,23 @@
 - 封存资产与冻结记录一致：
   - wheel SHA-256：`0190c7902e64ab8e8c98363421274d92343b974edf7bf53462ae2077d1d246cd`
   - sdist SHA-256：`ad888a21b17408d02a8a17120bc84cb9f9b0e2c53c7b57b4e906d31b4b95de6e`
+- 已把注释 Tag 对象 `00fb12747e93f9c48f24c434b5d329fbdad57bf4` 建在 commit
+  `fb49947627516bca463094becde16a63d047e2d6`，并发布为非 latest 的
+  [GitHub 预发布](https://github.com/adand-91/requirement-ledger/releases/tag/v0.2.0-alpha.2)。
+- 三项公开资产均已重下载且哈希一致；两种包均干净安装为 `0.2.0a2`，Demo、审查初始化／校验、
+  `codex-scan`、私有权限、信封断言与不覆盖行为全部通过。
 
 ## 卡在哪儿
 
-- 当前没有已知本地产品阻断。候选 commit `c556704d19d813a9a414d011045d794dce06ef0d`
-  已通过公开 CI；发布说明 commit 仍需自己的全绿 CI 才能打 Tag。
-- 如果第一次 CI 后修改了会打包进分发物的发布文档，就必须从最终 Tag 源码重新构建公开资产。
-- 候选 commit 的 Windows 原生覆盖已通过；最终精确 commit 的 CI 仍为硬门禁。
+- Alpha 2 发布已无阻断；仅剩提交本次事实性发布记录这一项仓库收尾。
 - 不声称已有外部用户采用、重复使用或 OpenAI 项目资格。
 
 ## 下一步计划
 
-1. 更新双语指纹并重跑 122 项测试、diff 检查和 Handoff 时序校验。
-2. 只把 Alpha 2 精确边界提交／推送到 `main`，等待公开跨平台 CI。
-3. 全绿后只做事实性发布状态更新，从最终源码重建 wheel、sdist 和仅含文件名的
-   `SHA256SUMS`，复验、推送并等待最终精确 commit 的 CI。
-4. 创建注释 Tag `v0.2.0-alpha.2`，发布为非 latest 的 GitHub 预发布，再重新下载并核验全部
-   资产以及 wheel/sdist 干净安装。
-5. 在 Alpha 2 后停止，汇报 Release 链接、证据和最新 Stars／Forks／Watchers。
+1. 更新双语指纹并运行 diff／Handoff 检查，把本次事实性发布记录提交／推送到 `main`，不移动
+   已发布的 Alpha 2 Tag。
+2. 核验该记录的 CI，然后停止并汇报 Release 链接、证据和最新 Stars／Forks／Watchers。
+3. Alpha 3 只作为未来地图候选保留；没有用户新指令就不实施、不发布。
 
 ## 踩过哪些坑
 
@@ -54,11 +53,10 @@
 
 ## 当前任务汇总
 
-- 状态：Alpha 2 候选 commit 已进入 `main` 并通过公开 CI run `33468431105`；尚待最终发布说明
-  commit／CI、Tag、Release、公开下载复验和最终汇报。
+- 状态：`v0.2.0-alpha.2` 已发布并独立重下载／复验；仅剩本次事实性发布记录及其 CI。
 - 版本边界：包 `0.2.0a2`；目标注释 Tag `v0.2.0-alpha.2`；没有包含或授权后续版本。
-- 本地门禁：Python 3.12 下 122 项测试、双语同步和 diff 检查通过；本次发布说明刷新后、推送前会
-  重跑全部门禁。
+- 已验证门禁：122 项本地测试、完整 Python 3.10–3.13 × Linux／macOS／Windows 公开 CI，以及
+  构建产物／安全冒烟均在 Tag commit 上通过。
 - 发布前 GitHub 快照：47 Stars、1 Fork、0 Watchers；最新稳定版仍为 `v0.1.1`。
 - 一句话结果：Alpha 2 把显式 Codex 导出变成有边界的证据信封，不假装读取完整历史，也不保留用户
   点名目标／路径原文。
@@ -88,19 +86,21 @@
   `0190c7902e64ab8e8c98363421274d92343b974edf7bf53462ae2077d1d246cd`。
 - 封存 sdist：`requirement_ledger-0.2.0-alpha.2.tar.gz`，SHA-256
   `ad888a21b17408d02a8a17120bc84cb9f9b0e2c53c7b57b4e906d31b4b95de6e`。
-- 候选 commit `c556704d19d813a9a414d011045d794dce06ef0d` 已通过公开 CI run
-  `33468431105`：Python 3.10–3.13 × Linux／macOS／Windows，以及构建产物／安全冒烟。
-- 发布前本地结果：Python 3.12.13 下 122 项测试通过，双语与空白检查通过；最终 commit CI 和
-  Release 下载证据要在真实产生后补记。
+- Tag 所在 commit `fb49947627516bca463094becde16a63d047e2d6` 已通过公开 CI runs
+  `33468720368`、`33468928114`：Python 3.10–3.13 × Linux／macOS／Windows，以及构建
+  产物／安全冒烟。
+- 公开 wheel SHA-256：`6dbb7b104a4a094138b87a0931d60030f58b3f8cfd6188f575fad9cae9c9094c`；
+  sdist：`d50b607a18e910d4c4be1d0d9658fd58ad33330da9b7191cc063efc30e188d62`；校验文件：
+  `b19d5981b643bbcc5c929b28a852aa73a26eaad09098f83c55d29809907275f0`。
+- 公开下载与批准文件逐字节一致，并通过干净安装与 Alpha 2 命令／隐私冒烟。
 
 ## 授权与禁止动作
 
-- 已授权：提交／推送 Alpha 2 精确边界，等待 CI，创建 Alpha 2 注释 Tag 与非 latest 预发布，上传
-  三项公开资产并复验公开下载。
+- 本批授权已完成：Alpha 2 精确边界、CI、注释 Tag、非 latest 预发布、三项公开资产、独立下载
+  复验及本次事实性仓库记录。
 - 未授权：发布后续待发版本、移动现有 Tag、建 Issue／PR、推广、改仓库名、提交插件、申请 OpenAI
   项目、发送外部消息，或 reset／clean／stash 维护者累计工作树。
-- 源码不一致、本地／公开门禁失败、Tag／Release 冲突或疑似私密数据时，立即停止发布，只在同一
-  Alpha 2 边界内诊断。
+- 不移动已发布 Alpha 2 Tag，也不替换公开资产。
 
 ## 回滚
 

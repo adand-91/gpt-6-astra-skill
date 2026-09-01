@@ -172,7 +172,15 @@ Use this for every public version. A checked box must point to command output or
 - Candidate archives are built from the frozen post-checklist source snapshot. Basename-only
   SHA-256 values and command evidence live outside the source tree to avoid self-referential
   archive hashes.
-- Candidate commit `c556704d19d813a9a414d011045d794dce06ef0d` passed public CI run
-  `33468431105`: Python 3.10–3.13 on Linux, macOS, and Windows plus built-artefact/security smoke.
-  Final release-doc commit CI, tag, Release, public-download verification, and adoption evidence
-  remain pending; no programme application or promotion is claimed.
+- Final tagged commit `fb49947627516bca463094becde16a63d047e2d6` passed public CI runs
+  `33468720368` and `33468928114`: Python 3.10–3.13 on Linux, macOS, and Windows plus
+  built-artefact/security smoke. Annotated tag object:
+  `00fb12747e93f9c48f24c434b5d329fbdad57bf4`.
+- Public wheel SHA-256:
+  `6dbb7b104a4a094138b87a0931d60030f58b3f8cfd6188f575fad9cae9c9094c`; public sdist:
+  `d50b607a18e910d4c4be1d0d9658fd58ad33330da9b7191cc063efc30e188d62`; public checksum file:
+  `b19d5981b643bbcc5c929b28a852aa73a26eaad09098f83c55d29809907275f0`.
+- All three assets were re-downloaded and matched the approved local files byte-for-byte. Both
+  archives clean-installed as `0.2.0a2`; Demo, audit init/check, `codex-scan`, private permissions,
+  envelope assertions, and no-overwrite behaviour passed. No programme application, promotion,
+  or external-user adoption is claimed.
