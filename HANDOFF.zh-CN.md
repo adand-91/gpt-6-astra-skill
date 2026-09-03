@@ -1,4 +1,4 @@
-<!-- translation-of: HANDOFF.md sha256:b3030fdfa811ed7e -->
+<!-- translation-of: HANDOFF.md sha256:7eec80acae18ed9a -->
 
 # 交接说明
 
@@ -18,6 +18,8 @@
 - 重建文档保留 Alpha 2 的公开 Tag、CI、资产哈希和重新下载证据。
 - 已重跑 132 项源码测试、19 项专项测试、翻译同步、编译和差异检查。新 wheel 与 sdist 均报告
   `0.2.0a3`；干净安装、确定性 Demo、审查、不覆盖、私有权限、现代信封隐私与解包 sdist 测试通过。
+- 初始发布 commit `5d97742` 已通过公开 CI `33707942357`：12 组 Python 3.10–3.13 ×
+  Linux／macOS／Windows 任务及构建产物／失败即停安全冒烟全部成功。
 
 ## 卡在哪儿
 
@@ -27,7 +29,7 @@
 
 ## 下一步计划
 
-1. 推送准确 release commit，等待公开 CI 通过；若最终发布事实令 commit 变化，则再次通过 CI。
+1. 推送最终发布状态 commit，并要求它通过同一套公开 CI 门禁。
 2. 创建注释 Tag `v0.2.0-alpha.3`，发布非 latest GitHub 预发布，重新下载全部资产、核对哈希，
    并分别干净安装两种归档。
 3. 向 `main` 添加真实发布记录，核验其 CI 后停止。
@@ -41,7 +43,8 @@
 
 ## 当前任务汇总
 
-- 状态：正在独立重建 Alpha 3；目前还没有 Alpha 3 Tag 或 GitHub Release。
+- 状态：最终 Alpha 3 源码已通过本地验证，初始公开 CI 也已通过；准确发布状态 commit、Tag 和
+  GitHub Release 仍待完成。
 - 版本边界：包版本 `0.2.0a3`；计划 Tag 为 `v0.2.0-alpha.3`。
 - 本地发布证据：132 项源码测试、19 项专项测试、构建、双归档干净安装、确定性 Demo、审查、
   隐私与失败即停检查均已通过；公开 CI 仍待取得。

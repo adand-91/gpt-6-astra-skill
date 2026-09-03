@@ -215,3 +215,7 @@ Use this for every public version. A checked box must point to command output or
 - Public Linux/macOS/Windows CI, annotated tag, GitHub prerelease, and public asset re-download
   verification remain gates. Promotion, programme application, repository rename, Issues, PRs,
   and external-user adoption are not claimed or authorised.
+- Initial release commit `5d977428abc43cebc9fa4708c54f9ed954f6b875` passed public CI run
+  [`33707942357`](https://github.com/adand-91/requirement-ledger/actions/runs/33707942357): all
+  12 Python 3.10–3.13 × Linux/macOS/Windows jobs plus the built-artefact and fail-closed security
+  smoke succeeded. The final release-facing status commit must pass the same gate before tagging.

@@ -20,6 +20,8 @@
 - Repeated 132 source tests, 19 focused tests, translation sync, compile, and diff checks. Fresh
   wheel and sdist builds both report `0.2.0a3`; clean installs, deterministic Demo, audit,
   no-overwrite, private permissions, modern envelope privacy, and extracted-sdist tests passed.
+- Initial release commit `5d97742` passed public CI run `33707942357`: all 12 Python 3.10–3.13
+  Linux/macOS/Windows jobs plus the built-artefact and fail-closed security smoke succeeded.
 
 ## 卡在哪儿
 
@@ -30,8 +32,7 @@
 
 ## 下一步计划
 
-1. Push the exact release commit, wait for green public CI, finalize release-facing facts, and
-   repeat CI if the commit changes.
+1. Push the finalized release-facing commit and require the same green public CI gate.
 2. Create annotated tag `v0.2.0-alpha.3`, publish a non-latest GitHub prerelease, re-download all
    assets, verify hashes, and clean-install both archives.
 3. Add a factual post-release record to `main`, verify its CI, and stop.
@@ -47,7 +48,8 @@
 
 ## 当前任务汇总
 
-- Status: isolated Alpha 3 reconstruction in progress; no Alpha 3 tag or GitHub Release yet.
+- Status: final Alpha 3 source is locally verified and its initial public CI passed; the exact
+  release-facing commit, tag, and GitHub Release are still pending.
 - Version boundary: package `0.2.0a3`; intended tag `v0.2.0-alpha.3`.
 - Local release evidence: 132 source tests, 19 focused tests, builds, dual clean installs,
   deterministic Demo, audit, privacy, and fail-closed checks passed; public CI is pending.
