@@ -219,3 +219,28 @@ Use this for every public version. A checked box must point to command output or
   [`33707942357`](https://github.com/adand-91/requirement-ledger/actions/runs/33707942357): all
   12 Python 3.10–3.13 × Linux/macOS/Windows jobs plus the built-artefact and fail-closed security
   smoke succeeded. The final release-facing status commit must pass the same gate before tagging.
+
+## v0.2.0-alpha.3 public prerelease evidence — 2026-09-03
+
+- Tagged commit: `dfa04a0d21ff0aca5c97d87b40546c58fe39d199`; annotated tag object:
+  `af32da5b81c12317177042875ffd08a8f03b816c`.
+- Final release-branch CI run
+  [`33708129443`](https://github.com/adand-91/requirement-ledger/actions/runs/33708129443) and
+  final `main` CI run
+  [`33708228485`](https://github.com/adand-91/requirement-ledger/actions/runs/33708228485) both
+  passed all 12 Python/OS matrix jobs plus built-artefact and fail-closed security smoke.
+- GitHub Release:
+  [`v0.2.0-alpha.3`](https://github.com/adand-91/requirement-ledger/releases/tag/v0.2.0-alpha.3).
+  It is a non-draft, non-latest prerelease; stable `v0.1.1` remains latest.
+- Public wheel SHA-256:
+  `c809a6bd92810a8509401e0d7c93eb976d073db5aafa8d97244c941a929ea7ec`.
+- Public sdist SHA-256:
+  `1a7deb8725ada52470f0b9739b93aaea47659eedf75b2bf475774b3576d2a740`.
+- Public `SHA256SUMS` SHA-256:
+  `18083577d5bb9fcd4020be11a8cab0900904d23e9bb0e9db605b2894f54f8164`.
+- All three assets were re-downloaded from GitHub and matched the approved local files
+  byte-for-byte. The checksum file verified both archives; wheel and sdist clean installs both
+  reported `0.2.0a3`, and the downloaded wheel passed deterministic Demo, audit init/check, modern
+  named-Skill envelope privacy, and terminal/item assertions.
+- No later version, promotion, repository rename, plugin submission, programme application,
+  Issue, PR, or external-user adoption is claimed.

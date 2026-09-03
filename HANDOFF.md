@@ -22,20 +22,26 @@
   no-overwrite, private permissions, modern envelope privacy, and extracted-sdist tests passed.
 - Initial release commit `5d97742` passed public CI run `33707942357`: all 12 Python 3.10–3.13
   Linux/macOS/Windows jobs plus the built-artefact and fail-closed security smoke succeeded.
+- Published annotated tag object `af32da5b81c12317177042875ffd08a8f03b816c` at commit
+  `dfa04a0d21ff0aca5c97d87b40546c58fe39d199` as the non-latest
+  [GitHub prerelease](https://github.com/adand-91/requirement-ledger/releases/tag/v0.2.0-alpha.3).
+- Re-downloaded all three public assets; hashes matched, wheel and sdist clean-installed as
+  `0.2.0a3`, and the downloaded wheel passed deterministic Demo, audit, modern envelope privacy,
+  and item/terminal assertions.
 
 ## 卡在哪儿
 
 - No known source-design blocker remains.
-- Publication is gated on public Linux/macOS/Windows CI for the exact release commit.
+- No Alpha 3 publication blocker remains. Only this factual post-release record and its CI remain.
 - External-user adoption and OpenAI programme eligibility remain unproven and are not release
   claims.
 
 ## 下一步计划
 
-1. Push the finalized release-facing commit and require the same green public CI gate.
-2. Create annotated tag `v0.2.0-alpha.3`, publish a non-latest GitHub prerelease, re-download all
-   assets, verify hashes, and clean-install both archives.
-3. Add a factual post-release record to `main`, verify its CI, and stop.
+1. Commit and push this factual post-release record to `main` without moving the immutable tag.
+2. Verify the record's CI, report release metrics, and stop.
+3. Keep larger Jarvis/usability changes for `v1.0.0-rc.1`; earlier candidates follow the normal
+   release cadence and still require separate authorization.
 
 ## 踩过哪些坑
 
@@ -48,11 +54,13 @@
 
 ## 当前任务汇总
 
-- Status: final Alpha 3 source is locally verified and its initial public CI passed; the exact
-  release-facing commit, tag, and GitHub Release are still pending.
+- Status: `v0.2.0-alpha.3` is published and independently re-downloaded/verified; only this factual
+  post-release record and its CI remain.
 - Version boundary: package `0.2.0a3`; intended tag `v0.2.0-alpha.3`.
 - Local release evidence: 132 source tests, 19 focused tests, builds, dual clean installs,
-  deterministic Demo, audit, privacy, and fail-closed checks passed; public CI is pending.
+  deterministic Demo, audit, privacy, and fail-closed checks passed.
+- Public release evidence: final CI runs `33708129443` and `33708228485` passed; public asset
+  hashes are recorded below and were independently verified.
 - Authorised: exact Alpha 3 commit/push/tag/prerelease/assets/re-download verification and factual
   release record. Not authorised: later versions, promotion, rename, plugin/programme submission,
   Issues, PRs, or unrelated external messages.
@@ -77,7 +85,10 @@
 - Frozen wheel SHA-256: `a46fa9b62dd5c8e702419743e312820214c5527f1da7d7405f26b3769e224b99`.
 - Frozen sdist SHA-256: `5c813a5fc3cf6f93f187b2cf02fe345e0f4be381567c8d2618faa57060601687`.
 - The frozen wheel's Python modules and the frozen sdist's shared files match the source snapshot
-  byte-for-byte. Final public hashes will be generated from the tagged commit.
+  byte-for-byte. The public hashes below were generated from the tagged commit.
+- Public wheel SHA-256: `c809a6bd92810a8509401e0d7c93eb976d073db5aafa8d97244c941a929ea7ec`.
+- Public sdist SHA-256: `1a7deb8725ada52470f0b9739b93aaea47659eedf75b2bf475774b3576d2a740`.
+- Public checksum-file SHA-256: `18083577d5bb9fcd4020be11a8cab0900904d23e9bb0e9db605b2894f54f8164`.
 
 ## 授权与禁止动作
 
