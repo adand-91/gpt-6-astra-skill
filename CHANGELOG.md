@@ -7,6 +7,36 @@ All notable changes to this project are documented here. Versions follow
 
 No changes yet.
 
+## [0.2.0a3] - 2026-09-03 (prerelease)
+
+### Added
+
+- `codex-modern-normalization/v1` for the supported official `item_completed` TurnItem allowlist
+  and `task_complete` / `turn_complete` terminals, plus a real named-Skill-shaped privacy fixture.
+
+### Changed
+
+- The dedicated Codex path now stops above 1,000,000 physical records as well as the existing
+  64 MiB byte cap.
+- Repeated completed-item snapshots keep their first physical position while the latest valid
+  structured snapshot supplies status. The same item ID in different turns remains distinct;
+  ordinary messages and tool events are not content-deduplicated.
+- Structured automation, delegation, Subagent, system, and non-evidence metadata records are
+  counted explicitly instead of being inferred from prose.
+- Snapshot IDs use canonical tuple hashing, retained/dropped item and terminal records are counted
+  separately, and the envelope validator enforces exact conservation against recognized records.
+
+### Security
+
+- The input envelope advances to `codex-input-envelope/v2`. Semantic normalization remains
+  explicitly `partial-alpha.3` because the upstream protocol is non-exhaustive and this release
+  uses a fixed allowlist.
+- Control-bearing rollout IDs, unknown or malformed `UserInput` blocks, invalid status/type pairs,
+  and normalization sub-counts that do not conserve fail closed rather than being silently merged,
+  discarded, or promoted to completed state.
+- Existing v0.1 `scan` and Alpha 2 `codex-scan` boundaries remain compatible; this prerelease does
+  not discover tasks, read `~/.codex`, or claim that one selected export is complete history.
+
 ## [0.2.0a2] - 2026-09-01 (prerelease)
 
 ### Added

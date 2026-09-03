@@ -1,9 +1,9 @@
-<!-- translation-of: README.md sha256:f0cf80077759f1ed -->
+<!-- translation-of: README.md sha256:24dc444527b2b40a -->
 
 # Requirement Ledger AI
 
-**Requirement Ledger 已有稳定的显式证据 v0.1.1，以及用于有界 Codex 输入的
-`v0.2.0-alpha.2` 预发布版。** 宿主能够有界读取任务历史时，用户只需点名一段 Codex 对话、一个 Agent Skill
+**Requirement Ledger 已有稳定的显式证据 v0.1.1，以及用于有界现代 Codex 输入的
+`v0.2.0-alpha.3` 预发布版。** 宿主能够有界读取任务历史时，用户只需点名一段 Codex 对话、一个 Agent Skill
 或项目，Skill 就能恢复相关上下文、生成具体改动卡，并在获得授权的修改前后比较同一案例。Python
 标准包尚未自带 Codex 历史适配器。
 
@@ -14,7 +14,7 @@
 
 [English](README.md) · [v0.1 CLI 契约](V0.1_CONTRACT.zh-CN.md) ·
 [v0.2 宿主契约](V0.2_HOST_CONTRACT.zh-CN.md) ·
-[Alpha 2 发布说明](docs/release-notes/v0.2.0-alpha.2.zh-CN.md) ·
+[Alpha 3 发布说明](docs/release-notes/v0.2.0-alpha.3.zh-CN.md) ·
 [Codex 对齐调研](docs/CODEX_ALIGNMENT_RESEARCH.zh-CN.md) · [更新地图](UPDATE_MAP.zh-CN.md) ·
 [路线图](ROADMAP.zh-CN.md) · [未完成项](docs/PROJECT_GAPS.md) · [安全政策](SECURITY.zh-CN.md)
 
@@ -55,23 +55,29 @@
 | 日报 | “用 Requirement Ledger 回顾昨天。” | 重建上一工作日、检查先前改动并推荐一个优化 |
 | 周报 | “运行本周 Requirement Ledger 周报。” | 给一周问题去重、检查维护健康度，并关联相关 GitHub 或官方行业变化 |
 
-Alpha 2 保留 Alpha 1 的审查骨架和检查器，并新增一条安装版 `codex-scan` 路径，只处理
-用户显式选中的导出。日报、周报目前是宿主契约与参考模板，不是本预发布版可初始化的模式。一次性审查只停留在点名目标；未来日报和周报只能枚举显式时间窗口内活跃的 Codex
+Alpha 3 保留 Alpha 1 的审查骨架和检查器，并在 Alpha 2 只处理一份显式选中导出的安装版
+`codex-scan` 路径上，增加受支持的现代 rollout 归一化。日报、周报目前是宿主契约与参考模板，
+不是本预发布版可初始化的模式。一次性审查只停留在点名目标；未来日报和周报只能枚举显式时间窗口内活跃的 Codex
 项目。宿主无法调取历史时，必须请用户选择任务或有界导出，不能声称覆盖完整。
 
 Requirement Ledger AI 是引导与证据层，不是隐藏补丁机器人。
 
-## v0.2.0-alpha.2 新增了什么
+## v0.2.0-alpha.3 新增了什么
 
 - `codex-scan` 把唯一选中的 Codex JSONL 导出绑定到非主目录的范围根、非路径目标／任务引用、显式
   IANA 时区和半开 `[start,end)` 窗口。
-- 输入不接受普通符号链接／reparse 边界或硬链接，只捕获一次，限 64 MiB，并从真正参与解析的同一份字节
-  计算摘要。
-- 私有证据内嵌不含路径和原文的 `codex-input-envelope/v1`：记录准确来源摘要／大小、哈希后的目标／
-  任务绑定、物理记录核算、固定排除项，并明确把目标历史覆盖标为部分；绝不把一份导出说成完整
-  Codex 历史。
+- 输入不接受普通符号链接／reparse 边界或硬链接，只捕获一次，限 64 MiB 和 1,000,000 条物理
+  记录，并从真正参与解析的同一份字节计算摘要。
+- 私有证据内嵌不含路径和原文的 `codex-input-envelope/v2`：记录准确来源摘要／大小、哈希后的目标／
+  任务绑定、物理记录核算，并明确把目标历史覆盖标为部分；绝不把一份导出说成完整 Codex 历史。
+- 支持的现代 `item_completed` 记录按第一次物理出现位置排序；重复快照按 turn + item 身份合并，
+  由最后一份合法结构化状态生效。`task_complete` 终点不会遮蔽随后迟到的完成项目。
+- 快照身份使用无歧义的规范元组；带控制字符的 rollout ID、未知或畸形用户输入块、不可能的状态／
+  类型组合和不守恒子计数全部失败即停。只接受当前 `text`、图像／音频、Skill 和 mention 输入判别字。
+- automation、delegation、Subagent、system 和元数据记录只按准确结构计入排除项；普通消息／工具
+  绝不按内容去重，也不会把自然语言当成完成证据。
 - Alpha 1 的 `review-init` 与 `review-check` 继续可用且兼容。准确限制与门禁见
-  [Alpha 2 发布说明](docs/release-notes/v0.2.0-alpha.2.zh-CN.md)。
+  [Alpha 3 发布说明](docs/release-notes/v0.2.0-alpha.3.zh-CN.md)。
 
 ## 为什么要做这个项目
 

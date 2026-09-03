@@ -6,7 +6,7 @@ candidate and every dependent target instead of creating an empty release. Every
 must have a coherent capability, passing tests, accurate notes, and a clean privacy review.
 
 [中文更新地图](UPDATE_MAP.zh-CN.md) · [roadmap](ROADMAP.md) ·
-[v0.2.0-alpha.2 release notes](docs/release-notes/v0.2.0-alpha.2.md)
+[v0.2.0-alpha.3 release notes](docs/release-notes/v0.2.0-alpha.3.md)
 
 ## Where this Alpha sits
 
@@ -24,10 +24,10 @@ flowchart LR
     J --> K["v0.2.0<br/>tested three-mode product"]
 ```
 
-Public `v0.2.0-alpha.1` is the first installable named-target audit bridge. The
-`v0.2.0-alpha.2` prerelease adds a strict `codex-scan` boundary for one selected export and embeds
-honest record/coverage metadata. It does **not** discover target history or claim the export is
-complete.
+Public `v0.2.0-alpha.1` is the first installable named-target audit bridge. Alpha 2 added a strict
+`codex-scan` boundary for one selected export; `v0.2.0-alpha.3` adds supported modern rollout
+normalisation, ordered completed items, snapshot dedupe, and structured semantic exclusions. It
+does **not** discover target history or claim that one selected export is complete.
 
 ## Problem-to-capability map
 
@@ -36,7 +36,7 @@ complete.
 | “I can name the Skill or project, but I do not know how to structure the review.” | `review-init --mode audit` creates a bounded, private scaffold with explicit target, window, timezone, coverage, and unknowns. | Shipped in Alpha 1 |
 | “A report can look complete while required evidence or safety fields are missing.” | `review-check` validates the report contract, sections, evidence labels, candidate state, authorisation declaration, and time window. | Shipped in Alpha 1 |
 | “A generated review might overwrite work or expose a broadly readable private file.” | New scaffolds use restrictive permissions where supported and fail instead of overwriting an existing path. | Shipped in Alpha 1 |
-| “I want Codex to use related history without making me retell everything.” | Alpha 2 binds one explicit export and embeds its bounded input envelope; Alpha 3 normalises supported modern Codex events and records semantic exclusions. | Alpha 2 shipped; Alpha 3 pending |
+| “I want Codex to use related history without making me retell everything.” | Alpha 2 binds one explicit export and embeds its bounded input envelope; Alpha 3 normalises supported modern Codex events and records semantic exclusions. | Alpha 2 shipped; Alpha 3 release candidate |
 | “I want yesterday and the last week reviewed without repeating old suggestions.” | Beta 1 installs daily review, Beta 2 installs weekly review, and Beta 3 carries stable candidates forward with deduplication. | Beta 1/2/3 gates |
 | “I need proof that the final report is the same file that was checked and handed off.” | RC 1 binds exact report bytes; RC 2 revalidates them immediately before handoff; RC 3 qualifies the complete three-mode surface. | RC 1/2/3 gates |
 
@@ -50,7 +50,7 @@ Git tags use the names below; Python packages map respectively to `0.2.0a1`, `0.
 | --- | --- | --- |
 | 1 | `v0.2.0-alpha.1` | **Published.** Private named-audit scaffold, strict checker, clean wheel/sdist installs, matching notes/checksums, and cross-platform CI. |
 | 2 | `v0.2.0-alpha.2` | **Published.** `codex-scan` binds one selected export, exact digest/size, target/window, record accounting, and honest partial coverage; directory, home/root scope, link boundary, hard link, drift, and oversized input fail closed. |
-| 3 | `v0.2.0-alpha.3` | Normalise supported modern Codex exports with ordered completed items, snapshot dedupe, half-open windows, and structured automation/delegation exclusions; prove it with fixtures and one real named-Skill review. |
+| 3 | `v0.2.0-alpha.3` | **Release candidate; publication gate pending.** Normalises supported modern Codex exports with ordered completed items, snapshot dedupe, half-open windows, and structured automation/delegation exclusions; fixtures include one real named-Skill-shaped privacy case. |
 | 4 | `v0.2.0-beta.1` | Ship installed daily initialisation/checking with an exact yesterday window, IANA timezone, source provenance, and analysis-only authority. |
 | 5 | `v0.2.0-beta.2` | Ship installed weekly initialisation/checking with an exact week window and source-bound GitHub/ecosystem evidence; no unbounded trend scrape. |
 | 6 | `v0.2.0-beta.3` | Carry stable candidate IDs across audit/daily/weekly runs; unresolved findings continue and repeated recommendations deduplicate without silent loss. |

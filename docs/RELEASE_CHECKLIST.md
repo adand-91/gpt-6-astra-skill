@@ -184,3 +184,34 @@ Use this for every public version. A checked box must point to command output or
   archives clean-installed as `0.2.0a2`; Demo, audit init/check, `codex-scan`, private permissions,
   envelope assertions, and no-overwrite behaviour passed. No programme application, promotion,
   or external-user adoption is claimed.
+
+## v0.2.0-alpha.3 pre-release evidence — 2026-09-03
+
+- Scope is only the modern Codex normalization increment: ordered `item_completed` snapshots,
+  turn terminals, exact structured exclusions, explicit current `UserInput` discriminators, and
+  one named-Skill-shaped privacy case. Beta, RC, stable, Jarvis, and later usability work are
+  excluded from this release.
+- The frozen source suite passed all 132 tests; the focused normalization/envelope suite passed
+  all 19 tests. Compile, translation sync, and `git diff --check` passed on macOS arm64 with
+  Python 3.12.
+- An independent Sol review first returned NO-GO with three P1 findings: delimiter-ambiguous IDs,
+  fail-open future user-input blocks, and unconserved normalization sub-counts. Canonical tuple
+  hashing plus control-character rejection, an exact current input allowlist, split item/terminal
+  drop accounting, status-by-kind validation, and recognized-record conservation closed all
+  three. The reviewer reran the adversarial cases and returned GO with no P0/P1.
+- The review also identified byte-cap CPU exposure from tiny records. A separate 1,000,000
+  physical-record work limit now fails closed in addition to the 64 MiB byte limit.
+- Frozen wheel and sdist installs both reported `requirement-ledger 0.2.0a3`. Their deterministic
+  Demos matched byte-for-byte; audit create/check, `0600`, no-overwrite exit 4, modern aliases,
+  snapshot/terminal dedupe, named-Skill envelope privacy, parser-version propagation, and
+  incomplete-to-blocked analysis all passed.
+- The public candidate is reconstructed from `origin/main` so Alpha 2's immutable publication
+  record is preserved. The frozen implementation and tests are reused, but public archives and
+  checksums are rebuilt from the final Alpha 3 commit.
+- The reconstructed source repeated all 132 tests and all 19 focused tests, translation sync,
+  compile, and `git diff --check`. Fresh wheel and sdist builds both reported `0.2.0a3`; the wheel
+  passed deterministic Demo, audit create/check, `0600`, no-overwrite, modern named-Skill privacy,
+  and envelope assertions, while the extracted sdist repeated all 132 tests and translation sync.
+- Public Linux/macOS/Windows CI, annotated tag, GitHub prerelease, and public asset re-download
+  verification remain gates. Promotion, programme application, repository rename, Issues, PRs,
+  and external-user adoption are not claimed or authorised.

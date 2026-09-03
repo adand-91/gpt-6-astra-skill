@@ -1,109 +1,82 @@
-<!-- translation-of: HANDOFF.md sha256:9599ea17b22a59d9 -->
+<!-- translation-of: HANDOFF.md sha256:b3030fdfa811ed7e -->
 
-# 交接
+# 交接说明
 
 ## 我们在做什么
 
-- 发布剩余待发版本中的第一个 `v0.2.0-alpha.2`，不混入后续本地 Beta、RC、插件或 v1 改动。
-- Alpha 2 的产品边界是：为用户点名的一份 Codex task 导出生成显式、有界、隐私优先的输入信封；
-  它不是自动读取 Codex 历史或访问账号。
-- 发布源码来自封存 Alpha 2 最终候选恢复成的隔离工作树；维护者累计脏工作树不是发布输入。
+- 把 `v0.2.0-alpha.3` 作为现有版本列车的下一个非 latest 预发布版公开。
+- 它唯一的产品增量是对受支持现代 Codex rollout 记录做有界归一化。
+- 从 `origin/main` 在独立工作区重建，保留公开的 Alpha 2 记录，也不触碰维护者后续累计工作。
 
 ## 完成了什么
 
-- 在隔离 `codex/release-v0.2.0-alpha.2` 工作树中，把封存 Alpha 2 源码恢复到
-  `origin/main` 基线上。
-- 包版本设为 `0.2.0a2`，新增 `codex-scan` 和 `src/requirement_ledger/codex_input.py`。
-- 扫描器要求显式目标和半开时间窗口，记录来源身份与记录计数，识别畸形／越窗数据，并如实报告
-  partial 或 unknown 覆盖，不虚构完整性。
-- 输出用摘要代替原始目标字符串和来源路径；已有大小、不覆盖、安全写入和校验边界继续生效。
-- 新增 `tests/test_codex_input_envelope.py`，同步更新 CLI、pipeline、transcript、安全 I/O、文档、
-  威胁模型、架构、发布清单和双语契约。
-- Python 3.12 下重新核验：122 项测试通过；刷新发布记录前，双语同步和 `git diff --check` 通过。
-- 封存资产与冻结记录一致：
-  - wheel SHA-256：`0190c7902e64ab8e8c98363421274d92343b974edf7bf53462ae2077d1d246cd`
-  - sdist SHA-256：`ad888a21b17408d02a8a17120bc84cb9f9b0e2c53c7b57b4e906d31b4b95de6e`
-- 已把注释 Tag 对象 `00fb12747e93f9c48f24c434b5d329fbdad57bf4` 建在 commit
-  `fb49947627516bca463094becde16a63d047e2d6`，并发布为非 latest 的
-  [GitHub 预发布](https://github.com/adand-91/requirement-ledger/releases/tag/v0.2.0-alpha.2)。
-- 三项公开资产均已重下载且哈希一致；两种包均干净安装为 `0.2.0a2`，Demo、审查初始化／校验、
-  `codex-scan`、私有权限、信封断言与不覆盖行为全部通过。
+- 已核验唯一冻结 Alpha 3 源码、wheel、sdist 与校验值。
+- 只复用经审计的 Alpha 2 到 Alpha 3 实现、测试、CI、契约和发布说明增量；排除生成的 egg-info
+  及所有 Beta／RC／v1／Jarvis 改动。
+- 已加入 `codex-modern-normalization/v1`、`codex-input-envelope/v2`、有序 item／terminal 核算、
+  结构化排除、规范元组哈希、严格输入／状态校验、准确记录守恒和 1,000,000 条记录工作上限。
+- 重建文档保留 Alpha 2 的公开 Tag、CI、资产哈希和重新下载证据。
+- 已重跑 132 项源码测试、19 项专项测试、翻译同步、编译和差异检查。新 wheel 与 sdist 均报告
+  `0.2.0a3`；干净安装、确定性 Demo、审查、不覆盖、私有权限、现代信封隐私与解包 sdist 测试通过。
 
 ## 卡在哪儿
 
-- Alpha 2 发布已无阻断；仅剩提交本次事实性发布记录这一项仓库收尾。
-- 不声称已有外部用户采用、重复使用或 OpenAI 项目资格。
+- 当前没有已知源码设计阻断。
+- 发布仍须以准确 release commit 通过公开 Linux／macOS／Windows CI。
+- 外部用户采用和 OpenAI 项目资格仍未证明，也不是本版本声明。
 
 ## 下一步计划
 
-1. 更新双语指纹并运行 diff／Handoff 检查，把本次事实性发布记录提交／推送到 `main`，不移动
-   已发布的 Alpha 2 Tag。
-2. 核验该记录的 CI，然后停止并汇报 Release 链接、证据和最新 Stars／Forks／Watchers。
-3. Alpha 3 只作为未来地图候选保留；没有用户新指令就不实施、不发布。
+1. 推送准确 release commit，等待公开 CI 通过；若最终发布事实令 commit 变化，则再次通过 CI。
+2. 创建注释 Tag `v0.2.0-alpha.3`，发布非 latest GitHub 预发布，重新下载全部资产、核对哈希，
+   并分别干净安装两种归档。
+3. 向 `main` 添加真实发布记录，核验其 CI 后停止。
 
 ## 踩过哪些坑
 
-- 活跃开发工作树包含后续待发版本；直接给它打 Tag 或整体提交会把后续代码错标为 Alpha 2，只有本
-  隔离工作树中的封存快照有效。
-- 测试会生成未跟踪 `__pycache__`；只能从本隔离工作树精确清理，不能广泛清理维护者工作树。
-- 候选压缩包能证明产品边界，却不能代替公开来源证明；公开资产必须对应最终 Tag commit，并在发布后
-  独立重下载。
-- 本地 macOS 全绿不能代替 Linux／macOS／Windows CI；公开门禁失败就停止，不弱化测试、不移动 Tag。
-- 内部校验记录可能带绝对路径；公开附件只能使用新生成、仅含文件名的 `SHA256SUMS`。
+- 冻结 Alpha 3 源码早于 Alpha 2 公开发布，错误地把 Alpha 2 写成未发布。只能复用其已审计增量，
+  不能用整个快照覆盖 `origin/main`。
+- 修正公开文档会改变 sdist，因此冻结候选归档不能直接作为最终公开资产；必须从准确 Tag commit 重建。
+- 活跃开发工作树包含后续排队版本，绝不能把它用于 Alpha 3 Tag，也不能清理或重置。
 
 ## 当前任务汇总
 
-- 状态：`v0.2.0-alpha.2` 已发布并独立重下载／复验；仅剩本次事实性发布记录及其 CI。
-- 版本边界：包 `0.2.0a2`；目标注释 Tag `v0.2.0-alpha.2`；没有包含或授权后续版本。
-- 已验证门禁：122 项本地测试、完整 Python 3.10–3.13 × Linux／macOS／Windows 公开 CI，以及
-  构建产物／安全冒烟均在 Tag commit 上通过。
-- 发布前 GitHub 快照：47 Stars、1 Fork、0 Watchers；最新稳定版仍为 `v0.1.1`。
-- 一句话结果：Alpha 2 把显式 Codex 导出变成有边界的证据信封，不假装读取完整历史，也不保留用户
-  点名目标／路径原文。
+- 状态：正在独立重建 Alpha 3；目前还没有 Alpha 3 Tag 或 GitHub Release。
+- 版本边界：包版本 `0.2.0a3`；计划 Tag 为 `v0.2.0-alpha.3`。
+- 本地发布证据：132 项源码测试、19 项专项测试、构建、双归档干净安装、确定性 Demo、审查、
+  隐私与失败即停检查均已通过；公开 CI 仍待取得。
+- 已授权：准确 Alpha 3 commit／push／Tag／预发布／资产／重新下载验证及真实发布记录。未授权：后续
+  版本、推广、改名、插件／项目申请、Issue、PR 或无关外部消息。
 
 ## 当前架构与入口
 
-- CLI 与路由：`src/requirement_ledger/cli.py`。
-- Codex 输入边界：`src/requirement_ledger/codex_input.py`。
-- 审查／报告管线：`src/requirement_ledger/pipeline.py`、`review.py`、`transcript.py`。
-- 安全输出／错误契约：`src/requirement_ledger/safeio.py`、`errors.py`。
-- 回归：`tests/test_codex_input_envelope.py` 及既有 `tests/`。
-- 用户／发布说明：`README.zh-CN.md`、`CHANGELOG.zh-CN.md`、
-  `docs/release-notes/v0.2.0-alpha.2.zh-CN.md` 及英文权威文件。
+- CLI／路由：`src/requirement_ledger/cli.py` 与 `src/requirement_ledger/pipeline.py`。
+- 输入边界：`src/requirement_ledger/codex_input.py`。
+- 现代 rollout 适配：`src/requirement_ledger/transcript.py`。
+- 回归测试：`tests/test_codex_modern_normalization.py`、`tests/test_codex_input_envelope.py`
+  及现有 `tests/` 全套。
 
 ## 运行与依赖
 
-- 支持 Python 3.10–3.13；Windows 条件安装 `tzdata>=2024.1`，类 Unix 系统使用标准库时区数据。
+- 支持 Python 3.10–3.13；Windows 按条件使用 `tzdata>=2024.1`。
 - 源码测试：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q`。
-- 双语门禁：`python3 scripts/check_translation_sync.py`。
+- 翻译门禁：`python3 scripts/check_translation_sync.py`。
 - 构建：`python3 -m build --sdist --wheel`；构建工具不是运行时依赖。
-- 发布冒烟必须干净安装两种压缩包，并覆盖版本、Demo、review 和 `codex-scan` 路径。
 
 ## 验证证据
 
-- 私有发布归档保留封存 Alpha 2 源码快照；其本地路径不发布到本仓库。
-- 封存 wheel：`requirement_ledger-0.2.0a2-py3-none-any.whl`，SHA-256
-  `0190c7902e64ab8e8c98363421274d92343b974edf7bf53462ae2077d1d246cd`。
-- 封存 sdist：`requirement_ledger-0.2.0-alpha.2.tar.gz`，SHA-256
-  `ad888a21b17408d02a8a17120bc84cb9f9b0e2c53c7b57b4e906d31b4b95de6e`。
-- Tag 所在 commit `fb49947627516bca463094becde16a63d047e2d6` 已通过公开 CI runs
-  `33468720368`、`33468928114`：Python 3.10–3.13 × Linux／macOS／Windows，以及构建
-  产物／安全冒烟。
-- 公开 wheel SHA-256：`6dbb7b104a4a094138b87a0931d60030f58b3f8cfd6188f575fad9cae9c9094c`；
-  sdist：`d50b607a18e910d4c4be1d0d9658fd58ad33330da9b7191cc063efc30e188d62`；校验文件：
-  `b19d5981b643bbcc5c929b28a852aa73a26eaad09098f83c55d29809907275f0`。
-- 公开下载与批准文件逐字节一致，并通过干净安装与 Alpha 2 命令／隐私冒烟。
+- 冻结 wheel SHA-256：`a46fa9b62dd5c8e702419743e312820214c5527f1da7d7405f26b3769e224b99`。
+- 冻结 sdist SHA-256：`5c813a5fc3cf6f93f187b2cf02fe345e0f4be381567c8d2618faa57060601687`。
+- 冻结 wheel 的 Python 模块和冻结 sdist 的共有文件均与源码快照逐字节一致。最终公开哈希将从
+  Tag commit 重新生成。
 
 ## 授权与禁止动作
 
-- 本批授权已完成：Alpha 2 精确边界、CI、注释 Tag、非 latest 预发布、三项公开资产、独立下载
-  复验及本次事实性仓库记录。
-- 未授权：发布后续待发版本、移动现有 Tag、建 Issue／PR、推广、改仓库名、提交插件、申请 OpenAI
-  项目、发送外部消息，或 reset／clean／stash 维护者累计工作树。
-- 不移动已发布 Alpha 2 Tag，也不替换公开资产。
+- 已授权：发布准确 Alpha 3 边界并做公开验证。
+- 未授权：发布后续版本、移动旧 Tag、替换旧资产、推广、改名、提交插件／项目申请、创建
+  Issue／PR，或修改脏开发工作树。
 
 ## 回滚
 
-- 打 Tag 前用经过评审的前向 commit 修正错误，不改写共享历史。
-- 打 Tag 后不移动或静默替换 Tag／资产；保留证据，若需纠正则另行取得新 Release 授权。
-- 未触碰的累计开发工作树和封存最终候选目录都是恢复源，均不得破坏性清理。
+- Tag 前若门禁失败，用经过复核的前向 commit 修复，或停止发布。
+- Tag 后绝不移动或静默替换 Tag／资产；如需修正，使用另行授权的更正版本。

@@ -36,21 +36,29 @@ Three report modes share the same evidence discipline:
   source-check attempt for source-bound GitHub or official industry evidence.
 
 The host contract, bilingual workflow, report templates, and report-shape validator are included.
-The Alpha 2 candidate also ships a narrower offline bridge:
+The local Alpha 3 candidate ships the narrower offline bridge established in Alpha 2:
 
 ```text
 one explicit Codex JSONL + non-home scope root + target/task/window/timezone
                               |
                               v
-       ordinary-link rejecting, single-capture 64 MiB binding
+ ordinary-link rejecting, single-capture 64 MiB / 1M-record binding
                               |
                               v
-          private evidence + text/path-free input envelope
+          private evidence + text/path-free input envelope v2
+                              |
+                              v
+     ordered completed items + structured exclusion counts
 ```
 
 This bridge does not discover history. It classifies every physical input record into recognised,
-outside-window, missing/invalid timestamp, malformed, unsupported, or oversized counts. Modern
-Codex semantic normalisation remains partial until the next parser candidate. Digest and parsing
+outside-window, missing/invalid timestamp, malformed, unsupported, or oversized counts. Supported
+modern `item_completed` snapshots coalesce by turn + item identity: first physical position is
+stable and latest valid status wins. Ordinary events are not content-deduplicated. Modern Codex
+tuple identity uses canonical JSON, current user-input discriminators are explicitly allowed, and
+the normalization sub-ledger must conserve exactly against recognized records. Semantic
+normalisation remains explicitly `partial-alpha.3` because the upstream protocol is
+non-exhaustive. Digest and parsing
 bind to the same captured bytes; concurrent source-path stability is metadata-checked best effort,
 not an atomic snapshot guarantee.
 

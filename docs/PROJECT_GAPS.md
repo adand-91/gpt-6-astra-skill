@@ -19,21 +19,30 @@ behaviour.
 - Synthetic end-to-end demo, anonymous fixtures, CI matrix, release/community documentation.
 - Compatibility retention for the original three scripts and retrospective Skill workflow.
 
-## Closed in the local v0.2.0-alpha.2 candidate
+## Closed through the local v0.2.0-alpha.3 candidate
 
 - One installed `codex-scan` path binds a single explicit Codex export to a non-home scope root,
   non-path target/task references, IANA timezone, and half-open window without enumerating files.
-- The captured source is limited to 64 MiB; the exact same bytes are hashed and parsed, and
-  path-component identity is rechecked around the read.
-- A text/path-free `codex-input-envelope/v1` records balanced physical-record accounting and
+- The captured source is limited to 64 MiB and 1,000,000 physical records; the exact same bytes
+  are hashed and parsed, and path-component identity is rechecked around the read.
+- A text/path-free `codex-input-envelope/v2` records balanced physical-record accounting and
   explicitly partial/unknown semantic and target-history coverage.
+- A fixed official TurnItem allowlist normalises modern `item_completed` records. It preserves
+  first physical order, applies the latest valid repeated snapshot, keeps turns distinct, and
+  records `task_complete` terminals without hiding late items.
+- Structured automation, delegation, Subagent, system, and metadata exclusions are counted
+  explicitly. Ordinary text cannot create completion/exclusion state, and a named-Skill fixture
+  proves that the envelope retains neither Skill names nor paths.
+- Control-bearing IDs and unknown/malformed user-input blocks fail closed; canonical tuple
+  identity and cross-field conservation prevent ambiguous dedupe or fabricated normalization
+  counts.
 - Root/home scope, directory input, traversal, scope escape, ordinary symlink/reparse boundary,
   hard link, drift, oversize, and overwrite cases fail closed in candidate tests. macOS fixed root
   compatibility aliases and non-atomic source metadata checks remain documented residuals.
 - Target/task SHA-256 bindings are deterministic and therefore linkable or guessable for
   low-entropy references; the envelope is private metadata, not an anonymity format.
 
-This is local implementation evidence, not a public Alpha 2 release or external-user adoption.
+This is local implementation evidence, not a public Alpha 2/3 release or external-user adoption.
 
 ## Open after v0.1 — product
 
@@ -50,8 +59,8 @@ This is local implementation evidence, not a public Alpha 2 release or external-
 - Cross-session evidence linking without exposing low-entropy identifiers.
 - A concrete Codex-host adapter that can use thread tools or a bounded local session index while
   keeping raw transcript data out of prompts unnecessarily. The current release provides the
-  host contract and Skill workflow; the Alpha 2 `codex-scan` bridge consumes a selected export but
-  is not a packaged history-discovery daemon.
+  host contract and Skill workflow; the Alpha 3 `codex-scan` bridge consumes and partially
+  normalises a selected export but is not a packaged history-discovery daemon.
 - Real daily and weekly runs with stable carry-over IDs and source-bound ecosystem evidence.
 - Adoption records: installs, repeat users, accepted fixes, before/after outcomes, and
   maintainer response — opt-in and never collected as telemetry by default.

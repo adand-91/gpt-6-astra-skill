@@ -1,4 +1,4 @@
-<!-- translation-of: CHANGELOG.md sha256:47ca8b7016678e63 -->
+<!-- translation-of: CHANGELOG.md sha256:05d648737321d94e -->
 
 # 变更日志
 
@@ -8,6 +8,32 @@
 ## [未发布]
 
 暂无变更。
+
+## [0.2.0a3] - 2026-09-03（预发布版）
+
+### 新增
+
+- 新增 `codex-modern-normalization/v1`：支持官方 `item_completed` TurnItem 白名单与
+  `task_complete` / `turn_complete` 终点，并加入真实点名 Skill 形状的隐私 fixture。
+
+### 变更
+
+- Codex 专用路径在原有 64 MiB 字节上限之外，再对超过 1,000,000 条物理记录的输入失败即停。
+- 重复完成项目快照保留第一次物理位置，由最后一份合法结构化快照提供状态；同一 item ID 位于不同
+  turn 时仍保持独立，普通消息和工具事件不做内容去重。
+- automation、delegation、Subagent、system 和非证据元数据记录只按准确结构分别计数，不从
+  自然语言推断。
+- 快照 ID 使用规范元组哈希，保留／丢弃的 item 与 terminal 记录分开计数；信封校验器要求这些
+  子计数与已识别记录精确守恒。
+
+### 安全
+
+- 输入信封升级为 `codex-input-envelope/v2`。上游协议并不穷尽，且本版本使用固定白名单，因此语义
+  归一化仍明确标为 `partial-alpha.3`。
+- 带控制字符的 rollout ID、未知或畸形 `UserInput` 块、非法状态／类型组合，以及不守恒的归一化
+  子计数都会失败即停，不会被静默合并、丢弃或提升为完成状态。
+- 现有 v0.1 `scan` 和 Alpha 2 `codex-scan` 边界保持兼容；本预发布版不会发现任务、读取
+  `~/.codex`，也不会声称一份选中导出就是完整历史。
 
 ## [0.2.0a2] - 2026-09-01（预发布版）
 

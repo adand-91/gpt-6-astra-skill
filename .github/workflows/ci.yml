@@ -67,11 +67,11 @@ jobs:
           test "$(stat -c '%a' alpha-audit.md)" = "600"
           if .wheel-venv/bin/requirement-ledger review-init --mode audit --target ci-skill --start 2026-08-29T00:00:00+00:00 --end 2026-08-30T00:00:00+00:00 --timezone UTC --output alpha-audit.md; then exit 1; fi
           mkdir ci-codex-input
-          .wheel-venv/bin/python -c "from pathlib import Path; Path('ci-codex-input/task.jsonl').write_text('{\"type\":\"event_msg\",\"timestamp\":\"2026-08-29T00:30:00Z\",\"payload\":{\"type\":\"user_message\",\"message\":\"synthetic\"}}\\n', encoding='utf-8')"
-          .wheel-venv/bin/requirement-ledger codex-scan --repo . --input ci-codex-input/task.jsonl --scope-root ci-codex-input --target conversation:ci --task-ref task:ci --since 2026-08-29T00:00:00+00:00 --until 2026-08-30T00:00:00+00:00 --timezone UTC --exclude unrelated --output alpha2.private.json
-          test "$(stat -c '%a' alpha2.private.json)" = "600"
-          .wheel-venv/bin/python -c "import json; value=json.load(open('alpha2.private.json', encoding='utf-8')); envelope=value['codex_input_envelope']; assert envelope['schema']=='codex-input-envelope/v1'; assert envelope['source']['summary']['included_events']==1; assert envelope['coverage']['overall']=='partial'; assert envelope['source']['path_stored'] is False"
-          if .wheel-venv/bin/requirement-ledger codex-scan --repo . --input ci-codex-input/task.jsonl --scope-root ci-codex-input --target conversation:ci --task-ref task:ci --since 2026-08-29T00:00:00+00:00 --until 2026-08-30T00:00:00+00:00 --timezone UTC --output alpha2.private.json; then exit 1; fi
+          .wheel-venv/bin/python -c "import json; from pathlib import Path; rows=[{'type':'event_msg','timestamp':'2026-08-29T00:30:00Z','payload':{'type':'item_completed','turn_id':'private-turn','item':{'type':'UserMessage','id':'private-item','content':[{'type':'text','text':'synthetic'},{'type':'skill','name':'private-skill','path':'/private/SKILL.md'}]}}},{'type':'event_msg','timestamp':'2026-08-29T00:30:01Z','payload':{'type':'task_complete','turn_id':'private-turn'}}]; Path('ci-codex-input/task.jsonl').write_text('\\n'.join(json.dumps(row) for row in rows)+'\\n', encoding='utf-8')"
+          .wheel-venv/bin/requirement-ledger codex-scan --repo . --input ci-codex-input/task.jsonl --scope-root ci-codex-input --target conversation:ci --task-ref task:ci --since 2026-08-29T00:00:00+00:00 --until 2026-08-30T00:00:00+00:00 --timezone UTC --exclude unrelated --output alpha3.private.json
+          test "$(stat -c '%a' alpha3.private.json)" = "600"
+          .wheel-venv/bin/python -c "import json; value=json.load(open('alpha3.private.json', encoding='utf-8')); envelope=value['codex_input_envelope']; rendered=json.dumps(envelope); assert envelope['schema']=='codex-input-envelope/v2'; assert envelope['source']['summary']['included_events']==1; assert envelope['source']['summary']['unique_completed_items']==1; assert envelope['normalization']['ordered_turn_terminals'][0]['kind']=='task_complete'; assert envelope['coverage']['overall']=='partial'; assert envelope['source']['path_stored'] is False; assert all(secret not in rendered for secret in ('private-turn','private-item','private-skill','/private/SKILL.md'))"
+          if .wheel-venv/bin/requirement-ledger codex-scan --repo . --input ci-codex-input/task.jsonl --scope-root ci-codex-input --target conversation:ci --task-ref task:ci --since 2026-08-29T00:00:00+00:00 --until 2026-08-30T00:00:00+00:00 --timezone UTC --output alpha3.private.json; then exit 1; fi
       - name: Inspect and install the built source distribution
         run: |
           tar -tzf dist/*.tar.gz > sdist-files.txt
@@ -80,6 +80,7 @@ jobs:
           grep -q '/tests/test_v01_pipeline.py$' sdist-files.txt
           grep -q '/tests/test_review_report.py$' sdist-files.txt
           grep -q '/tests/test_codex_input_envelope.py$' sdist-files.txt
+          grep -q '/tests/test_codex_modern_normalization.py$' sdist-files.txt
           grep -q '/docs/CODEX_ALIGNMENT_RESEARCH.md$' sdist-files.txt
           if grep -E '(__pycache__|\.pyc$|\.private\.json$)' sdist-files.txt; then exit 1; fi
           python -m venv .sdist-venv
@@ -99,3 +100,9 @@ jobs:
           tests.test_v01_cli.TestCLI.test_report_privacy_block_happens_before_output_creation
           tests.test_codex_input_envelope.TestCodexInputEnvelope.test_single_source_window_accounting_and_envelope_privacy
           tests.test_codex_input_envelope.TestCodexInputEnvelope.test_source_or_scope_drift_fails_before_cli_output_exists
+          tests.test_codex_modern_normalization.TestCodexModernNormalization.test_completed_items_keep_first_order_and_latest_snapshot
+          tests.test_codex_modern_normalization.TestCodexModernNormalization.test_structured_exclusions_are_exact_and_balanced
+          tests.test_codex_modern_normalization.TestCodexModernNormalization.test_control_character_ids_cannot_alias_snapshot_identity
+          tests.test_codex_modern_normalization.TestCodexModernNormalization.test_user_input_blocks_use_an_exact_fail_closed_allowlist
+          tests.test_codex_modern_normalization.TestCodexModernNormalization.test_normalization_schema_rejects_unbalanced_counts_and_statuses
+          tests.test_codex_modern_normalization.TestCodexModernNormalization.test_physical_record_work_limit_fails_closed

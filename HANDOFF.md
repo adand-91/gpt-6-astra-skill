@@ -2,129 +2,89 @@
 
 ## 我们在做什么
 
-- Publish `v0.2.0-alpha.2` as the first of the remaining queued prereleases, without including any
-  later local Beta, RC, plugin, or v1 work.
-- Alpha 2's product boundary is one explicit, bounded, privacy-preserving Codex input envelope for
-  a user-selected task export. It is not automatic Codex history retrieval or account access.
-- The release source is an isolated worktree restored from the sealed Alpha 2 final-candidate
-  snapshot. The maintainer's cumulative dirty worktree is not release input.
+- Publish `v0.2.0-alpha.3` as the next non-latest prerelease in the existing release train.
+- Its only product increment is bounded normalization of supported modern Codex rollout records.
+- Reconstruct the release from `origin/main` in an isolated worktree so the public Alpha 2 record
+  is preserved and the maintainer's later cumulative work remains untouched.
 
 ## 完成了什么
 
-- Restored the sealed Alpha 2 source snapshot over `origin/main` in the isolated
-  `codex/release-v0.2.0-alpha.2` worktree.
-- Set the package version to `0.2.0a2` and added `codex-scan` plus
-  `src/requirement_ledger/codex_input.py`.
-- The scanner requires an explicit target and half-open time window, records source identity and
-  record accounting, detects malformed/out-of-window data, and reports partial or unknown coverage
-  rather than claiming completeness.
-- Output uses digests instead of retaining raw target strings or source paths. Existing size,
-  no-overwrite, safe-write, and validation boundaries remain active.
-- Added `tests/test_codex_input_envelope.py` and updated the broader CLI, pipeline, transcript,
-  safe-I/O, documentation, threat-model, architecture, checklist, and bilingual contract surfaces.
-- Reverified the restored source on Python 3.12: 122 tests passed; translation sync and
-  `git diff --check` passed before the release-record refresh.
-- Verified sealed assets against the frozen record:
-  - wheel SHA-256: `0190c7902e64ab8e8c98363421274d92343b974edf7bf53462ae2077d1d246cd`
-  - sdist SHA-256: `ad888a21b17408d02a8a17120bc84cb9f9b0e2c53c7b57b4e906d31b4b95de6e`
-- Published annotated tag object `00fb12747e93f9c48f24c434b5d329fbdad57bf4` at commit
-  `fb49947627516bca463094becde16a63d047e2d6` as the non-latest
-  [GitHub prerelease](https://github.com/adand-91/requirement-ledger/releases/tag/v0.2.0-alpha.2).
-- Re-downloaded all three public assets. Their hashes matched, both archives clean-installed as
-  `0.2.0a2`, and Demo, audit init/check, `codex-scan`, private permissions, envelope assertions,
-  and no-overwrite behaviour passed.
+- Verified the unique frozen Alpha 3 source, wheel, sdist, and checksums.
+- Reused only the audited Alpha 2-to-Alpha 3 implementation, tests, CI, contracts, and release-note
+  delta; excluded generated egg-info and every Beta/RC/v1/Jarvis change.
+- Added `codex-modern-normalization/v1`, `codex-input-envelope/v2`, ordered item/terminal accounting,
+  structured exclusions, canonical tuple hashing, strict input/status validation, exact record
+  conservation, and the 1,000,000-record work cap.
+- Preserved Alpha 2's public tag, CI, asset hashes, and re-download evidence in the reconstructed
+  documentation.
+- Repeated 132 source tests, 19 focused tests, translation sync, compile, and diff checks. Fresh
+  wheel and sdist builds both report `0.2.0a3`; clean installs, deterministic Demo, audit,
+  no-overwrite, private permissions, modern envelope privacy, and extracted-sdist tests passed.
 
 ## 卡在哪儿
 
-- No Alpha 2 publication blocker remains. The post-release factual record is the only repository
-  housekeeping still pending.
-- No external-user adoption, repeat-use, or OpenAI programme eligibility is claimed.
+- No known source-design blocker remains.
+- Publication is gated on public Linux/macOS/Windows CI for the exact release commit.
+- External-user adoption and OpenAI programme eligibility remain unproven and are not release
+  claims.
 
 ## 下一步计划
 
-1. Restamp bilingual files, run diff and Handoff checks, and commit/push this factual post-release
-   record to `main` without moving the immutable Alpha 2 tag.
-2. Verify that record's CI, then stop and report the Release URL, evidence, and fresh GitHub
-   Stars/Forks/Watchers.
-3. Treat Alpha 3 as a future mapped candidate only; do not implement or publish it without a new
-   user instruction.
+1. Push the exact release commit, wait for green public CI, finalize release-facing facts, and
+   repeat CI if the commit changes.
+2. Create annotated tag `v0.2.0-alpha.3`, publish a non-latest GitHub prerelease, re-download all
+   assets, verify hashes, and clean-install both archives.
+3. Add a factual post-release record to `main`, verify its CI, and stop.
 
 ## 踩过哪些坑
 
-- The active development worktree contains later queued versions. Tagging or committing it would
-  mislabel later code as Alpha 2; only the sealed snapshot in this isolated worktree is valid.
-- Test execution can create untracked `__pycache__` directories. They are generated files and must
-  be removed only from this isolated worktree, never via a broad cleanup of the maintainer tree.
-- A candidate archive can prove the product boundary but not public provenance. The published
-  artifacts must correspond to the final tagged commit and be independently re-downloaded.
-- A green local macOS suite does not replace Linux/macOS/Windows CI. A failed public gate stops the
-  release instead of weakening tests or moving the tag.
-- Internal checksum records may contain absolute paths. Only a newly generated basename-only
-  `SHA256SUMS` may be attached publicly.
+- The frozen Alpha 3 source predates the public Alpha 2 release and incorrectly calls Alpha 2
+  unpublished. Only its audited delta is valid; the snapshot must not overwrite `origin/main`.
+- Frozen candidate archives cannot be uploaded as final public assets because corrected public
+  documentation changes the sdist. Public files must be rebuilt from the exact tagged commit.
+- The active development worktree contains later queued versions. It must never be tagged,
+  cleaned, reset, or used as Alpha 3 release input.
 
 ## 当前任务汇总
 
-- Status: `v0.2.0-alpha.2` is published and independently re-downloaded/verified; only this factual
-  post-release record and its CI remain.
-- Version boundary: package `0.2.0a2`; intended annotated tag `v0.2.0-alpha.2`; no later version is
-  included or authorised.
-- Verified gate: 122 local tests plus full public Python 3.10–3.13 Linux/macOS/Windows CI and
-  built-artefact/security smoke passed on the tagged commit.
-- GitHub snapshot before publication: 47 Stars, 1 Fork, 0 Watchers; stable `v0.1.1` remains latest.
-- One-line result: Alpha 2 turns an explicit Codex export into a bounded evidence envelope without
-  pretending to retrieve complete history or retaining user-selected target/path text.
+- Status: isolated Alpha 3 reconstruction in progress; no Alpha 3 tag or GitHub Release yet.
+- Version boundary: package `0.2.0a3`; intended tag `v0.2.0-alpha.3`.
+- Local release evidence: 132 source tests, 19 focused tests, builds, dual clean installs,
+  deterministic Demo, audit, privacy, and fail-closed checks passed; public CI is pending.
+- Authorised: exact Alpha 3 commit/push/tag/prerelease/assets/re-download verification and factual
+  release record. Not authorised: later versions, promotion, rename, plugin/programme submission,
+  Issues, PRs, or unrelated external messages.
 
 ## 当前架构与入口
 
-- CLI and routing: `src/requirement_ledger/cli.py`.
-- Codex input boundary: `src/requirement_ledger/codex_input.py`.
-- Review/report pipeline: `src/requirement_ledger/pipeline.py`, `review.py`, and `transcript.py`.
-- Safe output/error contracts: `src/requirement_ledger/safeio.py` and `errors.py`.
-- Regression suite: `tests/test_codex_input_envelope.py` plus the existing `tests/` suite.
-- User/release communication: `README.md`, `CHANGELOG.md`,
-  `docs/release-notes/v0.2.0-alpha.2.md`, and their Chinese mirrors.
+- CLI/routing: `src/requirement_ledger/cli.py` and `src/requirement_ledger/pipeline.py`.
+- Input boundary: `src/requirement_ledger/codex_input.py`.
+- Modern rollout adapter: `src/requirement_ledger/transcript.py`.
+- Regression suite: `tests/test_codex_modern_normalization.py` and
+  `tests/test_codex_input_envelope.py` plus the existing `tests/` suite.
 
 ## 运行与依赖
 
-- Supported Python: 3.10–3.13. Windows conditionally uses `tzdata>=2024.1`; Unix-like systems use
-  the standard library for timezone data.
-- Source test command: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q`.
+- Supported Python: 3.10–3.13. Windows conditionally uses `tzdata>=2024.1`.
+- Source tests: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q`.
 - Translation gate: `python3 scripts/check_translation_sync.py`.
 - Build: `python3 -m build --sdist --wheel`; build tooling is not a runtime dependency.
-- Release smoke must clean-install both archives and exercise version, Demo, review, and
-  `codex-scan` paths.
 
 ## 验证证据
 
-- The private release archive retains the sealed Alpha 2 source snapshot; its local path is not
-  published in this repository.
-- Frozen wheel: `requirement_ledger-0.2.0a2-py3-none-any.whl`, SHA-256
-  `0190c7902e64ab8e8c98363421274d92343b974edf7bf53462ae2077d1d246cd`.
-- Frozen sdist: `requirement_ledger-0.2.0-alpha.2.tar.gz`, SHA-256
-  `ad888a21b17408d02a8a17120bc84cb9f9b0e2c53c7b57b4e906d31b4b95de6e`.
-- Tagged commit `fb49947627516bca463094becde16a63d047e2d6` passed public CI runs
-  `33468720368` and `33468928114`: Python 3.10–3.13 on Linux, macOS, and Windows plus
-  built-artefact/security smoke.
-- Public wheel SHA-256:
-  `6dbb7b104a4a094138b87a0931d60030f58b3f8cfd6188f575fad9cae9c9094c`; public sdist:
-  `d50b607a18e910d4c4be1d0d9658fd58ad33330da9b7191cc063efc30e188d62`; public checksum file:
-  `b19d5981b643bbcc5c929b28a852aa73a26eaad09098f83c55d29809907275f0`.
-- Public downloads matched the approved files byte-for-byte and passed clean install plus the
-  Alpha 2 command and privacy smokes.
+- Frozen wheel SHA-256: `a46fa9b62dd5c8e702419743e312820214c5527f1da7d7405f26b3769e224b99`.
+- Frozen sdist SHA-256: `5c813a5fc3cf6f93f187b2cf02fe345e0f4be381567c8d2618faa57060601687`.
+- The frozen wheel's Python modules and the frozen sdist's shared files match the source snapshot
+  byte-for-byte. Final public hashes will be generated from the tagged commit.
 
 ## 授权与禁止动作
 
-- Authorised batch completed: Alpha 2 exact boundary, CI, annotated tag, non-latest prerelease,
-  three public assets, independent download verification, and this factual repository record.
-- Not authorised: publish later queued versions, move existing tags, create Issues/PRs, promote,
-  rename the repository, submit a plugin, apply to an OpenAI programme, send external messages, or
-  reset/clean/stash the maintainer's cumulative worktree.
-- Do not move the published Alpha 2 tag or replace its public assets.
+- Authorised: publish the exact Alpha 3 boundary and verify it publicly.
+- Not authorised: publish later versions, move old tags, replace old assets, promote, rename,
+  submit a plugin/programme application, create Issues/PRs, or alter the dirty development tree.
 
 ## 回滚
 
-- Before tagging, correct an error with a reviewed forward commit; never rewrite shared history.
-- After tagging, do not move or silently replace the tag or assets. Preserve evidence and use a
-  separately authorised corrective release if required.
-- The untouched cumulative development worktree and sealed final-candidate directory remain the
-  recovery sources; neither may be destructively cleaned.
+- Before tagging, fix a failed gate with a reviewed forward commit or stop the release.
+- After tagging, never move or silently replace the tag or assets; use a separately authorised
+  corrective release if required.

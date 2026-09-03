@@ -20,7 +20,46 @@ MAX_CODEX_INPUT_BYTES = 64 * 1024 * 1024
 MAX_LINE_BYTES = 200_000
 MAX_PRIVATE_TEXT = 8_000
 MAX_EVENTS_PER_INPUT = 10_000
+MAX_CODEX_RECORDS = 1_000_000
 MAX_TOOL_NAME = 512
+MAX_OPAQUE_SOURCE_ID = 2_048
+
+CODEX_COMPLETED_ITEM_TYPES = (
+    "UserMessage", "FunctionCallOutput", "HookPrompt", "AgentMessage", "Plan",
+    "Reasoning", "CommandExecution", "DynamicToolCall", "WebSearch", "ImageView",
+    "Extension", "ImageGeneration", "EnteredReviewMode", "ExitedReviewMode",
+    "FileChange", "McpToolCall", "ContextCompaction",
+)
+CODEX_COMPLETED_ITEM_STATUSES = {
+    "CommandExecution": ("completed", "failed", "declined"),
+    "DynamicToolCall": ("completed", "failed"),
+    "McpToolCall": ("completed", "failed"),
+    "FileChange": ("completed", "failed", "declined"),
+}
+CODEX_USER_INPUT_BLOCK_TYPES = (
+    "text", "image", "local_image", "audio", "local_audio", "skill", "mention",
+)
+CODEX_SEMANTIC_EXCLUSION_CODES = (
+    "OBSERVED_AUTOMATION_METADATA",
+    "OBSERVED_DELEGATION_RECORD",
+    "OBSERVED_SUBAGENT_RECORD",
+    "OBSERVED_SYSTEM_RECORD",
+    "OBSERVED_NON_EVIDENCE_METADATA",
+)
+_CODEX_DELEGATION_EVENT_TYPES = {
+    "collab_agent_spawn_begin", "collab_agent_spawn_end",
+    "collab_agent_interaction_begin", "collab_agent_interaction_end",
+    "collab_waiting_begin", "collab_waiting_end",
+    "collab_close_begin", "collab_close_end",
+    "collab_resume_begin", "collab_resume_end",
+}
+_CODEX_NON_EVIDENCE_EVENT_TYPES = {
+    "token_count", "thread_goal_updated", "thread_rolled_back", "turn_aborted",
+    "task_started", "turn_started", "thread_settings_applied",
+}
+_CODEX_METADATA_RECORD_TYPES = {
+    "compacted", "turn_context", "world_state", "security_risk_score", "realtime_item",
+}
 
 CORRECTIONS = (
     "不对", "不是这", "不是我", "错了", "搞错", "改成", "重新", "回退", "撤销", "别再",
@@ -389,6 +428,458 @@ def _codex_accounting(
     return counts
 
 
+def _bounded_source_id(value: Any) -> str | None:
+    if (not isinstance(value, str) or not value or len(value) > MAX_OPAQUE_SOURCE_ID
+            or any(ord(character) < 32 or ord(character) == 127 for character in value)):
+        return None
+    return value
+
+
+def _modern_user_text(item: dict[str, Any]) -> str | None:
+    """Extract only official ``UserInput::Text`` blocks from a UserMessage item."""
+
+    content = item.get("content")
+    if not isinstance(content, list):
+        return None
+    required_text_fields = {
+        "image": ("image_url",),
+        "local_image": ("path",),
+        "audio": ("audio_url",),
+        "local_audio": ("path",),
+        "skill": ("name", "path"),
+        "mention": ("name", "path"),
+    }
+    parts: list[str] = []
+    for block in content:
+        if not isinstance(block, dict):
+            return None
+        block_type = block.get("type")
+        if block_type not in CODEX_USER_INPUT_BLOCK_TYPES:
+            return None
+        if block_type == "text":
+            value = block.get("text")
+            if (not isinstance(value, str)
+                    or ("text_elements" in block
+                        and not isinstance(block.get("text_elements"), list))):
+                return None
+            parts.append(value)
+            continue
+        if any(not isinstance(block.get(field), str)
+               for field in required_text_fields[block_type]):
+            return None
+    return "".join(parts)
+
+
+def _structured_source_tag(value: Any, depth: int = 0) -> str | None:
+    """Read only known source discriminators; never search arbitrary metadata text."""
+
+    if depth > 3:
+        return None
+    if isinstance(value, str):
+        return value.lower()
+    if not isinstance(value, dict):
+        return None
+    for key in ("type", "kind", "source", "thread_source"):
+        if key in value:
+            tag = _structured_source_tag(value[key], depth + 1)
+            if tag is not None:
+                return tag
+    return None
+
+
+def _completed_item_status(kind: str, item: dict[str, Any]) -> str | None:
+    status = item.get("status")
+    if kind in CODEX_COMPLETED_ITEM_STATUSES and kind != "FileChange":
+        return (status if isinstance(status, str)
+                and status in CODEX_COMPLETED_ITEM_STATUSES[kind] else None)
+    if kind == "FileChange" and status is not None:
+        return (status if isinstance(status, str)
+                and status in CODEX_COMPLETED_ITEM_STATUSES[kind] else None)
+    return "completed"
+
+
+def _rollout_identity(*parts: str) -> str:
+    material = json.dumps(
+        list(parts), ensure_ascii=False, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(material).hexdigest()
+
+
+def _opaque_rollout_id(prefix: str, source_digest: str, *parts: str) -> str:
+    return prefix + _rollout_identity(source_digest, *parts)[:24]
+
+
+def _codex_scoped(
+    handle: BinaryIO,
+    since: datetime,
+    until: datetime,
+    source_digest: str,
+) -> tuple[list[dict[str, Any]], dict[str, int], dict[str, int], dict[str, Any]]:
+    """Normalize one bounded modern/legacy Codex rollout without content heuristics.
+
+    ``item_completed`` snapshots are coalesced by ``(turn_id, item.id)``.  The
+    first physical position stays fixed while the latest valid snapshot supplies
+    status and message data.  Ordinary events are never content-deduplicated.
+    """
+
+    accounting = {
+        "physical_records": 0,
+        "recognized_records": 0,
+        "included_events": 0,
+        "outside_window_records": 0,
+        "missing_or_invalid_timestamp_records": 0,
+        "malformed_records": 0,
+        "unsupported_records": 0,
+        "oversized_records": 0,
+    }
+    stats = {
+        "oversized_lines": 0,
+        "unparsable_or_unknown_lines": 0,
+        "dropped_events": 0,
+        "dropped_tool_mappings": 0,
+        "truncated_event_fields": 0,
+        "dropped_item_snapshot_records": 0,
+        "dropped_turn_terminal_snapshot_records": 0,
+        "conflicting_item_snapshots": 0,
+    }
+    semantic_counts = {code: 0 for code in CODEX_SEMANTIC_EXCLUSION_CODES}
+    events = _LimitedEvents()
+    fallback = _LimitedEvents()
+    calls = _LimitedToolNames()
+    saw_typed_user = False
+    completed: dict[str, dict[str, Any]] = {}
+    terminals: dict[str, dict[str, Any]] = {}
+    ordinary_recognized_records = 0
+    recognized_item_snapshot_records = 0
+    recognized_turn_terminal_records = 0
+    duplicate_snapshots = 0
+    duplicate_terminal_snapshots = 0
+
+    def recognize_ordinary() -> None:
+        nonlocal ordinary_recognized_records
+        accounting["recognized_records"] += 1
+        ordinary_recognized_records += 1
+
+    def recognize_item_snapshot() -> None:
+        nonlocal recognized_item_snapshot_records
+        accounting["recognized_records"] += 1
+        recognized_item_snapshot_records += 1
+
+    def recognize_turn_terminal() -> None:
+        nonlocal recognized_turn_terminal_records
+        accounting["recognized_records"] += 1
+        recognized_turn_terminal_records += 1
+
+    def exclude(code: str) -> None:
+        accounting["recognized_records"] += 1
+        semantic_counts[code] += 1
+
+    def append_event(target: _LimitedEvents, physical: int, event: dict[str, Any]) -> None:
+        event["metadata"]["physical_record"] = physical
+        target.append(event)
+
+    for physical, (size, raw) in enumerate(_input_lines(handle), start=1):
+        if physical > MAX_CODEX_RECORDS:
+            raise InputLimitError(
+                f"Codex input exceeds the {MAX_CODEX_RECORDS:,}-record work limit"
+            )
+        accounting["physical_records"] += 1
+        if raw is None:
+            if size > MAX_LINE_BYTES:
+                accounting["oversized_records"] += 1
+                stats["oversized_lines"] += 1
+            else:
+                accounting["malformed_records"] += 1
+                stats["unparsable_or_unknown_lines"] += 1
+            continue
+        try:
+            row = json.loads(raw)
+        except ValueError:
+            accounting["malformed_records"] += 1
+            stats["unparsable_or_unknown_lines"] += 1
+            continue
+        if not isinstance(row, dict):
+            accounting["unsupported_records"] += 1
+            continue
+        at = _strict_stamp(row.get("timestamp"))
+        if at is None:
+            accounting["missing_or_invalid_timestamp_records"] += 1
+            continue
+        if not _inside_half_open(at, since, until):
+            accounting["outside_window_records"] += 1
+            continue
+        payload = row.get("payload")
+        if not isinstance(payload, dict):
+            accounting["unsupported_records"] += 1
+            continue
+
+        kind = row.get("type")
+        payload_type = payload.get("type")
+        if kind in ("inter_agent_communication", "inter_agent_communication_metadata"):
+            exclude("OBSERVED_DELEGATION_RECORD")
+            continue
+        if kind == "session_meta":
+            source_tag = (_structured_source_tag(payload.get("thread_source"))
+                          or _structured_source_tag(payload.get("source")))
+            if source_tag == "automation":
+                exclude("OBSERVED_AUTOMATION_METADATA")
+            elif source_tag == "subagent":
+                exclude("OBSERVED_SUBAGENT_RECORD")
+            else:
+                exclude("OBSERVED_NON_EVIDENCE_METADATA")
+            continue
+        if kind in _CODEX_METADATA_RECORD_TYPES:
+            exclude("OBSERVED_NON_EVIDENCE_METADATA")
+            continue
+
+        if kind == "event_msg":
+            if payload_type in _CODEX_DELEGATION_EVENT_TYPES:
+                exclude("OBSERVED_DELEGATION_RECORD")
+                continue
+            if payload_type in _CODEX_NON_EVIDENCE_EVENT_TYPES:
+                exclude("OBSERVED_NON_EVIDENCE_METADATA")
+                continue
+            if payload_type == "sub_agent_activity":
+                exclude("OBSERVED_SUBAGENT_RECORD")
+                continue
+            if payload_type == "user_message":
+                message = payload.get("message")
+                if not isinstance(message, str):
+                    accounting["unsupported_records"] += 1
+                    continue
+                recognize_ordinary()
+                saw_typed_user = True
+                append_event(events, physical, _event(
+                    "correction" if is_correction(message) else "user_message", at, message
+                ))
+                continue
+            if payload_type == "agent_message":
+                recognize_ordinary()
+                append_event(events, physical, _event("assistant_message", at))
+                continue
+            if payload_type == "patch_apply_end":
+                recognize_ordinary()
+                if payload.get("success") is False:
+                    append_event(events, physical, _event(
+                        "tool_error", at, str(payload.get("stderr") or "patch failed"),
+                        tool="patch_apply",
+                    ))
+                continue
+            if payload_type in ("task_complete", "turn_complete"):
+                turn_id = _bounded_source_id(payload.get("turn_id"))
+                if turn_id is None:
+                    accounting["unsupported_records"] += 1
+                    continue
+                recognize_turn_terminal()
+                key = _rollout_identity(turn_id)
+                existing = terminals.get(key)
+                if existing is None:
+                    if len(terminals) >= MAX_EVENTS_PER_INPUT:
+                        stats["dropped_turn_terminal_snapshot_records"] += 1
+                        continue
+                    terminals[key] = {
+                        "id": _opaque_rollout_id("cturn_", source_digest, turn_id),
+                        "kind": "task_complete",
+                        "first_physical_record": physical,
+                        "latest_physical_record": physical,
+                        "first_occurred_at": at.isoformat(),
+                        "latest_occurred_at": at.isoformat(),
+                        "snapshot_count": 1,
+                    }
+                else:
+                    duplicate_terminal_snapshots += 1
+                    existing["latest_physical_record"] = physical
+                    existing["latest_occurred_at"] = at.isoformat()
+                    existing["snapshot_count"] += 1
+                continue
+            if payload_type == "item_completed":
+                turn_id = _bounded_source_id(payload.get("turn_id"))
+                item = payload.get("item")
+                if turn_id is None or not isinstance(item, dict):
+                    accounting["unsupported_records"] += 1
+                    continue
+                item_id = _bounded_source_id(item.get("id"))
+                item_kind = item.get("type")
+                if item_id is None or not isinstance(item_kind, str):
+                    accounting["unsupported_records"] += 1
+                    continue
+                if item_kind == "CollabAgentToolCall":
+                    exclude("OBSERVED_DELEGATION_RECORD")
+                    continue
+                if item_kind == "SubAgentActivity":
+                    exclude("OBSERVED_SUBAGENT_RECORD")
+                    continue
+                if item_kind not in CODEX_COMPLETED_ITEM_TYPES:
+                    accounting["unsupported_records"] += 1
+                    continue
+                status = _completed_item_status(item_kind, item)
+                if status is None:
+                    accounting["unsupported_records"] += 1
+                    continue
+                user_text = None
+                if item_kind == "UserMessage":
+                    user_text = _modern_user_text(item)
+                    if user_text is None:
+                        accounting["unsupported_records"] += 1
+                        continue
+                    saw_typed_user = True
+                if item_kind == "AgentMessage" and not isinstance(item.get("content"), list):
+                    accounting["unsupported_records"] += 1
+                    continue
+
+                identity = _rollout_identity(turn_id, item_id)
+                existing = completed.get(identity)
+                if existing is not None and existing["kind"] != item_kind:
+                    accounting["unsupported_records"] += 1
+                    stats["conflicting_item_snapshots"] += 1
+                    continue
+                recognize_item_snapshot()
+                if existing is None:
+                    if len(completed) >= MAX_EVENTS_PER_INPUT:
+                        stats["dropped_item_snapshot_records"] += 1
+                        continue
+                    completed[identity] = {
+                        "id": _opaque_rollout_id(
+                            "citem_", source_digest, turn_id, item_id
+                        ),
+                        "kind": item_kind,
+                        "status": status,
+                        "first_physical_record": physical,
+                        "latest_physical_record": physical,
+                        "first_occurred_at": at.isoformat(),
+                        "latest_occurred_at": at.isoformat(),
+                        "snapshot_count": 1,
+                        "_user_text": user_text,
+                    }
+                else:
+                    duplicate_snapshots += 1
+                    existing["status"] = status
+                    existing["latest_physical_record"] = physical
+                    existing["latest_occurred_at"] = at.isoformat()
+                    existing["snapshot_count"] += 1
+                    existing["_user_text"] = user_text
+                continue
+            accounting["unsupported_records"] += 1
+            continue
+
+        if kind == "response_item":
+            if payload_type in ("function_call", "custom_tool_call"):
+                recognize_ordinary()
+                name, name_truncated = _tool_name(payload.get("name"))
+                calls.remember(_call_key(payload.get("call_id")), name)
+                append_event(events, physical, _event(
+                    "tool_call", at, tool=name, tool_name_truncated=name_truncated
+                ))
+                continue
+            if payload_type in ("function_call_output", "custom_tool_call_output"):
+                recognize_ordinary()
+                text = _text(payload.get("output")) or str(payload.get("output") or "")
+                if looks_like_error(text):
+                    append_event(events, physical, _event(
+                        "tool_error", at, text,
+                        tool=calls.get(_call_key(payload.get("call_id")), "unknown"),
+                    ))
+                continue
+            if payload_type == "message":
+                role = payload.get("role")
+                if role in ("system", "developer"):
+                    exclude("OBSERVED_SYSTEM_RECORD")
+                    continue
+                if role == "user":
+                    recognize_ordinary()
+                    message = _text(payload.get("content"))
+                    append_event(fallback, physical, _event(
+                        "correction" if is_correction(message) else "user_message", at, message
+                    ))
+                    continue
+                if role == "assistant":
+                    recognize_ordinary()
+                    continue
+            accounting["unsupported_records"] += 1
+            continue
+
+        accounting["unsupported_records"] += 1
+
+    modern_events = _LimitedEvents()
+    for item in completed.values():
+        physical = int(item["first_physical_record"])
+        at = _strict_stamp(item["first_occurred_at"])
+        if item["kind"] == "UserMessage":
+            text = str(item.get("_user_text") or "")
+            append_event(modern_events, physical, _event(
+                "correction" if is_correction(text) else "user_message", at, text,
+                normalized_from="item_completed",
+            ))
+        elif item["kind"] == "AgentMessage":
+            append_event(modern_events, physical, _event(
+                "assistant_message", at, normalized_from="item_completed"
+            ))
+        elif item["status"] in ("failed", "declined") and item["kind"] in {
+            "CommandExecution", "DynamicToolCall", "McpToolCall", "FileChange",
+        }:
+            append_event(modern_events, physical, _event(
+                "tool_error", at, tool=item["kind"],
+                normalized_from="item_completed", structured_status=item["status"],
+            ))
+
+    candidates = list(events)
+    if not saw_typed_user:
+        candidates.extend(fallback)
+    candidates.extend(modern_events)
+    candidates.sort(key=lambda event: int(event.get("metadata", {}).get("physical_record", 0)))
+    retained_events = candidates[:MAX_EVENTS_PER_INPUT]
+    stats["dropped_events"] += (
+        events.dropped + modern_events.dropped
+        + (fallback.dropped if not saw_typed_user else 0)
+        + max(0, len(candidates) - MAX_EVENTS_PER_INPUT)
+    )
+    stats["dropped_tool_mappings"] += calls.dropped
+    stats["truncated_event_fields"] += (
+        events.truncated_fields + modern_events.truncated_fields
+        + (fallback.truncated_fields if not saw_typed_user else 0)
+    )
+    accounting["included_events"] = len(retained_events)
+
+    ordered_items = []
+    for item in completed.values():
+        ordered_items.append({key: value for key, value in item.items() if not key.startswith("_")})
+    normalization = {
+        "schema": "codex-modern-normalization/v1",
+        "parser_version": "2",
+        "order": "first-physical-record-occurrence",
+        "ordinary_recognized_records": ordinary_recognized_records,
+        "ordered_completed_items": ordered_items,
+        "ordered_turn_terminals": list(terminals.values()),
+        "snapshot_dedupe": {
+            "recognized_item_snapshot_records": recognized_item_snapshot_records,
+            "retained_item_snapshot_records": sum(
+                item["snapshot_count"] for item in ordered_items
+            ),
+            "unique_completed_items": len(ordered_items),
+            "duplicate_item_snapshots": duplicate_snapshots,
+            "dropped_item_snapshot_records": stats["dropped_item_snapshot_records"],
+            "recognized_turn_terminal_records": recognized_turn_terminal_records,
+            "retained_turn_terminal_snapshot_records": sum(
+                item["snapshot_count"] for item in terminals.values()
+            ),
+            "unique_turn_terminals": len(terminals),
+            "duplicate_turn_terminal_snapshots": duplicate_terminal_snapshots,
+            "dropped_turn_terminal_snapshot_records": (
+                stats["dropped_turn_terminal_snapshot_records"]
+            ),
+            "identity": "sha256(canonical-json([source_sha256,turn_id,item_id]))",
+            "first_position_preserved": True,
+            "latest_snapshot_wins": True,
+        },
+        "semantic_exclusions": [
+            {"code": code, "records": semantic_counts[code]}
+            for code in CODEX_SEMANTIC_EXCLUSION_CODES
+        ],
+        "supported_item_types": list(CODEX_COMPLETED_ITEM_TYPES),
+    }
+    return retained_events, stats, accounting, normalization
+
+
 def _plain(handle: BinaryIO, since: datetime | None,
            until: datetime | None) -> tuple[list[dict[str, Any]], dict[str, int]]:
     if since or until:
@@ -562,25 +1053,31 @@ def parse_scoped_codex_transcript(
         if initial_signature != _transcript_stat_signature(final_fd):
             raise InputChangedError("Codex input changed while it was being read")
 
+    source_digest = digest.hexdigest()
     buffer = BytesIO(payload)
-    events, stats = _codex(
-        buffer, since, until, require_offset=True, half_open=True
+    events, stats, accounting, normalization = _codex_scoped(
+        buffer, since, until, source_digest
     )
-    buffer.seek(0)
-    accounting = _codex_accounting(buffer, since, until, len(events))
     unaccounted_semantics = sum(accounting[key] for key in (
         "missing_or_invalid_timestamp_records", "malformed_records",
         "unsupported_records", "oversized_records",
     ))
+    observed_semantic_exclusions = sum(
+        item["records"] for item in normalization["semantic_exclusions"]
+        if item["code"] != "OBSERVED_NON_EVIDENCE_METADATA"
+    )
     completeness = (
-        "incomplete" if any(stats.values()) or unaccounted_semantics else "complete"
+        "incomplete" if (any(stats.values()) or unaccounted_semantics
+                         or observed_semantic_exclusions) else "complete"
     )
     return {
-        "digest": digest.hexdigest(),
+        "digest": source_digest,
         "bytes": len(payload),
         "provider": "codex",
+        "parser_version": "2",
         "events": events,
         "stats": stats,
         "accounting": accounting,
+        "normalization": normalization,
         "completeness": completeness,
     }

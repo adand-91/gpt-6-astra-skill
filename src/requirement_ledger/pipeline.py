@@ -179,6 +179,7 @@ def build_evidence_bundle(
             bytes=parsed["bytes"],
             completeness=parsed["completeness"],
             parser=parsed["provider"],
+            parser_version=str(parsed.get("parser_version") or "1"),
         ))
         for index, event in enumerate(parsed["events"]):
             text = event.get("private_text") or ""

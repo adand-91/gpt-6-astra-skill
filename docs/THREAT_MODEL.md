@@ -44,6 +44,14 @@ an instruction, approval, or reason to widen scope.
 | A selected export escapes its approved directory | `codex-scan` requires one explicit non-home scope root, rejects traversal/link/reparse/hard-link boundaries, and performs no enumeration |
 | The envelope hashes different bytes from those parsed | the bounded Codex path captures once from one securely opened file and hashes/parses the same captured bytes |
 | Source text or a local path leaks through the envelope | the envelope schema allows fixed metadata/counts only; source text, file name, and path are absent, while the enclosing evidence remains explicitly private |
+| Repeated lifecycle snapshots inflate one completed item | coalesce only structured `item_completed` records by turn + item identity; preserve first position and use the latest valid snapshot |
+| `task_complete` hides a late tool completion | retain the terminal and every later supported completed item in physical-record order; never interpret the terminal as an end-of-file assertion |
+| Words such as “done”, “automation”, or “delegation” alter structure | completion and semantic exclusions require exact protocol discriminators; ordinary text never creates either state |
+| A named Skill block leaks its name or local path | extract only official user text blocks into private evidence; the metadata envelope stores neither Skill blocks nor raw rollout identifiers |
+| Crafted IDs alias two lifecycle identities | reject control-bearing IDs and derive private IDs from canonical JSON tuples rather than delimiter concatenation |
+| A future or malformed user-input block silently loses a requirement | allow only current official text/image/audio/Skill/mention discriminators with required fields; unknown shapes are unsupported and make evidence incomplete |
+| Forged normalization counters pass schema validation | require retained, duplicate, dropped, ordinary, terminal, and semantic-exclusion counts to conserve exactly against recognized records |
+| Tiny records turn the 64 MiB byte cap into excessive parser work | fail closed after 1,000,000 physical records as well as at the byte cap |
 
 ## Residual risks
 

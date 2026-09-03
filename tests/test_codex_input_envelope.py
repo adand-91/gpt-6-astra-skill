@@ -95,7 +95,11 @@ class TestCodexInputEnvelope(unittest.TestCase):
             )
 
             envelope = bundle["codex_input_envelope"]
-            self.assertEqual(envelope["schema"], "codex-input-envelope/v1")
+            transcript_sources = [
+                item for item in bundle["sources"] if item["kind"] == "transcript"
+            ]
+            self.assertEqual(transcript_sources[0]["parser_version"], "2")
+            self.assertEqual(envelope["schema"], "codex-input-envelope/v2")
             self.assertEqual(envelope["window"]["semantics"], "[start,end)")
             self.assertEqual(envelope["window"]["start"], self.START)
             self.assertEqual(envelope["window"]["end"], self.END)
@@ -103,6 +107,8 @@ class TestCodexInputEnvelope(unittest.TestCase):
                 "physical_records": 5,
                 "recognized_records": 1,
                 "included_events": 1,
+                "unique_completed_items": 0,
+                "unique_turn_terminals": 0,
             })
             exclusions = {item["code"]: item["records"] for item in envelope["exclusions"]}
             self.assertEqual(exclusions["OUTSIDE_HALF_OPEN_WINDOW"], 1)
@@ -128,6 +134,10 @@ class TestCodexInputEnvelope(unittest.TestCase):
             self.assertFalse(envelope["privacy"]["contains_original_text"])
             self.assertFalse(envelope["privacy"]["contains_file_name"])
             self.assertFalse(envelope["privacy"]["contains_absolute_paths"])
+            self.assertFalse(envelope["privacy"]["contains_raw_rollout_identifiers"])
+            self.assertEqual(
+                envelope["coverage"]["semantic_normalization"], "partial-alpha.3"
+            )
             self.assertEqual(envelope["coverage"]["captured_bytes_binding"], "complete")
             self.assertEqual(
                 envelope["coverage"]["path_identity_check"],
