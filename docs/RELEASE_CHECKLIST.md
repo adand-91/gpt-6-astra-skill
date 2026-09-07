@@ -244,3 +244,15 @@ Use this for every public version. A checked box must point to command output or
   named-Skill envelope privacy, and terminal/item assertions.
 - No later version, promotion, repository rename, plugin submission, programme application,
   Issue, PR, or external-user adoption is claimed.
+
+## v0.2.0-beta.1 local qualification — 2026-09-07
+
+- Scope: installed audit/daily/weekly scaffolds and explicit local time windows only.
+- Reconstructed from the public Alpha 3 baseline using the checksum-verified 2026-08-30 Beta 1
+  source. AppleDouble metadata, obsolete public records and later Beta/RC/Jarvis work were excluded.
+- Source and extracted-sdist suites: 138 passed each. Translation, compile and diff checks passed.
+- Clean wheel/sdist: 0.2.0b1; all three modes, 0600, no-overwrite, invalid-input and deterministic
+  Demo passed. Archive inspection found no private files, maintainer paths or later modules.
+- Independent bounded implementation review: no release blocker. Installed weekly smoke was added.
+- Public exact-commit CI, annotated tag, prerelease, public checksums and re-download verification
+  remain gates. These actions are authorised for Beta 1 only.

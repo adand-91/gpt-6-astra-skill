@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime
 import hashlib
 import json
 import sys
@@ -17,7 +18,7 @@ from .pipeline import (analyze_evidence, build_codex_scan_bundle, build_evidence
                        validate_outcomes)
 from .privacy import finding_counts
 from .review import ReviewInputError, check as check_review_report
-from .review import write_audit_scaffold
+from .review import write_review_scaffold
 from .safeio import (explicit_regular_file, new_output_directory, private_output_path,
                      read_json_file, share_output_path, write_new_json, write_new_text)
 
@@ -89,16 +90,22 @@ def _parser() -> argparse.ArgumentParser:
 
     review_init = sub.add_parser(
         "review-init",
-        help="create a new private, analysis-only audit review scaffold (alpha)",
+        help="create a new private, analysis-only audit/daily/weekly review scaffold",
     )
-    review_init.add_argument("--mode", default="audit")
+    review_init.add_argument("--mode", choices=("audit", "daily", "weekly"), default="audit")
     review_init.add_argument("--target", required=True,
                              help="explicit conversation, Skill, or project target")
-    review_init.add_argument("--start", required=True,
-                             help="explicit offset-aware ISO-8601 window start")
-    review_init.add_argument("--end", required=True,
-                             help="explicit offset-aware ISO-8601 window end")
+    review_init.add_argument("--start", help="explicit offset-aware ISO-8601 window start")
+    review_init.add_argument("--end", help="explicit offset-aware ISO-8601 window end")
     review_init.add_argument("--timezone", required=True, help="explicit IANA timezone")
+    review_init.add_argument(
+        "--at",
+        help="offset-aware reference timestamp for the most recently completed daily/weekly window",
+    )
+    review_init.add_argument(
+        "--boundary-hour", type=int, default=8,
+        help="local daily/weekly boundary hour from 0 through 23 (default: 8)",
+    )
     review_init.add_argument("--output", required=True, help="new private Markdown output path")
 
     review_check = sub.add_parser("review-check", help="mechanically validate one explicit review report")
@@ -211,10 +218,28 @@ def run(args: argparse.Namespace) -> int:
         return 3 if findings else 0
 
     if args.command == "review-init":
-        if args.mode != "audit":
-            raise ReviewInputError("review-init alpha supports only mode=audit")
-        output = write_audit_scaffold(args.output, args.target, args.start, args.end, args.timezone)
-        print(f"WROTE_PRIVATE_AUDIT_SCAFFOLD {output}")
+        if args.at and (args.start is not None or args.end is not None):
+            raise ReviewInputError("at cannot be combined with an explicit start/end window")
+        reference = None
+        if args.at:
+            value = args.at[:-1] + "+00:00" if args.at.endswith("Z") else args.at
+            try:
+                reference = datetime.fromisoformat(value)
+            except ValueError as exc:
+                raise ReviewInputError("at must be an offset-aware ISO-8601 timestamp") from exc
+            if reference.tzinfo is None or reference.utcoffset() is None:
+                raise ReviewInputError("at must be an offset-aware ISO-8601 timestamp")
+        output = write_review_scaffold(
+            args.output,
+            args.mode,
+            args.target,
+            args.timezone,
+            start=args.start,
+            end=args.end,
+            boundary_hour=args.boundary_hour,
+            now=reference,
+        )
+        print(f"WROTE_PRIVATE_{args.mode.upper()}_SCAFFOLD {output}")
         return 0
 
     if args.command == "review-check":

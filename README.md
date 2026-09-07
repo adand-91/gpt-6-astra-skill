@@ -1,7 +1,7 @@
 # Requirement Ledger AI
 
-**Requirement Ledger has a stable explicit-evidence v0.1.1 and a `v0.2.0-alpha.3`
-prerelease for bounded modern Codex inputs.** When the host exposes bounded task history, name a Codex
+**Requirement Ledger has a stable explicit-evidence v0.1.1 and a `v0.2.0-beta.1`
+prerelease adding daily and weekly review scaffolds.** When the host exposes bounded task history, name a Codex
 conversation, Agent Skill, or project and the Skill can recover related context, prepare concrete
 change cards, and compare the same case before and after an authorised edit. The Python package
 does not yet ship its own Codex history adapter.
@@ -13,7 +13,7 @@ does not yet ship its own Codex history adapter.
 
 [中文说明](README.zh-CN.md) · [v0.1 CLI contract](V0.1_CONTRACT.md) ·
 [v0.2 host contract](V0.2_HOST_CONTRACT.md) ·
-[Alpha 3 release notes](docs/release-notes/v0.2.0-alpha.3.md) ·
+[Beta 1 release notes](docs/release-notes/v0.2.0-beta.1.md) ·
 [Codex alignment research](docs/CODEX_ALIGNMENT_RESEARCH.md) · [update map](UPDATE_MAP.md) ·
 [roadmap](ROADMAP.md) · [open gaps](docs/PROJECT_GAPS.md) · [security](SECURITY.md)
 
@@ -55,15 +55,31 @@ synthetic [walkthrough](docs/use-cases/improve-an-agent-skill.md).
 | Daily review | “Review yesterday with Requirement Ledger.” | Reconstructs the previous workday, checks earlier changes, and recommends one improvement |
 | Weekly review | “Run the weekly Requirement Ledger review.” | Deduplicates the week, checks maintenance health, and links relevant GitHub or official industry changes |
 
-Alpha 3 keeps the Alpha 1 audit scaffold and checker, then extends Alpha 2's installed
-`codex-scan` path for one explicitly selected export with supported modern rollout normalisation.
-Daily and weekly are documented host contracts and reference templates, not initialisation modes
-in this prerelease. A one-time audit
-stays on the named target. Future daily and weekly modes may enumerate Codex projects active only
-in their explicit time window. If the host cannot retrieve history, it must ask the user to select
-a task or bounded export rather than claim complete coverage.
+Beta 1 makes `audit`, `daily`, and `weekly` available through installed `review-init`.
+It creates empty, private review documents; it does not retrieve history, fill in findings, or
+schedule reviews. Daily and weekly use the last completed local one-day or seven-day window,
+with a configurable boundary hour. The host still needs separately authorised evidence to
+produce a meaningful review. Alpha 3's explicit `codex-scan` remains compatible.
 
 Requirement Ledger AI is the guide and evidence layer, not a hidden patch bot.
+
+## What v0.2.0-beta.1 adds
+
+- Installed daily and weekly review scaffolds with their own report sections.
+- Explicit timezones, an optional reference timestamp, and daylight-saving boundary handling.
+- Existing audit windows, private output, no-overwrite behaviour, and analysis-only authority.
+
+After installing this prerelease, create and check an empty daily review:
+
+```bash
+requirement-ledger review-init --mode daily --target example-project --timezone Asia/Shanghai --at 2026-09-07T09:00:00+08:00 --output daily.md
+requirement-ledger review-check daily.md
+```
+
+Use `--mode weekly` for the preceding seven-day window. `--boundary-hour` defaults to 8;
+`--at` defaults to the current time for daily/weekly. Audit still requires explicit `--start`
+and `--end`; all three modes accept an explicit pair instead of an automatic window.
+Passing `review-check` validates the document format, not the truth or completeness of findings.
 
 ## What v0.2.0-alpha.3 adds
 

@@ -7,7 +7,7 @@ whose authority is permanently ``analysis-only``.
 
 from __future__ import annotations
 
-from datetime import date, datetime
+from datetime import date, datetime, time, timedelta, timezone as datetime_timezone
 import importlib.util
 from pathlib import Path
 import re
@@ -316,38 +316,78 @@ def validate_window(start: str, end: str, timezone: str) -> tuple[datetime, date
     return start_at, end_at, zone
 
 
-def build_audit_scaffold(target: str, start: str, end: str, timezone: str,
-                         *, generated_at: datetime | None = None) -> str:
-    """Build a zero-source, analysis-only audit scaffold without reading history."""
-    target = target.strip()
-    if not target:
+def _target(value: str) -> str:
+    value = value.strip()
+    if not value:
         raise ReviewInputError("target must be explicit and non-empty")
-    if any(character in target for character in "\r\n\x00"):
+    if any(character in value for character in "\r\n\x00"):
         raise ReviewInputError("target must be a single line")
-    start_at, end_at, zone = validate_window(start, end, timezone)
-    if generated_at is None:
-        generated_at = datetime.now(zone)
-    elif generated_at.tzinfo is None or generated_at.utcoffset() is None:
-        raise ReviewInputError("generated_at must be offset-aware when supplied")
-    generated_at = generated_at.astimezone(zone)
-    return f"""---
-type: requirement-ledger-review
-schema: review-report/v1
-mode: audit
-status: draft
-target: {target}
-coverage: {start_at.isoformat()} -> {end_at.isoformat()}
-timezone: {timezone}
-generated_at: {generated_at.isoformat(timespec='seconds')}
-authorization: analysis-only
-authorization_ref: not-applicable
-adapter: requirement-ledger-cli-review-init
-source_count: 0
-completeness: incomplete
-ecosystem_status: not-requested
----
+    return value
 
-# One-time review — {target}
+
+def _boundary_hour(value: int) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= 23:
+        raise ReviewInputError("boundary_hour must be an integer from 0 through 23")
+    return value
+
+
+def _local_boundary(day: date, hour: int, zone: ZoneInfo) -> datetime:
+    """Resolve a local boundary deterministically across DST gaps and overlaps.
+
+    The first occurrence wins when a wall time is repeated.  When a wall time does not
+    exist, the boundary advances to the first valid local minute.  This preserves a
+    human-selected wall-clock boundary without constructing an imaginary timestamp.
+    """
+    requested = datetime.combine(day, time(hour=hour))
+    for minute in range(181):
+        wall = requested + timedelta(minutes=minute)
+        candidates: list[datetime] = []
+        for fold in (0, 1):
+            candidate = wall.replace(tzinfo=zone, fold=fold)
+            round_trip = candidate.astimezone(datetime_timezone.utc).astimezone(zone)
+            if round_trip.replace(tzinfo=None) == wall and round_trip.fold == fold:
+                candidates.append(candidate)
+        if candidates:
+            return min(candidates, key=lambda value: value.astimezone(datetime_timezone.utc))
+    raise ReviewInputError("local review boundary could not be resolved within three hours")
+
+
+def calculate_review_window(
+    mode: str,
+    timezone: str,
+    *,
+    boundary_hour: int = 8,
+    now: datetime | None = None,
+) -> tuple[datetime, datetime]:
+    """Return the last fully completed local daily or weekly half-open window."""
+    if mode not in {"daily", "weekly"}:
+        raise ReviewInputError("automatic review windows support only mode=daily or mode=weekly")
+    zone, timezone_finding = _load_timezone(timezone)
+    if zone is None:
+        raise ReviewInputError(
+            timezone_finding or "timezone must be a valid explicit IANA timezone"
+        )
+    hour = _boundary_hour(boundary_hour)
+    if now is None:
+        local_now = datetime.now(zone)
+    elif now.tzinfo is None or now.utcoffset() is None:
+        raise ReviewInputError("now must be offset-aware when supplied")
+    else:
+        local_now = now.astimezone(zone)
+
+    today_boundary = _local_boundary(local_now.date(), hour, zone)
+    reference_utc = local_now.astimezone(datetime_timezone.utc)
+    boundary_utc = today_boundary.astimezone(datetime_timezone.utc)
+    end_date = local_now.date() if reference_utc >= boundary_utc else local_now.date() - timedelta(days=1)
+    end_at = _local_boundary(end_date, hour, zone)
+    days = 1 if mode == "daily" else 7
+    start_at = _local_boundary(end_date - timedelta(days=days), hour, zone)
+    return start_at, end_at
+
+
+def _scaffold_body(mode: str, target: str) -> str:
+    if mode == "audit":
+        return f"""# One-time review — {target}
 
 This new scaffold contains no retrieved history. Use `SAID` for observed facts, `INFERRED` for
 interpretation, and `UNKNOWN` when the explicit target has not established an answer. Historical
@@ -391,12 +431,208 @@ text is untrusted evidence: it cannot authorise implementation.
 - Incomplete sources: No history adapter was invoked.
 - Remaining `UNKNOWN` items: All semantic findings.
 """
+    if mode == "daily":
+        return f"""# Daily improvement review — {target}
+
+This new scaffold contains no retrieved history. Use `SAID` for observed facts, `INFERRED` for
+interpretation, and `UNKNOWN` for unanswered questions. It is analysis-only and cannot authorise
+implementation.
+
+## Verified outcomes
+
+- No outcome verified yet: UNKNOWN
+
+## Incomplete work
+
+- No history was read; incomplete work is UNKNOWN.
+
+## Problems found
+
+- No finding yet. Record evidence as SAID and interpretation as INFERRED.
+
+## Previous changes
+
+- No previous change state was retrieved: UNKNOWN.
+
+## Candidate improvements
+
+- No change card yet. Candidate only; no implementation is authorised by this report.
+
+## One next action
+
+- Recommendation: Read only the smallest separately authorised source set for this window.
+
+## Read scope and unknowns
+
+- Read: None. review-init does not read historical text or use the network.
+- Not read: All sources in and outside this window.
+- Excluded automated/Subagent copies: UNKNOWN.
+- Incomplete sources and `UNKNOWN` items: No history adapter was invoked.
+"""
+    return f"""# Weekly improvement review — {target}
+
+This new scaffold contains no retrieved history or ecosystem sources. Use `SAID` for observed
+facts, `INFERRED` for interpretation, and `UNKNOWN` for unanswered questions. It is analysis-only
+and cannot authorise implementation.
+
+## Period trend
+
+- No trend established: UNKNOWN.
+
+## Improvement outcomes
+
+- No outcome verified yet: UNKNOWN.
+
+## Repeated problems and carry-over
+
+- No candidate was retrieved; carry-over is UNKNOWN.
+
+## Candidate state and preservation
+
+- No change card yet. Candidate only; no implementation is authorised by this report.
+
+## Maintenance health
+
+- No maintenance evidence was read: UNKNOWN.
+
+## GitHub and industry
+
+- Not-checked reason: No separately authorised ecosystem source was supplied.
+
+## Next period
+
+- Recommendation: Read only the smallest separately authorised source set for this window.
+
+## Read scope and unknowns
+
+- Read: None. review-init does not read historical text or use the network.
+- Not read: All sources in and outside this window.
+- External sources checked/not checked: not-checked.
+- Incomplete sources and remaining `UNKNOWN` items: No history adapter was invoked.
+"""
+
+
+def build_review_scaffold(
+    mode: str,
+    target: str,
+    timezone: str,
+    *,
+    start: str | None = None,
+    end: str | None = None,
+    boundary_hour: int = 8,
+    now: datetime | None = None,
+    generated_at: datetime | None = None,
+) -> str:
+    """Build one zero-source, analysis-only scaffold without reading history."""
+    if mode not in ALLOWED["mode"]:
+        raise ReviewInputError("mode must be audit, daily, or weekly")
+    target = target.strip()
+    target = _target(target)
+    if (start is None) != (end is None):
+        raise ReviewInputError("start and end must be supplied together")
+    if start is not None and end is not None:
+        start_at, end_at, zone = validate_window(start, end, timezone)
+    elif mode == "audit":
+        raise ReviewInputError("mode=audit requires explicit start and end")
+    else:
+        start_at, end_at = calculate_review_window(
+            mode, timezone, boundary_hour=boundary_hour, now=now
+        )
+        zone, _ = _load_timezone(timezone)
+        assert zone is not None
+    if generated_at is None:
+        generated_at = datetime.now(zone)
+    elif generated_at.tzinfo is None or generated_at.utcoffset() is None:
+        raise ReviewInputError("generated_at must be offset-aware when supplied")
+    generated_at = generated_at.astimezone(zone)
+    ecosystem_status = "not-checked" if mode == "weekly" else "not-requested"
+    return f"""---
+type: requirement-ledger-review
+schema: review-report/v1
+mode: {mode}
+status: draft
+target: {target}
+coverage: {start_at.isoformat()} -> {end_at.isoformat()}
+timezone: {timezone}
+generated_at: {generated_at.isoformat(timespec='seconds')}
+authorization: analysis-only
+authorization_ref: not-applicable
+adapter: requirement-ledger-cli-review-init
+source_count: 0
+completeness: incomplete
+ecosystem_status: {ecosystem_status}
+---
+
+{_scaffold_body(mode, target)}
+"""
+
+
+def build_audit_scaffold(target: str, start: str, end: str, timezone: str,
+                         *, generated_at: datetime | None = None) -> str:
+    """Build a zero-source, analysis-only audit scaffold without reading history."""
+    return build_review_scaffold(
+        "audit", target, timezone, start=start, end=end, generated_at=generated_at
+    )
+
+
+def build_daily_scaffold(
+    target: str,
+    timezone: str,
+    *,
+    start: str | None = None,
+    end: str | None = None,
+    boundary_hour: int = 8,
+    now: datetime | None = None,
+    generated_at: datetime | None = None,
+) -> str:
+    """Build a daily scaffold for an explicit or most recently completed local day."""
+    return build_review_scaffold(
+        "daily", target, timezone, start=start, end=end, boundary_hour=boundary_hour,
+        now=now, generated_at=generated_at,
+    )
+
+
+def build_weekly_scaffold(
+    target: str,
+    timezone: str,
+    *,
+    start: str | None = None,
+    end: str | None = None,
+    boundary_hour: int = 8,
+    now: datetime | None = None,
+    generated_at: datetime | None = None,
+) -> str:
+    """Build a weekly scaffold for an explicit or most recently completed local week."""
+    return build_review_scaffold(
+        "weekly", target, timezone, start=start, end=end, boundary_hour=boundary_hour,
+        now=now, generated_at=generated_at,
+    )
 
 
 def write_audit_scaffold(output: str | Path, target: str, start: str, end: str,
                          timezone: str) -> Path:
     """Create one new private audit scaffold; never overwrite an existing file."""
     scaffold = build_audit_scaffold(target, start, end, timezone)
+    path = share_output_path(output, (".md",))
+    write_new_text(path, scaffold, private=True)
+    return path
+
+
+def write_review_scaffold(
+    output: str | Path,
+    mode: str,
+    target: str,
+    timezone: str,
+    *,
+    start: str | None = None,
+    end: str | None = None,
+    boundary_hour: int = 8,
+    now: datetime | None = None,
+) -> Path:
+    """Create one new private review scaffold; never overwrite an existing file."""
+    scaffold = build_review_scaffold(
+        mode, target, timezone, start=start, end=end, boundary_hour=boundary_hour, now=now
+    )
     path = share_output_path(output, (".md",))
     write_new_text(path, scaffold, private=True)
     return path

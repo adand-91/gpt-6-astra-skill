@@ -184,7 +184,7 @@ class TestReviewReportContract(unittest.TestCase):
             self.assertEqual(code, 4)
             self.assertIn("E_UNSAFE_PATH", error)
 
-    def test_review_init_rejects_non_audit_window_and_timezone_without_traceback(self) -> None:
+    def test_review_init_supports_daily_and_rejects_bad_windows_without_traceback(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = Path(tmp) / "audit.md"
             code, _, error = self.call_cli([
@@ -196,13 +196,25 @@ class TestReviewReportContract(unittest.TestCase):
             self.assertIn("E_REVIEW_INPUT: start must be earlier", error)
             self.assertNotIn("Traceback", error)
 
-            code, _, error = self.call_cli([
+            daily = Path(tmp) / "daily.md"
+            code, output, error = self.call_cli([
                 "review-init", "--mode", "daily", "--target", "selected-skill",
-                "--start", "2026-08-28T08:00:00+08:00", "--end", "2026-08-29T08:00:00+08:00",
-                "--timezone", "Asia/Shanghai", "--output", str(report),
+                "--at", "2026-08-29T08:00:00+08:00", "--timezone", "Asia/Shanghai",
+                "--output", str(daily),
+            ])
+            self.assertEqual(code, 0, error)
+            self.assertIn("WROTE_PRIVATE_DAILY_SCAFFOLD", output)
+            self.assertEqual(self.call_cli(["review-check", str(daily)])[0], 0)
+
+            bad = Path(tmp) / "bad.md"
+            code, _, error = self.call_cli([
+                "review-init", "--mode", "weekly", "--target", "selected-skill",
+                "--at", "2026-08-29T08:00:00+08:00", "--start", "2026-08-20T08:00:00+08:00",
+                "--end", "2026-08-27T08:00:00+08:00", "--timezone", "Asia/Shanghai",
+                "--output", str(bad),
             ])
             self.assertEqual(code, 2)
-            self.assertIn("E_REVIEW_INPUT: review-init alpha supports only mode=audit", error)
+            self.assertIn("E_REVIEW_INPUT: at cannot be combined", error)
             self.assertNotIn("Traceback", error)
 
     def test_review_check_rejects_symlink_and_oversized_report(self) -> None:

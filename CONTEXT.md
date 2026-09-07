@@ -1,42 +1,29 @@
 # Project context
 
-Short pickup index; private evidence stays outside the repository.
+Short pickup index; private release evidence stays outside the repository.
 
 ## Current checkpoint
 
-- `v0.2.0-alpha.3` (`0.2.0a3`) is publicly available as a non-latest GitHub prerelease. Tagged
-  commit: `dfa04a0d21ff0aca5c97d87b40546c58fe39d199`; annotated tag object:
-  `af32da5b81c12317177042875ffd08a8f03b816c`.
-- Alpha 3 adds bounded normalization for supported modern Codex rollout records: ordered
-  completed-item snapshots, turn terminals, structured exclusions, exact record conservation,
-  canonical tuple identity, and a 1,000,000-record work cap.
-- The reconstructed source passed 132 source tests, 19 focused normalization/envelope tests,
-  translation sync, compile, build, clean-install, privacy, and deterministic-output checks. The
-  exact final commit must pass public Linux/macOS/Windows CI before tagging.
-- The maintainer's cumulative post-Alpha dirty worktree remains untouched. Beta, RC, stable,
-  Jarvis, and later usability changes are not part of Alpha 3.
-- The tagged commit passed final public CI runs `33708129443` and `33708228485`: all 12 Python
-  3.10–3.13 Linux/macOS/Windows jobs and the built-artefact/security smoke succeeded. All three
-  public assets were re-downloaded, hash-verified, and exercised through clean installs.
+- Preparing `v0.2.0-beta.1` (`0.2.0b1`) from the published Alpha 3 baseline.
+- This release adds installed audit/daily/weekly review scaffolds and local time-window handling.
+- The frozen Beta 1 input passed all three archive checksums. Only its bounded code/tests were
+  reused; obsolete publication records, AppleDouble metadata, and later features were excluded.
+- Fresh source and extracted-sdist suites each passed 138 tests. Both clean installs passed all
+  three modes, private permissions, no-overwrite, invalid-input, and deterministic Demo checks.
+- Exact-commit public CI and publication/download verification remain pending.
+- Stable v0.1.1 and all prior immutable releases remain intact; cumulative Jarvis work is separate.
 
 ## Pickup files
 
-- Changes: `CHANGELOG.md`; release notes: `docs/release-notes/v0.2.0-alpha.3.md`
-- Release: <https://github.com/adand-91/requirement-ledger/releases/tag/v0.2.0-alpha.3>
-- Modern normalization: `src/requirement_ledger/transcript.py` and
-  `src/requirement_ledger/codex_input.py`
-- Regressions: `tests/test_codex_modern_normalization.py` and
-  `tests/test_codex_input_envelope.py`
-- Publication gate: `docs/RELEASE_CHECKLIST.md`; technical state: `HANDOFF.md`
+- Scope and usage: `docs/release-notes/v0.2.0-beta.1.md` and `README.md`.
+- Gates and history: `docs/RELEASE_CHECKLIST.md`; current technical state: `HANDOFF.md`.
 
 ## Next action
 
-Stop at the completed Alpha 3 publication and report its evidence and current GitHub metrics.
-Later queued versions continue at the normal release cadence; the larger Jarvis/usability changes
-remain held for `v1.0.0-rc.1`.
+Push the exact Beta 1 candidate, verify public CI, publish a non-latest prerelease, then independently
+re-download and validate its assets. These release actions are explicitly authorised for Beta 1.
 
 ## Safety boundary
 
-Do not move existing tags or replace published assets. Do not include later queued versions,
-promote, rename the repository, submit a plugin, apply to a programme, create Issues/PRs, send
-external messages, or alter the maintainer's cumulative development worktree.
+Do not publish later candidates, move old tags, replace old assets, promote, rename, submit a
+plugin/application, or change the cumulative development worktree's program files.

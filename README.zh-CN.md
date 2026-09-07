@@ -1,9 +1,9 @@
-<!-- translation-of: README.md sha256:24dc444527b2b40a -->
+<!-- translation-of: README.md sha256:87258959fdd24b31 -->
 
 # Requirement Ledger AI
 
-**Requirement Ledger 已有稳定的显式证据 v0.1.1，以及用于有界现代 Codex 输入的
-`v0.2.0-alpha.3` 预发布版。** 宿主能够有界读取任务历史时，用户只需点名一段 Codex 对话、一个 Agent Skill
+**Requirement Ledger 已有稳定的显式证据 v0.1.1，以及新增日报、周报骨架的
+`v0.2.0-beta.1` 预发布版。** 宿主能够有界读取任务历史时，用户只需点名一段 Codex 对话、一个 Agent Skill
 或项目，Skill 就能恢复相关上下文、生成具体改动卡，并在获得授权的修改前后比较同一案例。Python
 标准包尚未自带 Codex 历史适配器。
 
@@ -14,7 +14,7 @@
 
 [English](README.md) · [v0.1 CLI 契约](V0.1_CONTRACT.zh-CN.md) ·
 [v0.2 宿主契约](V0.2_HOST_CONTRACT.zh-CN.md) ·
-[Alpha 3 发布说明](docs/release-notes/v0.2.0-alpha.3.zh-CN.md) ·
+[Beta 1 发布说明](docs/release-notes/v0.2.0-beta.1.zh-CN.md) ·
 [Codex 对齐调研](docs/CODEX_ALIGNMENT_RESEARCH.zh-CN.md) · [更新地图](UPDATE_MAP.zh-CN.md) ·
 [路线图](ROADMAP.zh-CN.md) · [未完成项](docs/PROJECT_GAPS.md) · [安全政策](SECURITY.zh-CN.md)
 
@@ -55,12 +55,28 @@
 | 日报 | “用 Requirement Ledger 回顾昨天。” | 重建上一工作日、检查先前改动并推荐一个优化 |
 | 周报 | “运行本周 Requirement Ledger 周报。” | 给一周问题去重、检查维护健康度，并关联相关 GitHub 或官方行业变化 |
 
-Alpha 3 保留 Alpha 1 的审查骨架和检查器，并在 Alpha 2 只处理一份显式选中导出的安装版
-`codex-scan` 路径上，增加受支持的现代 rollout 归一化。日报、周报目前是宿主契约与参考模板，
-不是本预发布版可初始化的模式。一次性审查只停留在点名目标；未来日报和周报只能枚举显式时间窗口内活跃的 Codex
-项目。宿主无法调取历史时，必须请用户选择任务或有界导出，不能声称覆盖完整。
+Beta 1 的安装版 `review-init` 现在支持 `audit`、`daily`、`weekly`。
+它生成私有空白复盘文档，不读取历史、不填写结论，也不自动安排复盘。日报和周报采用最近完整的本地一天或七天窗口，
+可设置每日分界小时。宿主仍需读取另行授权的证据，才能完成有意义的复盘。Alpha 3 的显式 `codex-scan` 保持兼容。
 
 Requirement Ledger AI 是引导与证据层，不是隐藏补丁机器人。
+
+## v0.2.0-beta.1 新增了什么
+
+- 安装版可生成日报、周报骨架，各自保留独立报告章节。
+- 支持显式时区、可选参考时间和夏令时边界处理。
+- 保留审查的显式窗口、私有输出、不覆盖已有文件和只读分析授权。
+
+安装此预发布版后，可创建并检查一份空白日报：
+
+```bash
+requirement-ledger review-init --mode daily --target example-project --timezone Asia/Shanghai --at 2026-09-07T09:00:00+08:00 --output daily.md
+requirement-ledger review-check daily.md
+```
+
+使用 `--mode weekly` 可生成前一个完整七天窗口。`--boundary-hour` 默认是 8；日报和周报未指定 `--at`
+时使用当前时间。一次性审查仍须显式提供 `--start` 和 `--end`；三种模式均可改用显式起止时间。
+`review-check` 通过只表示文档格式有效，不证明结论真实或完整。
 
 ## v0.2.0-alpha.3 新增了什么
 

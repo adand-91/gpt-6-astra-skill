@@ -72,6 +72,15 @@ jobs:
           test "$(stat -c '%a' alpha3.private.json)" = "600"
           .wheel-venv/bin/python -c "import json; value=json.load(open('alpha3.private.json', encoding='utf-8')); envelope=value['codex_input_envelope']; rendered=json.dumps(envelope); assert envelope['schema']=='codex-input-envelope/v2'; assert envelope['source']['summary']['included_events']==1; assert envelope['source']['summary']['unique_completed_items']==1; assert envelope['normalization']['ordered_turn_terminals'][0]['kind']=='task_complete'; assert envelope['coverage']['overall']=='partial'; assert envelope['source']['path_stored'] is False; assert all(secret not in rendered for secret in ('private-turn','private-item','private-skill','/private/SKILL.md'))"
           if .wheel-venv/bin/requirement-ledger codex-scan --repo . --input ci-codex-input/task.jsonl --scope-root ci-codex-input --target conversation:ci --task-ref task:ci --since 2026-08-29T00:00:00+00:00 --until 2026-08-30T00:00:00+00:00 --timezone UTC --output alpha3.private.json; then exit 1; fi
+      - name: Smoke-test installed Beta 1 review modes
+        run: |
+          .wheel-venv/bin/requirement-ledger review-init --mode daily --target ci-review --timezone Asia/Shanghai --at 2026-09-07T09:00:00+08:00 --output beta1-daily.md
+          .wheel-venv/bin/requirement-ledger review-check beta1-daily.md
+          .wheel-venv/bin/requirement-ledger review-init --mode weekly --target ci-review --timezone America/New_York --at 2026-11-02T08:00:00-05:00 --output beta1-weekly.md
+          .wheel-venv/bin/requirement-ledger review-check beta1-weekly.md
+          test "$(stat -c '%a' beta1-daily.md)" = "600"
+          if .wheel-venv/bin/requirement-ledger review-init --mode daily --target ci-review --timezone UTC --at 2026-09-07T09:00:00 --output beta1-invalid.md; then exit 1; fi
+          test ! -e beta1-invalid.md
       - name: Inspect and install the built source distribution
         run: |
           tar -tzf dist/*.tar.gz > sdist-files.txt

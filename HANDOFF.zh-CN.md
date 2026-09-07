@@ -1,92 +1,58 @@
-<!-- translation-of: HANDOFF.md sha256:1632e48447e80fd8 -->
+<!-- translation-of: HANDOFF.md sha256:25f2678949bdfad7 -->
 
-# 交接说明
+# HANDOFF
 
 ## 我们在做什么
 
-- 把 `v0.2.0-alpha.3` 作为现有版本列车的下一个非 latest 预发布版公开。
-- 它唯一的产品增量是对受支持现代 Codex rollout 记录做有界归一化。
-- 从 `origin/main` 在独立工作区重建，保留公开的 Alpha 2 记录，也不触碰维护者后续累计工作。
+将 `v0.2.0-beta.1` 发布为非 latest GitHub 预发布版，然后汇报仓库指标。
+授权范围是既有日报／周报骨架增量，不含后续 Jarvis 功能。
 
 ## 完成了什么
 
-- 已核验唯一冻结 Alpha 3 源码、wheel、sdist 与校验值。
-- 只复用经审计的 Alpha 2 到 Alpha 3 实现、测试、CI、契约和发布说明增量；排除生成的 egg-info
-  及所有 Beta／RC／v1／Jarvis 改动。
-- 已加入 `codex-modern-normalization/v1`、`codex-input-envelope/v2`、有序 item／terminal 核算、
-  结构化排除、规范元组哈希、严格输入／状态校验、准确记录守恒和 1,000,000 条记录工作上限。
-- 重建文档保留 Alpha 2 的公开 Tag、CI、资产哈希和重新下载证据。
-- 已重跑 132 项源码测试、19 项专项测试、翻译同步、编译和差异检查。新 wheel 与 sdist 均报告
-  `0.2.0a3`；干净安装、确定性 Demo、审查、不覆盖、私有权限、现代信封隐私与解包 sdist 测试通过。
-- 初始发布 commit `5d97742` 已通过公开 CI `33707942357`：12 组 Python 3.10–3.13 ×
-  Linux／macOS／Windows 任务及构建产物／失败即停安全冒烟全部成功。
-- 已在 commit `dfa04a0d21ff0aca5c97d87b40546c58fe39d199` 创建注释 Tag 对象
-  `af32da5b81c12317177042875ffd08a8f03b816c`，并作为非 latest
-  [GitHub 预发布](https://github.com/adand-91/requirement-ledger/releases/tag/v0.2.0-alpha.3)公开。
-- 三份公开资产均已重新下载且哈希一致；wheel 与 sdist 都干净安装为 `0.2.0a3`，下载后的 wheel
-  通过确定性 Demo、审查、现代信封隐私和 item／terminal 断言。
+- 在隔离发布工作区从公开 Alpha 3 重建候选。
+- 验证冻结 Beta 1 的 wheel、sdist 和源码 SHA-256；仅复制版本元数据、review／CLI 改动和两个测试文件，保留旧发布记录。
+- 更新中英文发布文档，新增安装后日报／周报 CI 检查。
+- 源码与解包源码各通过 138 项测试；翻译、编译、差异检查通过。
+- 两种干净安装报告 0.2.0b1；三模式创建／检查、私有权限、不覆盖、错误输入和确定性 Demo 全部通过。
+- 独立代码复核未发现阻断；其建议的周报 CLI 覆盖已纳入本地安装检查与新增 CI 步骤。
 
 ## 卡在哪儿
 
-- 当前没有已知源码设计阻断。
-- Alpha 3 发布已无阻断，只剩把真实发布记录写回并通过 CI。
-- 外部用户采用和 OpenAI 项目资格仍未证明，也不是本版本声明。
+本地无已知发布阻断。精确提交的公开 CI、发布与下载验证仍待完成。
 
 ## 下一步计划
 
-1. 提交并向 `main` 推送本真实发布记录，不移动不可变 Tag。
-2. 核验记录 CI，汇报发布数据，然后停止。
-3. 较大的 Jarvis／易用性改动留到 `v1.0.0-rc.1`；更早的候选按正常节奏发布，仍需分别授权。
+推送候选，通过三平台 CI，发布不可变附注标签和预发布版，再下载验证制品并汇报指标。完成 Beta 1 回执后停止。
 
 ## 踩过哪些坑
 
-- 冻结 Alpha 3 源码早于 Alpha 2 公开发布，错误地把 Alpha 2 写成未发布。只能复用其已审计增量，
-  不能用整个快照覆盖 `origin/main`。
-- 修正公开文档会改变 sdist，因此冻结候选归档不能直接作为最终公开资产；必须从准确 Tag commit 重建。
-- 活跃开发工作树包含后续排队版本，绝不能把它用于 Alpha 3 Tag，也不能清理或重置。
+冻结源码含 AppleDouble 元数据和过时 Alpha 发布状态，均未复制。累计 1.0.0 源码不能当作 Beta 1 快照。
+翻译摘要须跟随实际译文更新；首轮旧摘要失败已修正并重跑。
 
 ## 当前任务汇总
 
-- 状态：`v0.2.0-alpha.3` 已公开并独立重新下载验证；只剩本真实发布记录及其 CI。
-- 版本边界：包版本 `0.2.0a3`；计划 Tag 为 `v0.2.0-alpha.3`。
-- 本地发布证据：132 项源码测试、19 项专项测试、构建、双归档干净安装、确定性 Demo、审查、
-  隐私与失败即停检查均已通过。
-- 公开发布证据：最终 CI `33708129443` 与 `33708228485` 已通过；公开资产哈希记录如下并已独立核验。
-- 已授权：准确 Alpha 3 commit／push／Tag／预发布／资产／重新下载验证及真实发布记录。未授权：后续
-  版本、推广、改名、插件／项目申请、Issue、PR 或无关外部消息。
+- 包版本 0.2.0b1，计划标签 v0.2.0-beta.1，公开基线 Alpha 3。
+- 本地资格通过，公开发布待完成。
+- 用户授权 Beta 1 提交、推送、CI、标签、Release、制品与仓库指标查询。
+- 后续版本、改名、推广、插件提交、项目申请仍排除。
 
 ## 当前架构与入口
 
-- CLI／路由：`src/requirement_ledger/cli.py` 与 `src/requirement_ledger/pipeline.py`。
-- 输入边界：`src/requirement_ledger/codex_input.py`。
-- 现代 rollout 适配：`src/requirement_ledger/transcript.py`。
-- 回归测试：`tests/test_codex_modern_normalization.py`、`tests/test_codex_input_envelope.py`
-  及现有 `tests/` 全套。
+`src/requirement_ledger/review.py` 计算窗口并生成私有空骨架；`cli.py` 暴露显式参数。
+没有新增历史发现、联网或自动调度。
 
 ## 运行与依赖
 
-- 支持 Python 3.10–3.13；Windows 按条件使用 `tzdata>=2024.1`。
-- 源码测试：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q`。
-- 翻译门禁：`python3 scripts/check_translation_sync.py`。
-- 构建：`python3 -m build --sdist --wheel`；构建工具不是运行时依赖。
+Python 3.10–3.13；Windows 沿用条件 tzdata 依赖。
+测试：`PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q`。
+构建：在隔离构建环境运行 `python -m build --sdist --wheel`。
 
 ## 验证证据
 
-- 冻结 wheel SHA-256：`a46fa9b62dd5c8e702419743e312820214c5527f1da7d7405f26b3769e224b99`。
-- 冻结 sdist SHA-256：`5c813a5fc3cf6f93f187b2cf02fe345e0f4be381567c8d2618faa57060601687`。
-- 冻结 wheel 的 Python 模块和冻结 sdist 的共有文件均与源码快照逐字节一致。以下公开哈希从
-  Tag commit 生成。
-- 公开 wheel SHA-256：`c809a6bd92810a8509401e0d7c93eb976d073db5aafa8d97244c941a929ea7ec`。
-- 公开 sdist SHA-256：`1a7deb8725ada52470f0b9739b93aaea47659eedf75b2bf475774b3576d2a740`。
-- 公开校验文件 SHA-256：`18083577d5bb9fcd4020be11a8cab0900904d23e9bb0e9db605b2894f54f8164`。
-
-## 授权与禁止动作
-
-- 已授权：发布准确 Alpha 3 边界并做公开验证。
-- 未授权：发布后续版本、移动旧 Tag、替换旧资产、推广、改名、提交插件／项目申请、创建
-  Issue／PR，或修改脏开发工作树。
+源码／解包源码各 138 项。翻译：`python3 scripts/check_translation_sync.py`。
+编译：`python3 -m compileall -q src scripts tests`。空白：`git diff --check`。
+归档检查排除字节码、私有 JSON、维护者路径和后续模块。公开哈希与 CI 回执在实际完成后登记。
 
 ## 回滚
 
-- Tag 前若门禁失败，用经过复核的前向 commit 修复，或停止发布。
-- Tag 后绝不移动或静默替换 Tag／资产；如需修正，使用另行授权的更正版本。
+发布前用经过审查的前向提交修正。不移动公开标签或替换制品。累计开发工作区和先前发布保持不变。

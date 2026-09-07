@@ -12,7 +12,7 @@ license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "requirement-ledger contributors" }]
 classifiers = [
-  "Development Status :: 2 - Pre-Alpha",
+  "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",

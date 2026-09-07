@@ -7,6 +7,24 @@ All notable changes to this project are documented here. Versions follow
 
 No changes yet.
 
+## [0.2.0b1] - 2026-09-07 (prerelease)
+
+### Added
+
+- Installed `review-init` support for all three useful modes: `audit`, `daily`, and `weekly`.
+- Automatic daily and weekly half-open windows from an explicit IANA timezone, offset-aware
+  reference timestamp, and local boundary hour, while retaining explicit start/end windows.
+- Deterministic daylight-saving handling: nonexistent local boundary times advance to the first
+  valid minute and repeated boundary times use their first occurrence.
+
+### Security and compatibility
+
+- Every generated scaffold remains zero-source, private, no-overwrite, analysis-only, and valid
+  under the same `review-check` contract; no history discovery or network call was added.
+- Legacy audit APIs and the audit CLI output marker remain compatible.
+- Invalid modes, partial explicit windows, naive timestamps, conflicting reference/window inputs,
+  invalid timezones, and invalid boundary hours fail without a traceback or output file.
+
 ## [0.2.0a3] - 2026-09-03 (prerelease)
 
 ### Added
