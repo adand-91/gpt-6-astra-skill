@@ -1,4 +1,4 @@
-<!-- translation-of: HANDOFF.md sha256:25f2678949bdfad7 -->
+<!-- translation-of: HANDOFF.md sha256:a2ccbf7d893e02f5 -->
 
 # HANDOFF
 
@@ -52,6 +52,11 @@ Python 3.10–3.13；Windows 沿用条件 tzdata 依赖。
 源码／解包源码各 138 项。翻译：`python3 scripts/check_translation_sync.py`。
 编译：`python3 -m compileall -q src scripts tests`。空白：`git diff --check`。
 归档检查排除字节码、私有 JSON、维护者路径和后续模块。公开哈希与 CI 回执在实际完成后登记。
+
+## 授权与禁止动作
+
+已授权 Beta 1 的提交、推送、公开 CI、标签、预发布、制品和重新下载验证。
+后续版本、推广、改名与外部申请不在范围内。
 
 ## 回滚
 
