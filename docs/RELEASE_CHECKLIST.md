@@ -256,3 +256,21 @@ Use this for every public version. A checked box must point to command output or
 - Independent bounded implementation review: no release blocker. Installed weekly smoke was added.
 - Public exact-commit CI, annotated tag, prerelease, public checksums and re-download verification
   remain gates. These actions are authorised for Beta 1 only.
+
+## v0.2.0-beta.1 public prerelease evidence — 2026-09-07
+
+- Exact tagged commit: `a279f673e1febe809bcf6dc8c4765898d1ee2750`.
+- Branch CI [34080729594](https://github.com/adand-91/requirement-ledger/actions/runs/34080729594),
+  main CI [34080824950](https://github.com/adand-91/requirement-ledger/actions/runs/34080824950),
+  and tag CI [34080827166](https://github.com/adand-91/requirement-ledger/actions/runs/34080827166)
+  passed all Python/OS jobs and built-artifact/security smoke.
+- Published [v0.2.0-beta.1](https://github.com/adand-91/requirement-ledger/releases/tag/v0.2.0-beta.1)
+  at 2026-09-07T03:47:46Z, non-draft, prerelease, not latest stable.
+- Wheel SHA-256: `4d289d8ed873d78c8d845144472a148243347476280c639a5b7bffea419995e4`.
+- Sdist SHA-256: `2fd9dc3525810f61be86005728e60c573ee28923ea3921a3d202f106eb08a405`.
+- SHA256SUMS SHA-256: `0df4f9628f054b23baf7e007aa5e348b31e5f2bfbc40ad963282e96aea5ffb62`.
+- All three public assets were downloaded independently and matched the approved bytes. Downloaded
+  wheel and sdist both clean-installed, reported 0.2.0b1, and passed all three modes, no-overwrite,
+  private permissions, invalid-input, and deterministic Demo checks; extracted-sdist 138 tests passed.
+- After publication: 105 stars, 3 subscribers (actual Watch), 6 forks, 0 open issues. These are
+  a point-in-time repository count, not evidence of adoption caused by this release.

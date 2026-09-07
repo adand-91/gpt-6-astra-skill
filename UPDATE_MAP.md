@@ -1,6 +1,6 @@
 # Update map
 
-The next release is `v0.2.0-beta.1` (`0.2.0b1`), adding installed daily and weekly
+The newest prerelease is `v0.2.0-beta.1` (`0.2.0b1`), adding installed daily and weekly
 review scaffolds. Each release needs a real increment, a tested exact source snapshot,
 and its own publication authorization. No daily release schedule is promised.
 
@@ -14,7 +14,7 @@ and its own publication authorization. No daily release schedule is promised.
 | v0.2.0-alpha.1 | Named-target audit scaffold and checker | Published |
 | v0.2.0-alpha.2 | Bounded explicit Codex input | Published |
 | v0.2.0-alpha.3 | Supported modern Codex record normalization | Published |
-| v0.2.0-beta.1 | Installed audit/daily/weekly scaffolds and local time windows | Current prerelease candidate |
+| v0.2.0-beta.1 | Installed audit/daily/weekly scaffolds and local time windows | Published prerelease |
 
 ## Beta 1 acceptance
 
