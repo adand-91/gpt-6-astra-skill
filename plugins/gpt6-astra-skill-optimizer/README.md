@@ -1,4 +1,4 @@
-# Astra Skill Doctor
+# Astra Skill Optimizer
 
 A focused workflow for adapting project Skills and personal workflows to GPT-6/Astra behavior.
 

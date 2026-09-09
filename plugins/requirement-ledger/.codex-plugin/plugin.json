@@ -1,6 +1,6 @@
 {
   "name": "requirement-ledger",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Codex-first project manager for programming newcomers, with plain-language takeover and evidence-bound reviews.",
   "author": {
     "name": "Requirement Ledger contributors"

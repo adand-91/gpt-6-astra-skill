@@ -1,15 +1,15 @@
-<!-- translation-of: README.md sha256:905a33f39920ffbf -->
+<!-- translation-of: README.md sha256:e19d809a94d03023 -->
 
-# Astra Skill Doctor
+# Astra Skill Optimizer
 
 ### 面向 GPT-6／Astra 的 Skill 适配与个人工作流优化
 
-Astra Skill Doctor 专门处理新 GPT-6／Astra 发布后旧 Skill 约束失真的问题。用户选定一个项目和相关 Skill 后，它输出有证据的适配判断、最小改动和可复核验证；长期发展为类似 Jarvis 的个人与社区 Skill 优化系统。
+Astra Skill Optimizer 专门处理新 GPT-6／Astra 发布后旧 Skill 约束失真的问题。用户选定一个项目和相关 Skill 后，它输出有证据的适配判断、最小改动和可复核验证；长期发展为类似 Jarvis 的个人与社区 Skill 优化系统。
 
 这里的“说人话”不等于把字数压到最少，而是先给结论，再提供足够的依据、影响、行动和验收说明，
 让用户不需要翻译术语或继续追问，就能真正理解问题。
 
-**Astra Skill Doctor 是当前产品和仓库的公开身份。** 旧 Python 包和 CLI 在迁移期间保留为兼容入口。
+**Astra Skill Optimizer 是当前产品和仓库的公开身份。** 旧 Python 包和 CLI 在迁移期间保留为兼容入口。
 
 当前插件是轻量 Skill 工作流；完整的 GPT-6／Astra 适配仍需真实项目反馈验证。
 
@@ -22,7 +22,7 @@ Astra Skill Doctor 专门处理新 GPT-6／Astra 发布后旧 Skill 约束失真
 ## 为什么需要它
 
 长期 AI 辅助项目很容易把决定埋进聊天：当前目标发生漂移，旧要求被重新当成事实，修问题时误删有效能力，
-或者把摘要误当成“报告真实且已获批准”的证明。Astra Skill Doctor 为 GPT-6/Astra 提供一条窄审查链：
+或者把摘要误当成“报告真实且已获批准”的证明。Astra Skill Optimizer 为 GPT-6/Astra 提供一条窄审查链：
 
 ```text
 一个已选目标

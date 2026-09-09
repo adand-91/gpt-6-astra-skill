@@ -1,9 +1,9 @@
-<!-- translation-of: ROADMAP.md sha256:53259673f7573bd2 -->
+<!-- translation-of: ROADMAP.md sha256:beabab619d983c52 -->
 
-# Astra Skill Doctor 路线图
+# Astra Skill Optimizer 路线图
 
-Astra Skill Doctor 是当前公开产品和仓库身份。历史 Requirement Ledger Python 核心与插件入口在迁移期间
-作为兼容组件保留；本路线图追踪 Astra Skill Doctor 适配和长期的 Jarvis 式系统，不代表新版本已经发布。
+Astra Skill Optimizer 是当前公开产品和仓库身份。历史 Requirement Ledger Python 核心与插件入口在迁移期间
+作为兼容组件保留；本路线图追踪 Astra Skill Optimizer 适配和长期的 Jarvis 式系统，不代表新版本已经发布。
 
 [English](ROADMAP.md) · [产品完工合同](docs/V1_PRODUCT_CONTRACT.zh-CN.md) ·
 [更新地图](UPDATE_MAP.zh-CN.md) ·
@@ -30,9 +30,9 @@ Astra Skill Doctor 是当前公开产品和仓库身份。历史 Requirement Led
 `audit`、`daily` 和 `weekly` 已实现，但只处理用户或宿主明确提供的目标／窗口／范围／文件。任何模式都不会
 发现全部本地历史。
 
-### Astra Skill Doctor 公开产品
+### Astra Skill Optimizer 公开产品
 
-公开产品名是 Astra Skill Doctor。短期目标是把现有项目 Skill 与流程适配到 GPT-6／Astra；长期发展为类似 Jarvis 的
+公开产品名是 Astra Skill Optimizer。短期目标是把现有项目 Skill 与流程适配到 GPT-6／Astra；长期发展为类似 Jarvis 的
 个人与社区 Skill 优化系统。v1 用户流程是：
 
 ```text

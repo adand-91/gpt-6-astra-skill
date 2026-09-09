@@ -1,10 +1,10 @@
-<!-- translation-of: docs/PRO_APPLICATION_BRIEF.md sha256:2fbe7909267c4a60 -->
+<!-- translation-of: docs/PRO_APPLICATION_BRIEF.md sha256:c7b0c34eeeddea67 -->
 
-# Astra Skill Doctor——项目申请简报
+# Astra Skill Optimizer——项目申请简报
 
 ## 项目名称
 
-Astra Skill Doctor
+Astra Skill Optimizer
 
 ## 仓库
 
@@ -32,14 +32,14 @@ https://github.com/adand-91/gpt-6-astra-skill
 - 分开记录事实、推断和未知。
 - 默认只读审计，修改需要明确授权。
 - 保留旧 Python 证据组件和 CLI 作为兼容入口。
-- 公开产品显示名为 Astra Skill Doctor。
+- 公开产品显示名为 Astra Skill Optimizer。
 
 ## 当前验证
 
 - 在文档说明的 macOS 边界下，213 项测试通过，7 项跳过。
 - 插件结构校验通过。
 - 翻译同步、交接校验和空白差异检查通过。
-- `1.0.1` 命名迁移已进入 GitHub 默认分支。
+- `1.0.2` Optimizer 改名候选已在本地完成，等待推送。
 
 ## 额外模型访问的用途
 
@@ -54,4 +54,4 @@ https://github.com/adand-91/gpt-6-astra-skill
 
 ## 状态与申请说明
 
-仓库已公开，`1.0.1` 候选已进入 `main`。本文是申请表草稿，尚未提交，不包含私有凭据或令牌。
+仓库已公开，`1.0.2` Optimizer 改名候选已在本地准备，尚未推送。本文是申请表草稿，尚未提交，不包含私有凭据或令牌。

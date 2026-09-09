@@ -14,7 +14,7 @@ class AstraSkillOptimizerTests(unittest.TestCase):
     def test_manifest_is_independent_skill_only_v1(self) -> None:
         manifest = json.loads((PLUGIN / ".codex-plugin" / "plugin.json").read_text())
         self.assertEqual(manifest["name"], "gpt6-astra-skill-optimizer")
-        self.assertEqual(manifest["version"], "1.0.1")
+        self.assertEqual(manifest["version"], "1.0.2")
         self.assertEqual(manifest["skills"], "./skills/")
         self.assertEqual(manifest["interface"]["capabilities"], ["Interactive"])
         self.assertEqual(len(manifest["interface"]["defaultPrompt"]), 3)

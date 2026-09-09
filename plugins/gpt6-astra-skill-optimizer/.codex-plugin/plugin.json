@@ -1,9 +1,9 @@
 {
   "name": "gpt6-astra-skill-optimizer",
-  "version": "1.0.1",
-  "description": "Focused Astra Skill Doctor workflow for adapting one selected project and its explicitly related Skills to GPT-6/Astra behavior.",
+  "version": "1.0.2",
+  "description": "Focused Astra Skill Optimizer workflow for adapting one selected project and its explicitly related Skills to GPT-6/Astra behavior.",
   "author": {
-    "name": "Astra Skill Doctor contributors"
+    "name": "Astra Skill Optimizer contributors"
   },
   "license": "MIT",
   "keywords": [
@@ -15,16 +15,16 @@
   ],
   "skills": "./skills/",
   "interface": {
-    "displayName": "Astra Skill Doctor",
+    "displayName": "Astra Skill Optimizer",
     "shortDescription": "Audit and adapt one project and its related Skills for GPT-6/Astra.",
     "longDescription": "Independent Skill workflow for GPT-6/Astra adaptation: checks instruction conflicts, workflow drift, evidence, output contracts, delegation, and risk-calibrated verification. Findings are evidence-bound and changes require explicit authorization.",
-    "developerName": "Astra Skill Doctor contributors",
+    "developerName": "Astra Skill Optimizer contributors",
     "category": "Productivity",
     "capabilities": [
       "Interactive"
     ],
     "defaultPrompt": [
-      "Audit this selected project and its related Skills for Astra Skill Doctor compatibility.",
+      "Audit this selected project and its related Skills for Astra Skill Optimizer compatibility.",
       "Find the highest-risk outdated Skill constraint with evidence and one next action.",
       "After I authorize it, apply only the approved Skill changes to the listed files."
     ]

@@ -5,11 +5,19 @@ All notable changes to this project are documented here. Versions follow
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-09-09
+
+### Changed
+
+- Corrected the public product display name to **Astra Skill Optimizer** and retained the internal optimizer plugin identifier for compatibility.
+- Prepared the renamed distribution as a new version so the historical `1.0.1` record remains immutable.
+
+
 ## [1.0.1] - 2026-09-09
 
 ### Changed
 
-- Renamed the public product display name to **Astra Skill Doctor** for GPT-6/Astra Skill adaptation.
+- Renamed the public product display name to **Astra Skill Optimizer** for GPT-6/Astra Skill adaptation.
 - Kept the historical plugin id, package module, and CLI as compatibility entry points while exposing `gpt6-astra-skill`.
 - Aligned repository-facing documentation, marketplace display names, and release notes with the new product identity.
 

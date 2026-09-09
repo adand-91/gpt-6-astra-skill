@@ -1,14 +1,14 @@
-<!-- translation-of: docs/V1_PRODUCT_CONTRACT.md sha256:67a7cf0dabcaa22a -->
+<!-- translation-of: docs/V1_PRODUCT_CONTRACT.md sha256:807ea3a5f96c5347 -->
 
-# Astra Skill Doctor v1 产品完工合同
+# Astra Skill Optimizer v1 产品完工合同
 
 历史引用：贾维斯 v1 产品完工合同。
 
-本文定义 Astra Skill Doctor 的公开产品体验，记录产品契约，不代表获得新版本发布授权。
+本文定义 Astra Skill Optimizer 的公开产品体验，记录产品契约，不代表获得新版本发布授权。
 
 ## 名称与版本边界
 
-- 当前公开产品和 GitHub 仓库统一为 **Astra Skill Doctor**（`gpt-6-astra-skill`）。迁移期间保留
+- 当前公开产品和 GitHub 仓库统一为 **Astra Skill Optimizer**（`gpt-6-astra-skill`）。迁移期间保留
   Requirement Ledger 包、CLI 和旧插件入口作为兼容名称。
 - 历史本地 `1.0.0` 候选证明 Python CLI 与证据工作流曾通过，不等于 GPT-6／Astra 适配已在真实项目中稳定。
 - 下文“v1 完工”要求对话产品与发布证据同时过门。本地产品可以先完成，公开动作仍等单独授权。
@@ -19,7 +19,7 @@
 
 `嗨，贾维斯，帮我接管这个项目。`
 
-Astra Skill Doctor 会依次：
+Astra Skill Optimizer 会依次：
 
 1. 在读取工具或文件前马上回应：接管请求从 `可以接管。` 开始，进度请求只回复
    `可以汇报。`，不先讲流程；

@@ -1,8 +1,8 @@
-# Astra Skill Doctor 项目契约
+# Astra Skill Optimizer 项目契约
 
 ## 项目名称
 
-- 产品名：**Astra Skill Doctor**
+- 产品名：**Astra Skill Optimizer**
 - GitHub 仓库：`gpt-6-astra-skill`
 - `Astra` 是本项目统一拼写；“Astro”视为同一名称的误拼，不建立第二个品牌。
 
@@ -10,7 +10,7 @@
 
 新一代模型发布后，旧 Skill 中的约束、流程和提示词可能失真：它们可能限制模型能力、制造多余确认、破坏工具协作，或者让原本有效的工作流失效。
 
-Astra Skill Doctor 专门发现这些失真，并把现有项目的 Skill 和流程调整为在 GPT-6 及 Astra 环境下可用、可验证、可继续维护的版本。
+Astra Skill Optimizer 专门发现这些失真，并把现有项目的 Skill 和流程调整为在 GPT-6 及 Astra 环境下可用、可验证、可继续维护的版本。
 
 ## 短期目标
 
@@ -52,7 +52,7 @@ Astra Skill Doctor 专门发现这些失真，并把现有项目的 Skill 和流
 
 ## 版本边界
 
-当前仓库的旧包名和 CLI 命令保留为兼容入口，改名迁移期间不得破坏已有安装和测试。新的公开产品名、仓库名、文档入口和插件说明统一使用 Astra Skill Doctor。
+当前仓库的旧包名和 CLI 命令保留为兼容入口，改名迁移期间不得破坏已有安装和测试。新的公开产品名、仓库名、文档入口和插件说明统一使用 Astra Skill Optimizer。
 
 项目改名、包与 CLI 迁移、公开发布和社区推广分别验收，不把其中一项当成其他项已经完成。
 

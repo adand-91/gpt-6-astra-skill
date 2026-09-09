@@ -1,16 +1,16 @@
-<!-- translation-of: HANDOFF.md sha256:1f2d399d70e8dfd7 -->
+<!-- translation-of: HANDOFF.md sha256:e64a02f739cea7dd -->
 
 # HANDOFF
 
 ## 我们在做什么
 
-本项目正在统一为 **Astra Skill Doctor**：面向 GPT-6/Astra 新模型的 Skill 与工作流适配系统。短期处理一个明确项目及其相关 Skill 的失真、验证和最小修正；长期发展为类似 Jarvis 的个人与开源社区 Skill 优化系统。
+本项目正在统一为 **Astra Skill Optimizer**：面向 GPT-6/Astra 新模型的 Skill 与工作流适配系统。短期处理一个明确项目及其相关 Skill 的失真、验证和最小修正；长期发展为类似 Jarvis 的个人与开源社区 Skill 优化系统。
 
 ## 完成了什么
 
 - 已有独立适配插件 `plugins/gpt6-astra-skill-optimizer`，具备证据、正反案例、最小改动和回滚边界。
 - 已建立产品契约 `docs/GPT6_ASTRA_SKILL_CONTRACT.md`，明确新名称、短期目标、长期愿景和纯粹性边界。
-- 本地包元数据和当前 README 已切换到 Astra Skill Doctor；旧 Python 包与 CLI 暂保留为兼容入口。
+- 本地包元数据和当前 README 已切换到 Astra Skill Optimizer；旧 Python 包与 CLI 暂保留为兼容入口。
 - GitHub 仓库已改名为 `gpt-6-astra-skill`。
 - 新增定位修改后，Jarvis 全量测试 213 项通过、7 项跳过；插件结构校验通过。
 
@@ -23,7 +23,7 @@
 
 ## 下一步计划
 
-先完成仓库远端命名核实、当前公开文档统一和兼容迁移表；随后用一个脱敏真实项目做首个 Astra Skill Doctor 适配回归。
+先完成仓库远端命名核实、当前公开文档统一和兼容迁移表；随后用一个脱敏真实项目做首个 Astra Skill Optimizer 适配回归。
 
 ## 踩过哪些坑
 
@@ -33,7 +33,7 @@
 
 ## 当前任务汇总
 
-当前目标：完成 Astra Skill Doctor 的命名、定位和迁移边界，并准备短期适配闭环。未授权/未执行：扫描无关 Skill、自动改动外部项目、发送外部申请、交易和其他业务动作。
+当前目标：完成 Astra Skill Optimizer 的命名、定位和迁移边界，并准备短期适配闭环。未授权/未执行：扫描无关 Skill、自动改动外部项目、发送外部申请、交易和其他业务动作。
 
 ## 当前架构与入口
 

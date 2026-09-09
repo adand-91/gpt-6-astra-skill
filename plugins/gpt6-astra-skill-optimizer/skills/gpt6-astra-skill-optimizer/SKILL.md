@@ -8,7 +8,7 @@ description: >-
   separate explicit authorization.
 ---
 
-# Astra Skill Doctor
+# Astra Skill Optimizer
 
 This is an independent Skill audit and optimization workflow. It does not manage the business
 project, train GPT-6 Astra, or replace domain Skills. It audits the selected project and the Skills

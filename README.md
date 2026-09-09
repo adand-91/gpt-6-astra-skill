@@ -1,16 +1,16 @@
-# Astra Skill Doctor
+# Astra Skill Optimizer
 
-### Astra Skill Doctor compatibility and personal workflow optimization
+### Astra Skill Optimizer compatibility and personal workflow optimization
 
-Astra Skill Doctor adapts existing project Skills and workflows when new GPT-6/Astra model behavior makes older constraints unreliable. Select one project and its related Skills; the workflow produces evidence-bound findings, minimal changes, and reproducible validation. Long term it becomes a Jarvis-like personal and community Skill optimization system.
+Astra Skill Optimizer adapts existing project Skills and workflows when new GPT-6/Astra model behavior makes older constraints unreliable. Select one project and its related Skills; the workflow produces evidence-bound findings, minimal changes, and reproducible validation. Long term it becomes a Jarvis-like personal and community Skill optimization system.
 
 Plain language here does not mean the shortest possible answer. It means a decision-complete
 explanation: conclusion first, then enough evidence, impact, action, and acceptance detail for the
 user to understand the problem without translating jargon or asking what the report means.
 
-**Astra Skill Doctor is the current public product and repository identity.** The legacy Python package and CLI remain as compatibility entry points during migration.
+**Astra Skill Optimizer is the current public product and repository identity.** The legacy Python package and CLI remain as compatibility entry points during migration.
 
-**The public identity is Astra Skill Doctor.** The existing Python package and CLI remain compatibility entry points during the naming migration. The current plugin is a thin Skill workflow; complete GPT-6/Astra adaptation still requires real project feedback.
+**The public identity is Astra Skill Optimizer.** The existing Python package and CLI remain compatibility entry points during the naming migration. The current plugin is a thin Skill workflow; complete GPT-6/Astra adaptation still requires real project feedback.
 
 [中文说明](README.zh-CN.md) · [product completion contract](docs/V1_PRODUCT_CONTRACT.md) ·
 [stable contract](docs/V1_STABLE_CONTRACT.md) ·
@@ -22,7 +22,7 @@ user to understand the problem without translating jargon or asking what the rep
 
 Long AI-assisted projects lose decisions inside chat: the current goal drifts, old requirements
 reappear as facts, useful behaviour gets removed during a fix, and a digest is mistaken for proof
-that a report is true or approved. Astra Skill Doctor gives GPT-6/Astra workflows a narrow compatibility loop:
+that a report is true or approved. Astra Skill Optimizer gives GPT-6/Astra workflows a narrow compatibility loop:
 
 ```text
 one selected target

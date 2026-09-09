@@ -4,14 +4,14 @@ Short pickup index. Task rules: `AGENTS.md`; product contract: `docs/GPT6_ASTRA_
 
 ## Project goal
 
-Build **Astra Skill Doctor**: a focused system that adapts existing project Skills and workflows to new GPT-6/Astra model behavior, using traceable evidence, minimal changes, and reproducible validation. Long term it becomes a Jarvis-like personal and community Skill optimization system.
+Build **Astra Skill Optimizer**: a focused system that adapts existing project Skills and workflows to new GPT-6/Astra model behavior, using traceable evidence, minimal changes, and reproducible validation. Long term it becomes a Jarvis-like personal and community Skill optimization system.
 
 ## Current checkpoint
 
-- The public product identity is **Astra Skill Doctor**; the GitHub repository slug remains `gpt-6-astra-skill` for URL continuity.
+- The public product identity is **Astra Skill Optimizer**; the GitHub repository slug remains `gpt-6-astra-skill` for URL continuity.
 - The independent Astra audit plugin exists at `plugins/gpt6-astra-skill-optimizer`.
 - Existing Requirement Ledger package and CLI remain compatibility entry points during migration.
-- Version `1.0.1` naming migration is validated and pushed to `main`: 213 tests passed, 7 skipped; translation sync and plugin validation also pass.
+- Version `1.0.2` Optimizer rename candidate is validated locally and pending push: 213 tests passed, 7 skipped; translation sync and plugin validation also pass.
 - Business-specific Skills and order records remain outside this project.
 
 ## Next action and boundary

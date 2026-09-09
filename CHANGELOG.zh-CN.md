@@ -1,4 +1,4 @@
-<!-- translation-of: CHANGELOG.md sha256:6bc14bc7e9eebd86 -->
+<!-- translation-of: CHANGELOG.md sha256:7d86659f6ec27dfb -->
 
 # 变更日志
 
@@ -7,11 +7,19 @@
 
 ## [未发布]
 
+## [1.0.2] - 2026-09-09
+
+### 变更
+
+- 将公开产品显示名确认为 **Astra Skill Optimizer**，并保留内部 optimizer 插件标识作为兼容入口。
+- 将本次改名整理为新版本，保持历史 `1.0.1` 记录不变。
+
+
 ## [1.0.1] - 2026-09-09
 
 ### 变更
 
-- 将面向 GPT-6／Astra Skill 适配的公开产品显示名改为 **Astra Skill Doctor**。
+- 将面向 GPT-6／Astra Skill 适配的公开产品显示名改为 **Astra Skill Optimizer**。
 - 保留历史插件 ID、包模块和 CLI 作为兼容入口，同时新增 `gpt6-astra-skill` 命令。
 - 统一仓库文档、marketplace 显示名和发布说明中的新产品身份。
 

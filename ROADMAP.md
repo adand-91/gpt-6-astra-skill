@@ -1,8 +1,8 @@
-# Astra Skill Doctor roadmap
+# Astra Skill Optimizer roadmap
 
-Astra Skill Doctor is the public product and repository identity. The historical Requirement Ledger
+Astra Skill Optimizer is the public product and repository identity. The historical Requirement Ledger
 Python core and plugin entry points remain compatibility components during migration; this roadmap
-tracks Astra Skill Doctor adaptation and the longer Jarvis-like system, not a new release claim.
+tracks Astra Skill Optimizer adaptation and the longer Jarvis-like system, not a new release claim.
 
 [中文路线图](ROADMAP.zh-CN.md) · [product completion contract](docs/V1_PRODUCT_CONTRACT.md) ·
 [update map](UPDATE_MAP.md) ·
@@ -30,9 +30,9 @@ private credentials, external service dependencies, or execution authority.
 `audit`, `daily`, and `weekly` are implemented modes, but they only handle the target/window/
 scope/files explicitly supplied by the user or host. No mode discovers all local history.
 
-### Astra Skill Doctor public product
+### Astra Skill Optimizer public product
 
-The public product name is Astra Skill Doctor. Its short-term journey is to adapt existing project
+The public product name is Astra Skill Optimizer. Its short-term journey is to adapt existing project
 Skills and workflows to GPT-6/Astra; its long-term direction is a Jarvis-like personal and
 community Skill optimization system. Its v1 user journey is:
 

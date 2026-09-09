@@ -1,12 +1,12 @@
-# Astra Skill Doctor v1 product completion contract
+# Astra Skill Optimizer v1 product completion contract
 
 Legacy reference: Jarvis v1 product completion contract.
 
-This document defines the public product experience for Astra Skill Doctor. It records the product contract; it does not authorize a new release.
+This document defines the public product experience for Astra Skill Optimizer. It records the product contract; it does not authorize a new release.
 
 ## Name and version boundary
 
-- The public product and GitHub repository are **Astra Skill Doctor** (`gpt-6-astra-skill`). The legacy
+- The public product and GitHub repository are **Astra Skill Optimizer** (`gpt-6-astra-skill`). The legacy
   Requirement Ledger package, CLI, and plugin entry points remain compatibility names during migration.
 - The historical local `1.0.0` candidate proves the Python CLI and evidence workflow. It does not by
   itself prove that GPT-6/Astra adaptation works across real projects.
@@ -19,7 +19,7 @@ A newcomer selects one Codex project or task and says:
 
 `Hi Jarvis, take over this project.`
 
-Astra Skill Doctor then:
+Astra Skill Optimizer then:
 
 1. answers immediately before reading tools or files: Chinese takeover starts with `可以接管。`,
    while a Chinese progress request uses only `可以汇报。` as its pre-tool acknowledgement;
@@ -132,7 +132,7 @@ be dumped into the first screen merely because it exists.
 
 ## Completion gates
 
-Astra Skill Doctor v1 is product-complete only when all of these are true:
+Astra Skill Optimizer v1 is product-complete only when all of these are true:
 
 1. A fresh Chinese takeover begins visibly with `可以接管。`; a Chinese progress request uses only
    `可以汇报。` before tool use. Both respect the bounded first-pass read budget and ordinary reports
@@ -166,7 +166,7 @@ application still requires separate maintainer authorization even after these ga
 
 ## Current state
 
-- Locally retained for compatibility: stable CLI/evidence core and legacy entry points. The current product layer is the thin Astra Skill Doctor adaptation plugin with a two-layer boundary,
+- Locally retained for compatibility: stable CLI/evidence core and legacy entry points. The current product layer is the thin Astra Skill Optimizer adaptation plugin with a two-layer boundary,
   three answer depths, plain-language eight-field reports, fast first takeover, six lifecycle
   routes, distinct daily/weekly templates, strict-evidence escalation, bounded resource discovery,
   and feedback-driven improvement routing.

@@ -1,4 +1,4 @@
-<!-- translation-of: CONTEXT.md sha256:00b16d8963c0dfee -->
+<!-- translation-of: CONTEXT.md sha256:adc5858cd5719557 -->
 
 # 项目上下文
 
@@ -6,7 +6,7 @@
 
 ## 项目目标
 
-构建 **Astra Skill Doctor**：当 GPT-6/Astra 新模型让旧约束失效时，适配现有项目的 Skill 与工作流。长期发展为类似 Jarvis 的个人与社区 Skill 优化系统。
+构建 **Astra Skill Optimizer**：当 GPT-6/Astra 新模型让旧约束失效时，适配现有项目的 Skill 与工作流。长期发展为类似 Jarvis 的个人与社区 Skill 优化系统。
 
 ## 当前检查点
 
