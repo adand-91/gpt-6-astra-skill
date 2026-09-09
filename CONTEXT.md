@@ -11,7 +11,7 @@ Build **Astra Skill Optimizer**: a focused system that adapts existing project S
 - The public product identity is **Astra Skill Optimizer**; the GitHub repository slug remains `gpt-6-astra-skill` for URL continuity.
 - The independent Astra audit plugin exists at `plugins/gpt6-astra-skill-optimizer`.
 - Existing Requirement Ledger package and CLI remain compatibility entry points during migration.
-- Version `1.0.2` Optimizer rename candidate is validated locally and pending push: 213 tests passed, 7 skipped; translation sync and plugin validation also pass.
+- Version `1.0.2` Optimizer rename candidate is pushed to `main`: 213 tests collected, 206 passed, 7 skipped; translation sync and plugin validation also pass.
 - Business-specific Skills and order records remain outside this project.
 
 ## Next action and boundary

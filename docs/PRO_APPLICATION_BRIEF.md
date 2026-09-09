@@ -34,10 +34,10 @@ Build a Jarvis-like personal and open-source community system for maintaining re
 
 ## Current verification
 
-- 213 tests passed and 7 were skipped under the documented macOS boundary.
+- 213 tests were collected: 206 passed and 7 were skipped under the documented macOS boundary.
 - Plugin structure validation passed.
 - Translation synchronization, handoff validation, and whitespace checks passed.
-- Version `1.0.2` Astra Skill Optimizer rename candidate is prepared locally; the default branch still contains the prior `1.0.1` release.
+- Version `1.0.2` Astra Skill Optimizer is pushed to the default branch; no new tag or GitHub Release has been created.
 
 ## Why additional model access would help
 
@@ -52,4 +52,4 @@ A higher-capability model environment would let us evaluate the same audit workf
 
 ## Status and request
 
-The repository is public; the `1.0.2` Optimizer rename candidate is prepared locally and is not yet pushed. This document is a draft for an application form; it has not been submitted and contains no private credentials or tokens.
+The repository is public; version `1.0.2` with the Optimizer name is on `main`. This document is a draft for an application form; it has not been submitted and contains no private credentials or tokens.

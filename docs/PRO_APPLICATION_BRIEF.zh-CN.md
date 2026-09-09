@@ -1,4 +1,4 @@
-<!-- translation-of: docs/PRO_APPLICATION_BRIEF.md sha256:c7b0c34eeeddea67 -->
+<!-- translation-of: docs/PRO_APPLICATION_BRIEF.md sha256:6b6d2f263de6f9b9 -->
 
 # Astra Skill Optimizer——项目申请简报
 
@@ -36,10 +36,10 @@ https://github.com/adand-91/gpt-6-astra-skill
 
 ## 当前验证
 
-- 在文档说明的 macOS 边界下，213 项测试通过，7 项跳过。
+- 在文档说明的 macOS 边界下，测试共 213 项，206 项通过、7 项跳过。
 - 插件结构校验通过。
 - 翻译同步、交接校验和空白差异检查通过。
-- `1.0.2` Optimizer 改名候选已在本地完成，等待推送。
+- `1.0.2` Astra Skill Optimizer 已推送到默认分支，尚未新建标签或 GitHub Release。
 
 ## 额外模型访问的用途
 
@@ -54,4 +54,4 @@ https://github.com/adand-91/gpt-6-astra-skill
 
 ## 状态与申请说明
 
-仓库已公开，`1.0.2` Optimizer 改名候选已在本地准备，尚未推送。本文是申请表草稿，尚未提交，不包含私有凭据或令牌。
+仓库已公开，`1.0.2` Optimizer 改名版本已进入 `main`。本文是申请表草稿，尚未提交，不包含私有凭据或令牌。
