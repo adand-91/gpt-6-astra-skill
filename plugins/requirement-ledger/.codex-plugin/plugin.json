@@ -1,0 +1,34 @@
+{
+  "name": "requirement-ledger",
+  "version": "1.0.1",
+  "description": "Codex-first project manager for programming newcomers, with plain-language takeover and evidence-bound reviews.",
+  "author": {
+    "name": "Requirement Ledger contributors"
+  },
+  "homepage": "https://github.com/adand-91/gpt-6-astra-skill",
+  "repository": "https://github.com/adand-91/gpt-6-astra-skill",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "requirements",
+    "review",
+    "privacy",
+    "evidence"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Requirement Ledger",
+    "shortDescription": "Let Jarvis manage selected Codex work and give you one clear next action.",
+    "longDescription": "Codex-first Jarvis workflow for programming newcomers: plain-language project takeover, three answer depths, six project lifecycle scenes, dedicated daily and weekly reports, and explicit-source evidence-bound reviews.",
+    "developerName": "Requirement Ledger contributors",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive"
+    ],
+    "defaultPrompt": [
+      "Hi Jarvis, take over this Codex project and give me one clear next action.",
+      "Jarvis, explain this requirement change or blocker in plain language and tell me what to do next.",
+      "Run an evidence-bound review of the last completed local workday from these explicit sources."
+    ]
+  }
+}

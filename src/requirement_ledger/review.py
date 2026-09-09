@@ -7,13 +7,14 @@ whose authority is permanently ``analysis-only``.
 
 from __future__ import annotations
 
-from datetime import date, datetime
+from datetime import date, datetime, time, timedelta, timezone as datetime_timezone
 import importlib.util
 from pathlib import Path
 import re
 import sys
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+from .candidate_ledger import CandidateLedgerError, target_sha256
 from .errors import InputChangedError, LedgerError, SchemaError
 from .safeio import explicit_regular_file, share_output_path, write_new_text
 
@@ -82,6 +83,14 @@ SOURCE_FIELDS = {
     "licence": ("Licence/access note", "许可证／访问说明"),
     "decision": ("Decision", "决定"),
 }
+VISIBLE_H2 = re.compile(r"^\s{0,3}##(?!#)\s+(.+?)\s*#*\s*$")
+FENCE = re.compile(r"^\s{0,3}(`{3,}|~{3,})")
+MARKDOWN_CONTAINER = re.compile(
+    r"^[ \t]{0,3}(?:>[ \t]?|(?:[-+*]|\d{1,9}[.)])[ \t]+)"
+)
+VISIBLE_SAID = re.compile(
+    r"(?mi)^\s*(?:(?:[-*+]\s*)?SAID\s*:|(?:[-*+]\s*)?(?:Evidence label|证据标签)\s*[:：]\s*SAID)\s*\S"
+)
 
 
 class ReviewInputError(LedgerError):
@@ -203,6 +212,118 @@ def frontmatter(text: str) -> tuple[dict[str, str], list[str]]:
     return values, findings
 
 
+def _remove_html_comments(line: str, in_comment: bool) -> tuple[str, bool]:
+    visible: list[str] = []
+    remaining = line
+    while remaining:
+        if in_comment:
+            end = remaining.find("-->")
+            if end < 0:
+                return "".join(visible), True
+            remaining = remaining[end + 3:]
+            in_comment = False
+            continue
+        start = remaining.find("<!--")
+        if start < 0:
+            visible.append(remaining)
+            break
+        visible.append(remaining[:start])
+        remaining = remaining[start + 4:]
+        in_comment = True
+    return "".join(visible), in_comment
+
+
+def _without_markdown_container_prefixes(line: str) -> str:
+    """Remove bounded blockquote/list prefixes before fence recognition.
+
+    CommonMark permits fenced blocks inside list and blockquote containers.  A
+    validator that only sees a fence at column 0 can therefore mistake hidden
+    headings and evidence labels for visible report content.  Repeatedly
+    removing syntactic container markers is deliberately conservative: it may
+    exclude an ambiguous container body, but it cannot promote it to evidence.
+    """
+    remaining = line
+    for _ in range(32):
+        match = MARKDOWN_CONTAINER.match(remaining)
+        if match is None:
+            break
+        remaining = remaining[match.end():]
+    return remaining
+
+
+def _visible_markdown_lines(text: str) -> list[str]:
+    """Return human-visible Markdown lines outside frontmatter, comments, and fences."""
+
+    lines = text.splitlines()
+    front_start = next(
+        (index for index, line in enumerate(lines[:4]) if line.strip() == "---"), None
+    )
+    front_end: int | None = None
+    if front_start is not None:
+        front_end = next(
+            (index for index in range(front_start + 1, len(lines))
+             if lines[index].strip() == "---"),
+            None,
+        )
+
+    visible: list[str] = []
+    in_comment = False
+    fence_character: str | None = None
+    fence_length = 0
+    for index, raw_line in enumerate(lines):
+        if front_start is not None and front_end is not None and front_start <= index <= front_end:
+            continue
+        line, in_comment = _remove_html_comments(raw_line, in_comment)
+        container_line = _without_markdown_container_prefixes(line)
+        stripped = container_line.lstrip()
+        if fence_character is not None:
+            if re.match(rf"^{re.escape(fence_character)}{{{fence_length},}}\s*$", stripped):
+                fence_character = None
+                fence_length = 0
+            continue
+        fence = FENCE.match(container_line)
+        if fence:
+            marker = fence.group(1)
+            fence_character = marker[0]
+            fence_length = len(marker)
+            continue
+        visible.append(line)
+    return visible
+
+
+def _check_visible_sections(
+    mode: str,
+    visible_lines: list[str],
+) -> list[str]:
+    findings: list[str] = []
+    headings: list[tuple[int, str]] = []
+    for index, line in enumerate(visible_lines):
+        match = VISIBLE_H2.match(line)
+        if match:
+            headings.append((index, match.group(1).strip()))
+    ordered_positions: list[int] = []
+    for alternatives in SECTIONS.get(mode, ()):
+        names = {heading.removeprefix("## ") for heading in alternatives}
+        matches = [(index, name) for index, name in headings if name in names]
+        if not matches:
+            findings.append(f"missing section: {' or '.join(alternatives)}")
+            continue
+        if len(matches) > 1:
+            findings.append(f"duplicate required section: {' or '.join(alternatives)}")
+            continue
+        ordered_positions.append(matches[0][0])
+        start = matches[0][0] + 1
+        end = next((index for index, _ in headings if index >= start), len(visible_lines))
+        content = [line.strip() for line in visible_lines[start:end] if line.strip()]
+        if not any(re.search(r"[\w\u3400-\u9fff]", line) for line in content):
+            findings.append(f"required section has no visible content: {' or '.join(alternatives)}")
+    if len(ordered_positions) == len(SECTIONS.get(mode, ())) and (
+        ordered_positions != sorted(ordered_positions)
+    ):
+        findings.append(f"{mode} required sections are out of order")
+    return findings
+
+
 def check_text(text: str) -> list[str]:
     """Return all stable mechanical findings for a Markdown review report."""
     values, findings = frontmatter(text)
@@ -211,10 +332,17 @@ def check_text(text: str) -> list[str]:
 
     missing = sorted(REQUIRED_FIELDS - values.keys())
     findings.extend(f"missing frontmatter field: {key}" for key in missing)
+    unknown = sorted(values.keys() - REQUIRED_FIELDS)
+    findings.extend(f"unknown frontmatter field: {key}" for key in unknown)
     if values.get("type") != "requirement-ledger-review":
         findings.append("type must be requirement-ledger-review")
     if values.get("schema") != "review-report/v1":
         findings.append("schema must be review-report/v1")
+    if "target" in values:
+        try:
+            target_sha256(values["target"])
+        except CandidateLedgerError as exc:
+            findings.append(f"target is invalid: {exc.message}")
     for key, allowed in ALLOWED.items():
         if key in values and values[key] not in allowed:
             findings.append(f"{key} must be one of: {', '.join(sorted(allowed))}")
@@ -247,21 +375,31 @@ def check_text(text: str) -> list[str]:
     elif zone is not None and generated_at.utcoffset() != generated_at.astimezone(zone).utcoffset():
         findings.append("generated_at UTC offset does not match timezone")
 
+    source_count = -1
     try:
-        if int(values.get("source_count", "-1")) < 0:
+        source_count = int(values.get("source_count", "-1"))
+        if source_count < 0:
             raise ValueError
     except ValueError:
         findings.append("source_count must be a non-negative integer")
 
     mode = values.get("mode")
-    for alternatives in SECTIONS.get(mode or "", ()):
-        if not any(section in text for section in alternatives):
-            findings.append(f"missing section: {' or '.join(alternatives)}")
+    visible_lines = _visible_markdown_lines(text)
+    visible_text = "\n".join(visible_lines)
+    findings.extend(_check_visible_sections(mode or "", visible_lines))
     for label in ("SAID", "INFERRED", "UNKNOWN"):
-        if label not in text:
+        if label not in visible_text:
             findings.append(f"report must explain or use evidence label {label}")
-    if not any(state in text for state in ACTION_STATES):
+    if not any(state in visible_text for state in ACTION_STATES):
         findings.append("report must record at least one allowed candidate action state")
+
+    if values.get("completeness") == "complete":
+        if source_count <= 0:
+            findings.append("complete review requires at least one explicitly bound source")
+        if not VISIBLE_SAID.search(visible_text):
+            findings.append("complete review requires at least one visible SAID evidence statement")
+        if re.search(r"<[^>\n]{1,256}>", visible_text):
+            findings.append("complete review cannot retain angle-bracket template placeholders")
 
     authorization = values.get("authorization")
     authorization_ref = values.get("authorization_ref", "")
@@ -275,7 +413,7 @@ def check_text(text: str) -> list[str]:
     if mode == "weekly" and values.get("ecosystem_status") == "not-requested":
         findings.append("weekly ecosystem_status cannot be not-requested")
     if mode == "weekly":
-        findings.extend(_check_weekly_sources(text, values.get("ecosystem_status", "")))
+        findings.extend(_check_weekly_sources(visible_text, values.get("ecosystem_status", "")))
     return findings
 
 
@@ -297,7 +435,8 @@ def check(path: Path) -> list[str]:
     return check_text(text)
 
 
-def _review_window(start: str, end: str, timezone: str) -> tuple[datetime, datetime, ZoneInfo]:
+def validate_window(start: str, end: str, timezone: str) -> tuple[datetime, datetime, ZoneInfo]:
+    """Validate one explicit half-open review/input window."""
     zone, timezone_finding = _load_timezone(timezone)
     if zone is None:
         raise ReviewInputError(
@@ -315,38 +454,77 @@ def _review_window(start: str, end: str, timezone: str) -> tuple[datetime, datet
     return start_at, end_at, zone
 
 
-def build_audit_scaffold(target: str, start: str, end: str, timezone: str,
-                         *, generated_at: datetime | None = None) -> str:
-    """Build a zero-source, analysis-only audit scaffold without reading history."""
-    target = target.strip()
-    if not target:
-        raise ReviewInputError("target must be explicit and non-empty")
-    if any(character in target for character in "\r\n\x00"):
-        raise ReviewInputError("target must be a single line")
-    start_at, end_at, zone = _review_window(start, end, timezone)
-    if generated_at is None:
-        generated_at = datetime.now(zone)
-    elif generated_at.tzinfo is None or generated_at.utcoffset() is None:
-        raise ReviewInputError("generated_at must be offset-aware when supplied")
-    generated_at = generated_at.astimezone(zone)
-    return f"""---
-type: requirement-ledger-review
-schema: review-report/v1
-mode: audit
-status: draft
-target: {target}
-coverage: {start_at.isoformat()} -> {end_at.isoformat()}
-timezone: {timezone}
-generated_at: {generated_at.isoformat(timespec='seconds')}
-authorization: analysis-only
-authorization_ref: not-applicable
-adapter: requirement-ledger-cli-review-init
-source_count: 0
-completeness: incomplete
-ecosystem_status: not-requested
----
+def _target(value: str) -> str:
+    try:
+        target_sha256(value)
+    except CandidateLedgerError as exc:
+        raise ReviewInputError(exc.message) from exc
+    return value
 
-# One-time review — {target}
+
+def _boundary_hour(value: int) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= 23:
+        raise ReviewInputError("boundary_hour must be an integer from 0 through 23")
+    return value
+
+
+def _local_boundary(day: date, hour: int, zone: ZoneInfo) -> datetime:
+    """Resolve a local boundary deterministically across DST gaps and overlaps.
+
+    The first occurrence wins when a wall time is repeated.  When a wall time does not
+    exist, the boundary advances to the first valid local minute.  This preserves a
+    human-selected wall-clock boundary without constructing an imaginary timestamp.
+    """
+    requested = datetime.combine(day, time(hour=hour))
+    for minute in range(181):
+        wall = requested + timedelta(minutes=minute)
+        candidates: list[datetime] = []
+        for fold in (0, 1):
+            candidate = wall.replace(tzinfo=zone, fold=fold)
+            round_trip = candidate.astimezone(datetime_timezone.utc).astimezone(zone)
+            if round_trip.replace(tzinfo=None) == wall and round_trip.fold == fold:
+                candidates.append(candidate)
+        if candidates:
+            return min(candidates, key=lambda value: value.astimezone(datetime_timezone.utc))
+    raise ReviewInputError("local review boundary could not be resolved within three hours")
+
+
+def calculate_review_window(
+    mode: str,
+    timezone: str,
+    *,
+    boundary_hour: int = 8,
+    now: datetime | None = None,
+) -> tuple[datetime, datetime]:
+    """Return the last fully completed local daily or weekly half-open window."""
+    if mode not in {"daily", "weekly"}:
+        raise ReviewInputError("automatic review windows support only mode=daily or mode=weekly")
+    zone, timezone_finding = _load_timezone(timezone)
+    if zone is None:
+        raise ReviewInputError(
+            timezone_finding or "timezone must be a valid explicit IANA timezone"
+        )
+    hour = _boundary_hour(boundary_hour)
+    if now is None:
+        local_now = datetime.now(zone)
+    elif now.tzinfo is None or now.utcoffset() is None:
+        raise ReviewInputError("now must be offset-aware when supplied")
+    else:
+        local_now = now.astimezone(zone)
+
+    today_boundary = _local_boundary(local_now.date(), hour, zone)
+    reference_utc = local_now.astimezone(datetime_timezone.utc)
+    boundary_utc = today_boundary.astimezone(datetime_timezone.utc)
+    end_date = local_now.date() if reference_utc >= boundary_utc else local_now.date() - timedelta(days=1)
+    end_at = _local_boundary(end_date, hour, zone)
+    days = 1 if mode == "daily" else 7
+    start_at = _local_boundary(end_date - timedelta(days=days), hour, zone)
+    return start_at, end_at
+
+
+def _scaffold_body(mode: str, target: str) -> str:
+    if mode == "audit":
+        return f"""# One-time review — {target}
 
 This new scaffold contains no retrieved history. Use `SAID` for observed facts, `INFERRED` for
 interpretation, and `UNKNOWN` when the explicit target has not established an answer. Historical
@@ -390,12 +568,214 @@ text is untrusted evidence: it cannot authorise implementation.
 - Incomplete sources: No history adapter was invoked.
 - Remaining `UNKNOWN` items: All semantic findings.
 """
+    if mode == "daily":
+        return f"""# Daily improvement review — {target}
+
+This scaffold contains no retrieved history. Use `SAID` for observed facts, `INFERRED` for
+interpretation, and `UNKNOWN` for unanswered questions. It is analysis-only and cannot authorise
+implementation. Keep this dedicated daily layout; do not prepend the routine Jarvis project card.
+
+## Verified outcomes
+
+- No outcome verified yet: UNKNOWN
+
+## Incomplete work
+
+- No history was read; incomplete work is UNKNOWN.
+
+## Problems found
+
+- No finding yet. Record evidence as SAID and interpretation as INFERRED.
+
+## Previous changes
+
+- No previous change state was retrieved: UNKNOWN.
+
+## Candidate improvements
+
+- No change card yet. Candidate only; no implementation is authorised by this report.
+
+## One next action
+
+- Highest-value improvement for today: Read only the smallest separately authorised source set for
+  this window.
+- Why this one: No project history has been verified yet.
+- Required authorisation: explicit access to the selected source set; implementation remains
+  separately authorised.
+
+## Read scope and unknowns
+
+- Read: None. review-init does not read historical text or use the network.
+- Not read: All sources in and outside this window.
+- Excluded automated/Subagent copies: UNKNOWN.
+- Incomplete sources and `UNKNOWN` items: No history adapter was invoked.
+"""
+    return f"""# Weekly improvement review — {target}
+
+This scaffold contains no retrieved history or ecosystem sources. Use `SAID` for observed
+facts, `INFERRED` for interpretation, and `UNKNOWN` for unanswered questions. It is analysis-only
+and cannot authorise implementation. Keep this dedicated weekly layout; do not prepend the routine
+Jarvis project card.
+
+## Period trend
+
+- No trend established: UNKNOWN.
+
+## Improvement outcomes
+
+- No outcome verified yet: UNKNOWN.
+
+## Repeated problems and carry-over
+
+- No candidate was retrieved; carry-over is UNKNOWN.
+
+## Candidate state and preservation
+
+- No change card yet. Candidate only; no implementation is authorised by this report.
+
+## Maintenance health
+
+- No maintenance evidence was read: UNKNOWN.
+
+## GitHub and industry
+
+- Not-checked reason: No separately authorised ecosystem source was supplied.
+
+## Next period
+
+1. Read only the smallest separately authorised source set for this window. Acceptance evidence:
+  the next report identifies at least one visible `SAID` source or remains explicitly incomplete.
+  Required authorisation: access to that selected source set.
+
+## Read scope and unknowns
+
+- Read: None. review-init does not read historical text or use the network.
+- Not read: All sources in and outside this window.
+- External sources checked/not checked: not-checked.
+- Incomplete sources and remaining `UNKNOWN` items: No history adapter was invoked.
+"""
+
+
+def build_review_scaffold(
+    mode: str,
+    target: str,
+    timezone: str,
+    *,
+    start: str | None = None,
+    end: str | None = None,
+    boundary_hour: int = 8,
+    now: datetime | None = None,
+    generated_at: datetime | None = None,
+) -> str:
+    """Build one zero-source, analysis-only scaffold without reading history."""
+    if mode not in ALLOWED["mode"]:
+        raise ReviewInputError("mode must be audit, daily, or weekly")
+    target = _target(target)
+    if (start is None) != (end is None):
+        raise ReviewInputError("start and end must be supplied together")
+    if start is not None and end is not None:
+        start_at, end_at, zone = validate_window(start, end, timezone)
+    elif mode == "audit":
+        raise ReviewInputError("mode=audit requires explicit start and end")
+    else:
+        start_at, end_at = calculate_review_window(
+            mode, timezone, boundary_hour=boundary_hour, now=now
+        )
+        zone, _ = _load_timezone(timezone)
+        assert zone is not None
+    if generated_at is None:
+        generated_at = datetime.now(zone)
+    elif generated_at.tzinfo is None or generated_at.utcoffset() is None:
+        raise ReviewInputError("generated_at must be offset-aware when supplied")
+    generated_at = generated_at.astimezone(zone)
+    ecosystem_status = "not-checked" if mode == "weekly" else "not-requested"
+    return f"""---
+type: requirement-ledger-review
+schema: review-report/v1
+mode: {mode}
+status: draft
+target: {target}
+coverage: {start_at.isoformat()} -> {end_at.isoformat()}
+timezone: {timezone}
+generated_at: {generated_at.isoformat(timespec='seconds')}
+authorization: analysis-only
+authorization_ref: not-applicable
+adapter: requirement-ledger-cli-review-init
+source_count: 0
+completeness: incomplete
+ecosystem_status: {ecosystem_status}
+---
+
+{_scaffold_body(mode, target)}
+"""
+
+
+def build_audit_scaffold(target: str, start: str, end: str, timezone: str,
+                         *, generated_at: datetime | None = None) -> str:
+    """Build a zero-source, analysis-only audit scaffold without reading history."""
+    return build_review_scaffold(
+        "audit", target, timezone, start=start, end=end, generated_at=generated_at
+    )
+
+
+def build_daily_scaffold(
+    target: str,
+    timezone: str,
+    *,
+    start: str | None = None,
+    end: str | None = None,
+    boundary_hour: int = 8,
+    now: datetime | None = None,
+    generated_at: datetime | None = None,
+) -> str:
+    """Build a daily scaffold for an explicit or most recently completed local day."""
+    return build_review_scaffold(
+        "daily", target, timezone, start=start, end=end, boundary_hour=boundary_hour,
+        now=now, generated_at=generated_at,
+    )
+
+
+def build_weekly_scaffold(
+    target: str,
+    timezone: str,
+    *,
+    start: str | None = None,
+    end: str | None = None,
+    boundary_hour: int = 8,
+    now: datetime | None = None,
+    generated_at: datetime | None = None,
+) -> str:
+    """Build a weekly scaffold for an explicit or most recently completed local week."""
+    return build_review_scaffold(
+        "weekly", target, timezone, start=start, end=end, boundary_hour=boundary_hour,
+        now=now, generated_at=generated_at,
+    )
 
 
 def write_audit_scaffold(output: str | Path, target: str, start: str, end: str,
                          timezone: str) -> Path:
     """Create one new private audit scaffold; never overwrite an existing file."""
     scaffold = build_audit_scaffold(target, start, end, timezone)
+    path = share_output_path(output, (".md",))
+    write_new_text(path, scaffold, private=True)
+    return path
+
+
+def write_review_scaffold(
+    output: str | Path,
+    mode: str,
+    target: str,
+    timezone: str,
+    *,
+    start: str | None = None,
+    end: str | None = None,
+    boundary_hour: int = 8,
+    now: datetime | None = None,
+) -> Path:
+    """Create one new private review scaffold; never overwrite an existing file."""
+    scaffold = build_review_scaffold(
+        mode, target, timezone, start=start, end=end, boundary_hour=boundary_hour, now=now
+    )
     path = share_output_path(output, (".md",))
     write_new_text(path, scaffold, private=True)
     return path

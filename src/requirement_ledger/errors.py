@@ -42,3 +42,10 @@ class IncompleteEvidenceError(LedgerError):
 class ExecutionBlockedError(LedgerError):
     code = "E_EXECUTION_BLOCKED"
     exit_code = 8
+
+
+class InputLimitError(LedgerError):
+    """A bounded input exceeded an explicit product limit."""
+
+    code = "E_INPUT_LIMIT"
+    exit_code = 9

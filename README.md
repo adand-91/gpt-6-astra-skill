@@ -1,315 +1,255 @@
-# Requirement Ledger AI
+# Astra Skill Doctor
 
-**Requirement Ledger has a stable explicit-evidence v0.1.1 and a public `v0.2.0-alpha.1`
-prerelease for named-target audits.** When the host exposes bounded task history, name a Codex
-conversation, Agent Skill, or project and the Skill can recover related context, prepare concrete
-change cards, and compare the same case before and after an authorised edit. The Python package
-does not yet ship its own Codex history adapter.
+### Astra Skill Doctor compatibility and personal workflow optimization
 
-[![CI](https://github.com/adand-91/requirement-ledger/actions/workflows/ci.yml/badge.svg)](https://github.com/adand-91/requirement-ledger/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/adand-91/requirement-ledger)](https://github.com/adand-91/requirement-ledger/releases/latest)
-[![Python](https://img.shields.io/badge/Python-3.10--3.13-3776AB)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+Astra Skill Doctor adapts existing project Skills and workflows when new GPT-6/Astra model behavior makes older constraints unreliable. Select one project and its related Skills; the workflow produces evidence-bound findings, minimal changes, and reproducible validation. Long term it becomes a Jarvis-like personal and community Skill optimization system.
 
-[中文说明](README.zh-CN.md) · [v0.1 CLI contract](V0.1_CONTRACT.md) ·
-[v0.2 host contract](V0.2_HOST_CONTRACT.md) ·
-[Alpha 1 notes](docs/release-notes/v0.2.0-alpha.1.md) · [update map](UPDATE_MAP.md) ·
-[roadmap](ROADMAP.md) · [open gaps](docs/PROJECT_GAPS.md) · [security](SECURITY.md)
+Plain language here does not mean the shortest possible answer. It means a decision-complete
+explanation: conclusion first, then enough evidence, impact, action, and acceptance detail for the
+user to understand the problem without translating jargon or asking what the report means.
 
-> Requirement Ledger does not autonomously edit your project. The CLI gathers and structures evidence;
-> Codex remains the developer, and every real modification stays visible and reviewable.
+**Astra Skill Doctor is the current public product and repository identity.** The legacy Python package and CLI remain as compatibility entry points during migration.
 
-## Start with one sentence
+**The public identity is Astra Skill Doctor.** The existing Python package and CLI remain compatibility entry points during the naming migration. The current plugin is a thin Skill workflow; complete GPT-6/Astra adaptation still requires real project feedback.
 
-After installing the Skill, the user names the target rather than diagnosing it:
+[中文说明](README.zh-CN.md) · [product completion contract](docs/V1_PRODUCT_CONTRACT.md) ·
+[stable contract](docs/V1_STABLE_CONTRACT.md) ·
+[roadmap](ROADMAP.md) · [security](SECURITY.md) · [Codex alignment](docs/CODEX_ALIGNMENT_RESEARCH.md)
 
-> Use Requirement Ledger to audit this Skill. Find its related Codex history, tell me what should
-> improve, preserve what already works, and show me the change cards before editing anything.
+> The repository naming migration and public metadata alignment are tracked separately from historical release records.
 
-The Codex host should locate the target, find only its related authorised tasks and project
-records, reconstruct the work history, explain the problems without jargon, preserve working
-behaviour, prepare small change cards, and stop for authorisation before editing. The user does not
-need to remember the failures or design YAML, prompts, tests, or repository architecture.
+## Why it exists
+
+Long AI-assisted projects lose decisions inside chat: the current goal drifts, old requirements
+reappear as facts, useful behaviour gets removed during a fix, and a digest is mistaken for proof
+that a report is true or approved. Astra Skill Doctor gives GPT-6/Astra workflows a narrow compatibility loop:
 
 ```text
-one named target
-  -> related Codex history
-  -> repeated problems and personal preferences
-  -> what must stay
-  -> concrete change cards
-  -> authorised visible edit
-  -> same success and boundary cases before/after
+one selected target
+  -> goal and current stage
+  -> main problem and preserved behaviour
+  -> one reviewable improvement
+  -> explicit next action and authority
+  -> optional exact-source binding and handoff check
 ```
 
-See the [three review modes](references/review-modes.md),
-[Codex context discovery](references/codex-context-discovery.md), the
-[beginner Skill-personalisation workflow](references/personalization-workflow.md), and the fully
-synthetic [walkthrough](docs/use-cases/improve-an-agent-skill.md).
+It does not discover every task, scan a home directory, edit the target, or turn analysis into
+permission.
 
-## Three ways to use it
+## Fast Codex project takeover
 
-| Mode | Say this | What it does |
+Install the core and plugin, select one Codex task or project, then start a new task and say:
+
+```text
+Hi Jarvis, take over this selected project. Recover its goal, current
+stage, blocker, and one next action. Do not modify it.
+```
+
+If the host does not select the Skill automatically, retry once explicitly:
+`$requirement-ledger-workflow Hi Jarvis, take over this selected project.`
+
+The first screen should look like this—not like a request for JSONL paths or schema fields:
+
+```text
+# Project goal
+...
+## Overall progress: about 60% (estimated)
+██████░░░░
+Current work area: ...
+## Current-area progress: about 80% (estimated)
+████████░░
+Current blocker: none.
+No decision is needed from you now.
+# Next step
+...
+Completion test: ...
+```
+
+This quick result is a `host-selected / unbound` Codex decision aid. Evidence or authority appears
+in plain language only when it changes the next action; the first screen has no fixed technical
+metadata line. It is not a CLI-created source pack, final report, or handoff identity.
+
+## Three answer depths
+
+Jarvis does not print the complete project card after every message.
+
+| What you need | What Jarvis returns |
+| --- | --- |
+| One narrow answer | The answer first, plus only the decisive reason or practical effect. |
+| A clear explanation | Conclusion, necessary cause or evidence, practical impact, and what follows. |
+| Takeover, complete status, or a key project event | The full eight-field report with both progress bars, one next action, and its completion test. |
+
+Daily and weekly reports keep their own fixed layouts. The daily report ends with one
+highest-value next action; the weekly report may rank up to three next-period actions. Neither
+mode mechanically prepends the ordinary project card.
+
+## Six project-manager scenes
+
+Jarvis chooses one primary scene from ordinary language. It does not ask the user to select an
+internal workflow first.
+
+| What the user says | Primary scene | Useful result |
 | --- | --- | --- |
-| One-time audit | “Audit this conversation / Skill / project.” | Finds related history, prioritises problems, and prepares change cards |
-| Daily review | “Review yesterday with Requirement Ledger.” | Reconstructs the previous workday, checks earlier changes, and recommends one improvement |
-| Weekly review | “Run the weekly Requirement Ledger review.” | Deduplicates the week, checks maintenance health, and links relevant GitHub or official industry changes |
+| “Take over this project.” | Project setup | Goal, stage, evidence freshness, authority, blocker, and first action |
+| “What changed today?” | Progress review | Period, completed work, change, risk, and one next-period priority |
+| “The client changed the requirement.” | Requirement change | Old/new requirement, impact, invalidated assumptions, decision, and safe next action |
+| “Why is this blocked?” | Blocker diagnosis | Symptom, facts, reproduction state, candidate causes, missing evidence, and next check |
+| “Can this version ship?” | Version acceptance | Scope and criteria with pass/fail/skipped/unknown kept separate |
+| “Prepare a handoff.” | Handoff | Goal, decisions, unfinished work, risks, evidence pointers, and receiving-task opening |
 
-Alpha 1 installs the audit scaffold and checker only. Daily and weekly are documented host
-contracts and reference templates, not initialisation modes in this prerelease. A one-time audit
-stays on the named target. Future daily and weekly modes may enumerate Codex projects active only
-in their explicit time window. If the host cannot retrieve history, it must ask the user to select
-a task or bounded export rather than claim complete coverage.
+An ordinary report offers at most three prompts relevant to the current stage. The complete menu
+appears only when the user asks what Jarvis can do. For unfamiliar implementation work, Jarvis can
+first check available Skills, official tools, original GitHub projects, documentation, and relevant
+public forums, then explain what is worth reusing. Discovery does not itself install or run a
+candidate. Visible user corrections and reproduced failures can become focused improvement
+candidates; Jarvis does not claim passive observation, automatic memory, or background learning.
+Daily and weekly reports can run on demand; unattended delivery still needs a separately configured
+schedule and notification path.
 
-Requirement Ledger AI is the guide and evidence layer, not a hidden patch bot.
+## Two review levels
 
-## What v0.2.0-alpha.1 adds
+| Level | Use it when | Inputs | Honest result |
+| --- | --- | --- | --- |
+| **Codex quick audit** | You need the next maintenance decision now. | One host-selected task or project. No separate window, JSONL, scope root, or file path. | Plain-language, `analysis-only`, `host-selected`, `unbound`; dynamic state is `partial`, `unstable`, or `unknown` until verified. |
+| **Evidence-bound review** | The result must be reproducible or handed off. | Explicit target, half-open window, IANA timezone, non-home scope root, exact files, and optional candidate state. | Private source pack, checked final report, exact binding, and read-only handoff verification. |
 
-- `review-init --mode audit` creates a private, analysis-only scaffold for one named target and
-  explicit time window.
-- `review-check` mechanically rejects malformed review contracts before they are treated as
-  evidence or handed to an editing workflow.
-- New files are no-overwrite and private-by-default where supported; initial coverage is honestly
-  zero-source and incomplete.
-- The [release notes](docs/release-notes/v0.2.0-alpha.1.md) explain the solved problems, while the
-  [update map](UPDATE_MAP.md) separates shipped capability from the ten-day path to stable v0.2.
+The v1 CLI's `review-init --mode audit` remains part of the second level and therefore still
+requires explicit `--start`, `--end`, and `--timezone`. The plugin must never imply that a quick
+audit already passed the evidence-bound chain.
 
-## Why this exists
+The complete target experience and its release gates are defined in the
+[Jarvis v1 product completion contract](docs/V1_PRODUCT_CONTRACT.md). The local Python version
+`1.0.0` is the stable technical core; it is not, by itself, proof that every product gate or
+public-release gate has passed.
 
-AI-assisted projects usually lose the most valuable information they produce:
+## Why Codex-first
 
-- the user corrects the agent, but the real requirement stays buried in chat;
-- the same error appears again, but nobody can tell whether it is upstream, project-local,
-  personal configuration, or still unknown;
-- a patch is called “fixed” without a frozen baseline or the same after-test;
-- useful feedback never reaches a maintainer, while unsafe raw logs get pasted into public
-  issues.
+- The entry point is one selected Codex task or project and one explicit Skill invocation—not a
+  new form the user must learn before receiving a useful answer.
+- The plugin is a thin, skills-only Codex distribution layer. Deterministic schemas, privacy
+  boundaries, stale-state rejection, exact-byte binding, and verification stay in an ordinary
+  Python CLI that can be tested independently.
+- Host text, repository instructions, tool output, and old reports remain evidence, never fresh
+  authority. That matches Codex's explicit approval and layered-instruction model.
+- This is not a Claude Code port. Anthropic's public Skills examples informed packaging research
+  only; v1 depends on no Claude-specific hook, plugin runtime, or configuration, and copies no
+  Anthropic Skill text or code. The differentiator is executable verification beyond instructions,
+  not a blanket claim that one coding agent is universally better.
 
-Requirement Ledger makes that loop explicit:
+See the fact/decision/unknown split in [Codex alignment research](docs/CODEX_ALIGNMENT_RESEARCH.md).
+
+## Architecture
 
 ```text
-explicit Codex/Claude/text input + test log + read-only Git snapshot
-  -> private evidence
-  -> conservative attribution
-  -> quote-free report + DRAFT repair plan
-  -> host-owned Codex patch
-  -> digest-bound oracle before/after result
+Codex host-selected context --quick audit--> plain-language, unbound decision
+
+explicit target/window/files
+  -> independent requirement-ledger CLI
+  -> source pack + candidate continuity + final report
+  -> exact review binding + read-only handoff check
+  -> separately authorised host-owned implementation
 ```
 
-It works with ordinary software projects. The target does not have to use AI, Python, or this
-Skill; only the evidence collector itself is Python.
+The repository-local plugin is a thin Skill distribution layer with no second runtime, app, hook, plugin-owned
+authentication or credential flow, updater, model call, telemetry, database, or network client.
+The normative boundary is [the v1 stable contract](docs/V1_STABLE_CONTRACT.md).
 
-## What v0.1 delivers
+## Install the core locally
 
-- A zero-runtime-dependency package and `requirement-ledger` command for Python 3.10–3.13.
-- Explicit Claude Code, Codex JSONL, and plain-text transcript adapters with event-level time
-  filtering and input-mutation checks.
-- A fixed, read-only Git snapshot: HEAD, status digest, dirty count, and tracked-file count;
-  remote URLs are never read or emitted.
-- Versioned `SourceRef`, `EvidenceItem`, `IssueRecord`, `FixProposal`, and `ValidationResult`
-  records.
-- Four attribution fields — `upstream`, `project-local`, `personal`, `unknown` — with
-  `unknown` as the honest default.
-- Physically separate private evidence and quote-free reports, restrictive file modes,
-  non-overwrite writes, and a fail-closed privacy gate.
-- `DRAFT — NOT SENT`, `not-applied` repair plans. No hidden patch, commit, push, Issue, PR,
-  Release, upload, or telemetry.
-- A deterministic, wholly synthetic end-to-end demo.
+### macOS with Homebrew Python
 
-## Install
-
-Clone the repository, then install the package locally:
+From this checkout, use an isolated tool environment:
 
 ```bash
-git clone https://github.com/adand-91/requirement-ledger
-cd requirement-ledger
+uv tool install .
+requirement-ledger --version
+```
+
+This exact macOS checkout installed `requirement-ledger 1.0.0` through `uv tool install .`.
+Homebrew-managed Python follows PEP 668 and can reject system-level `pip install`; do not use
+`--break-system-packages` for this project.
+
+### Existing virtual environment
+
+```bash
 python3 -m pip install .
 requirement-ledger --version
 ```
 
-The runtime uses only the Python standard library on systems with an IANA timezone database.
-Windows installs the standard `tzdata` package conditionally because Windows does not ship that
-database. Build isolation may fetch build tooling; a prepared offline Windows environment must
-include `tzdata` before using `python3 -m pip install --no-build-isolation --no-deps .`.
+The core uses the Python standard library. Windows installs also receive the small conditional
+`tzdata` package so IANA review windows remain available. The old public Alpha wheel is not this
+local candidate.
 
-To install this exact prerelease without cloning:
-
-```bash
-python3 -m pip install \
-  https://github.com/adand-91/requirement-ledger/releases/download/v0.2.0-alpha.1/requirement_ledger-0.2.0a1-py3-none-any.whl
-```
-
-### Install the Codex or Claude Skill
-
-The repository is also a self-contained agent Skill:
+## Install or refresh the local Codex plugin
 
 ```bash
-# Codex
-git clone https://github.com/adand-91/requirement-ledger ~/.codex/skills/requirement-ledger
-
-# Claude Code
-git clone https://github.com/adand-91/requirement-ledger ~/.claude/skills/requirement-ledger
+codex plugin marketplace add /absolute/path/to/requirement-ledger
+codex plugin add requirement-ledger@requirement-ledger-local
+codex plugin list --marketplace requirement-ledger-local
 ```
 
-The Skill tells the host when to gather evidence, when to stop at a proposal, and how to hand a
-reviewed plan back to the ordinary coding workflow. It does not grant new permissions.
-
-## Sixty-second synthetic demo
-
-This command does not inspect a repository, a home directory, or a real conversation:
+Codex installs a versioned plugin snapshot. During local development, editing this checkout does
+not prove that a new task loaded the changed Skill bytes. If the same unpublished version was
+already installed, refresh it explicitly and then start a new Codex task:
 
 ```bash
-requirement-ledger demo --output-dir /tmp/requirement-ledger-demo
-find /tmp/requirement-ledger-demo -maxdepth 1 -type f -print
+codex plugin remove requirement-ledger@requirement-ledger-local
+codex plugin add requirement-ledger@requirement-ledger-local
 ```
 
-It writes five files:
+Use `codex plugin --help` as the installed command authority. Removing the plugin does not
+uninstall the Python package.
 
-```text
-01-evidence.private.json   raw synthetic evidence; private format
-02-analysis.json           conservative issue candidates
-03-proposals.json          DRAFT — NOT SENT, not-applied plans
-04-report.md               quote-free report; still needs human privacy review
-05-validation.json         synthetic baseline-fail -> after-pass result
-```
+## Evidence-bound CLI workflow
 
-The source fixtures are in [examples/anonymous](examples/anonymous/README.md).
-
-## Use it on a project
-
-Choose the exact repository and exact evidence files yourself. Storing private evidence outside
-the project is recommended:
+Keep the private source pack, candidate state, report, and binding under one approved non-home
+scope. Every placeholder below must be replaced with one explicit local value.
 
 ```bash
-requirement-ledger doctor --repo /path/to/project
+# 1. Create and validate a bounded audit scaffold.
+requirement-ledger review-init --mode audit --target project:example \
+  --start 2026-08-01T08:00:00+08:00 --end 2026-08-02T08:00:00+08:00 \
+  --timezone Asia/Shanghai --output /approved/review/final-report.md
+requirement-ledger review-check /approved/review/final-report.md
 
-requirement-ledger scan \
-  --repo /path/to/project \
-  --input /path/to/explicit-codex-or-claude-session.jsonl \
-  --test-log /path/to/existing-test-output.log \
-  --output /tmp/project-evidence.private.json
+# 2. Bind only the selected files, then verify their current bytes.
+requirement-ledger source-pack --target project:example --scope-root /approved/review \
+  --source /approved/review/input.jsonl --output /approved/review/sources.private.json
+requirement-ledger source-verify --pack /approved/review/sources.private.json \
+  --target project:example --scope-root /approved/review \
+  --source /approved/review/input.jsonl
 
-requirement-ledger analyze \
-  --evidence /tmp/project-evidence.private.json \
-  --output /tmp/project-analysis.json
-
-requirement-ledger report \
-  --analysis /tmp/project-analysis.json \
-  --output /tmp/project-report.md
-
-requirement-ledger suggest \
-  --analysis /tmp/project-analysis.json \
-  --output /tmp/project-proposals.json
+# 3. Carry exact candidate state, check the completed report, bind it, and recheck the handoff.
+requirement-ledger candidate-sync --target project:example --scope-root /approved/review \
+  --current /approved/review/current-candidates.private.json \
+  --output /approved/review/candidates.private.json
+# After replacing the scaffold with a complete status=final report:
+requirement-ledger review-check /approved/review/final-report.md
+requirement-ledger review-bind --target project:example --scope-root /approved/review \
+  --report /approved/review/final-report.md --source-pack /approved/review/sources.private.json \
+  --source /approved/review/input.jsonl --candidate-state /approved/review/candidates.private.json \
+  --output /approved/review/review-binding.private.json
+requirement-ledger review-handoff-check --binding /approved/review/review-binding.private.json \
+  --target project:example --report /approved/review/final-report.md \
+  --source-pack /approved/review/sources.private.json --scope-root /approved/review \
+  --source /approved/review/input.jsonl --candidate-state /approved/review/candidates.private.json
 ```
 
-`scan` never discovers `~/.codex`, `~/.claude`, or other projects. JSONL provider detection is
-automatic; use `--provider codex|claude|text` when a custom filename is ambiguous. Time windows
-are ISO-8601 and apply to individual JSONL events. Plain text has no timestamps, so it rejects
-time-window flags instead of pretending.
+`review-handoff-check` blocks incomplete evidence by default. `--allow-incomplete-archive` retains
+an incomplete identity for archival use only; it does not authorise implementation or publication.
 
-### Record validation without running project code
+## Compatibility and boundaries
 
-v0.1 deliberately does not execute arbitrary third-party tests. Let Codex or your existing
-sandbox freeze the exact argv, working directory, relevant environment, and fixture digests,
-hash that descriptor with SHA-256, then run it before and after the reviewed intervention.
-Provide the same 64-hex digest in both tiny JSON records and on the command line:
+- The v0.1 CLI remains available for explicit evidence, conservative attribution, draft repair
+  plans, and externally recorded before/after oracle results.
+- The CLI does not run project code, apply a patch, modify a worktree, commit, push, create issues,
+  publish a release, upload data, or use telemetry.
+- Private evidence and source packs can contain sensitive relationships or hashes. A mechanical
+  pass is not publication approval.
+- A SHA-256 digest proves byte/state identity within the selected inputs. It does not prove truth,
+  authorship, completeness, semantic correctness, approval, or execution authority.
+- Windows-native fault-injection tests have not yet run on Windows for this candidate; macOS skips
+  are not cross-platform evidence.
 
-```json
-{"oracle": "unit-regression", "oracle_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "exit_code": 1}
-```
-
-```json
-{"oracle": "unit-regression", "oracle_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "exit_code": 0}
-```
-
-```bash
-requirement-ledger verify \
-  --oracle unit-regression \
-  --oracle-digest aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa \
-  --baseline /tmp/baseline.json \
-  --after /tmp/after.json \
-  --output /tmp/validation.json
-```
-
-Only the same oracle name **and digest** changing from failure to success is `improved`.
-Mismatched identities, boolean/non-integer exit codes, or codes outside 0–255 are
-`inconclusive`; baseline success followed by failure is `regressed`.
-
-## Attribution without pretending
-
-Each issue stores a suspected scope and a final scope separately:
-
-| Scope | What confirmation requires |
-|---|---|
-| `upstream` | independent projects/sessions, same provider/version, clean reproduction, local and personal causes excluded |
-| `project-local` | direct repository evidence plus a clean comparison where the behaviour does not reproduce elsewhere |
-| `personal` | separately authorised personal-configuration evidence or a clean-config comparison |
-| `unknown` | the default when those conditions are not met |
-
-A complaint is not an upstream finding. A failed project test is not proof that a dependency is
-wrong. Incomplete or conflicting evidence blocks confirmation. See the normative
-[v0.1 contract](V0.1_CONTRACT.md).
-
-## Privacy and safety
-
-Private evidence files may contain original user text and must end in `.private.json`; they are
-created with restrictive permissions where the OS supports them. Do not attach them to an
-Issue, PR, email, or chat.
-
-Reports exclude original quotes, local paths, session IDs, command arguments, remotes, and raw
-errors. Before a report is written, the automated gate checks common secret formats, auth and
-cookie headers, email, phone, home paths, credential-bearing remotes, UUIDs, IP addresses, and
-terminal controls. A hit returns `E_PRIVACY_BLOCK` and no report file is created.
-
-**Passing an automated privacy check is not proof that a file is safe to share.** Every report
-says that human review is still required.
-
-The v0.1 CLI contains no project-code runner, patch application, dependency installer, network
-client, telemetry, browser, GitHub writer, or account integration. Its only subprocesses are
-fixed read-only probes through a trusted absolute Git executable with redirecting `GIT_*`
-environment removed. Output parents must already exist; every output ancestor is checked before
-an exclusive write. Read the [threat model](docs/THREAT_MODEL.md) and
-[security policy](SECURITY.md) before using real evidence.
-
-## Legacy retrospective tools
-
-The original Skill workflow remains available for compatibility:
-
-```bash
-python3 scripts/scan_transcript.py path/to/session.jsonl
-python3 scripts/check_retro_report.py path/to/report.md
-python3 scripts/check_translation_sync.py
-```
-
-The legacy scanner can still discover local agent directories when explicitly invoked with
-`--engine`. Its `--no-text` option only removes message/error bodies; paths, session metadata,
-and command shapes may remain. It is **not share-safe**. Use the new packaged pipeline for any
-new workflow and treat all legacy output as private.
-
-## Development
-
-```bash
-python3 -m pip install --no-build-isolation --no-deps -e .
-python3 -m unittest discover -s tests -v
-python3 -m compileall -q src scripts tests
-python3 scripts/check_translation_sync.py
-```
-
-All fixtures must be synthetic. Never paste a real transcript, secret, private remote, client
-name, session identifier, or personal path into an Issue or test. See
-[CONTRIBUTING.md](CONTRIBUTING.md), [SUPPORT.md](SUPPORT.md), and the
-[project gap ledger](docs/PROJECT_GAPS.md).
-
-## What is intentionally unfinished
-
-v0.1 does not provide safe autonomous modification. Isolation backends, object-bound approval
-tokens, frozen-oracle execution, transactional apply, and rollback fault injection are required
-before that boundary can move. Structured test adapters, clean-room reproduction, a packaged
-Codex history adapter, real audit/daily/weekly validation, opt-in adoption evidence, governance,
-and signed releases also remain open.
-
-That list is maintained in [docs/PROJECT_GAPS.md](docs/PROJECT_GAPS.md), so “polished” cannot be
-confused with “finished”.
-
-## License
-
-MIT. See [LICENSE](LICENSE).
+Before automating the workflow, read the [stable contract](docs/V1_STABLE_CONTRACT.md),
+[threat model](docs/THREAT_MODEL.md), and [release checklist](docs/RELEASE_CHECKLIST.md).

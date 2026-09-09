@@ -66,6 +66,24 @@ jobs:
           .wheel-venv/bin/requirement-ledger review-check alpha-audit.md
           test "$(stat -c '%a' alpha-audit.md)" = "600"
           if .wheel-venv/bin/requirement-ledger review-init --mode audit --target ci-skill --start 2026-08-29T00:00:00+00:00 --end 2026-08-30T00:00:00+00:00 --timezone UTC --output alpha-audit.md; then exit 1; fi
+          mkdir ci-codex-input
+          .wheel-venv/bin/python -c "import json; from pathlib import Path; rows=[{'type':'event_msg','timestamp':'2026-08-29T00:30:00Z','payload':{'type':'item_completed','turn_id':'private-turn','item':{'type':'UserMessage','id':'private-item','content':[{'type':'text','text':'synthetic'},{'type':'skill','name':'private-skill','path':'/private/SKILL.md'}]}}},{'type':'event_msg','timestamp':'2026-08-29T00:30:01Z','payload':{'type':'task_complete','turn_id':'private-turn'}}]; Path('ci-codex-input/task.jsonl').write_text('\\n'.join(json.dumps(row) for row in rows)+'\\n', encoding='utf-8')"
+          .wheel-venv/bin/requirement-ledger codex-scan --repo . --input ci-codex-input/task.jsonl --scope-root ci-codex-input --target conversation:ci --task-ref task:ci --since 2026-08-29T00:00:00+00:00 --until 2026-08-30T00:00:00+00:00 --timezone UTC --exclude unrelated --output alpha3.private.json
+          test "$(stat -c '%a' alpha3.private.json)" = "600"
+          .wheel-venv/bin/python -c "import json; value=json.load(open('alpha3.private.json', encoding='utf-8')); envelope=value['codex_input_envelope']; rendered=json.dumps(envelope); assert envelope['schema']=='codex-input-envelope/v2'; assert envelope['source']['summary']['included_events']==1; assert envelope['source']['summary']['unique_completed_items']==1; assert envelope['normalization']['ordered_turn_terminals'][0]['kind']=='task_complete'; assert envelope['coverage']['overall']=='partial'; assert envelope['source']['path_stored'] is False; assert all(secret not in rendered for secret in ('private-turn','private-item','private-skill','/private/SKILL.md'))"
+          if .wheel-venv/bin/requirement-ledger codex-scan --repo . --input ci-codex-input/task.jsonl --scope-root ci-codex-input --target conversation:ci --task-ref task:ci --since 2026-08-29T00:00:00+00:00 --until 2026-08-30T00:00:00+00:00 --timezone UTC --output alpha3.private.json; then exit 1; fi
+          mkdir ci-review
+          .wheel-venv/bin/python -c "from pathlib import Path; Path('ci-review/source.txt').write_text('bounded synthetic evidence\n', encoding='utf-8')"
+          .wheel-venv/bin/requirement-ledger source-pack --target ci-review-target --scope-root ci-review --source ci-review/source.txt --output ci-review/sources.private.json
+          .wheel-venv/bin/python -c "import json; from pathlib import Path; from requirement_ledger.candidate_ledger import target_sha256; entry={'id':'cand_ci_01','status':'candidate','title':'Bind reviewed evidence','evidence_refs':['src_ci_01'],'preserve':'Keep exact inputs.','smallest_change':'Bind the final report.','success':'Unchanged inputs pass.','boundary':'One-byte drift fails.','rollback':'Discard the binding.','disproof':'Changed bytes still pass.'}; value={'schema_version':'candidate-current/v1','target_sha256':target_sha256('ci-review-target'),'expected_head':'none','entries':[entry]}; Path('ci-review/current.private.json').write_text(json.dumps(value), encoding='utf-8')"
+          .wheel-venv/bin/requirement-ledger candidate-sync --target ci-review-target --scope-root ci-review --current ci-review/current.private.json --output ci-review/state.private.json
+          .wheel-venv/bin/requirement-ledger review-init --mode daily --target ci-review-target --start 2026-08-29T08:00:00+00:00 --end 2026-08-30T08:00:00+00:00 --timezone UTC --output ci-review/daily.md
+          .wheel-venv/bin/python -c "from pathlib import Path; path=Path('ci-review/daily.md'); text=path.read_text(encoding='utf-8').replace('status: draft','status: final',1).replace('source_count: 0','source_count: 1',1).replace('completeness: incomplete','completeness: complete',1).replace('- No outcome verified yet: UNKNOWN','- SAID: One explicit source was reviewed.',1); path.write_text(text, encoding='utf-8')"
+          .wheel-venv/bin/requirement-ledger review-check ci-review/daily.md
+          .wheel-venv/bin/requirement-ledger review-bind --target ci-review-target --scope-root ci-review --report ci-review/daily.md --source-pack ci-review/sources.private.json --source ci-review/source.txt --candidate-state ci-review/state.private.json --output ci-review/binding.private.json
+          .wheel-venv/bin/requirement-ledger review-handoff-check --binding ci-review/binding.private.json --target ci-review-target --scope-root ci-review --report ci-review/daily.md --source-pack ci-review/sources.private.json --source ci-review/source.txt --candidate-state ci-review/state.private.json
+          .wheel-venv/bin/requirement-ledger review-init --mode weekly --target ci-weekly --start 2026-08-23T08:00:00+00:00 --end 2026-08-30T08:00:00+00:00 --timezone UTC --output ci-review/weekly.md
+          .wheel-venv/bin/requirement-ledger review-check ci-review/weekly.md
       - name: Inspect and install the built source distribution
         run: |
           tar -tzf dist/*.tar.gz > sdist-files.txt
@@ -73,6 +91,17 @@ jobs:
           grep -q '/UPDATE_MAP.md$' sdist-files.txt
           grep -q '/tests/test_v01_pipeline.py$' sdist-files.txt
           grep -q '/tests/test_review_report.py$' sdist-files.txt
+          grep -q '/tests/test_codex_input_envelope.py$' sdist-files.txt
+          grep -q '/tests/test_codex_modern_normalization.py$' sdist-files.txt
+          grep -q '/tests/test_candidate_ledger.py$' sdist-files.txt
+          grep -q '/tests/test_review_pack.py$' sdist-files.txt
+          grep -q '/tests/test_review_binding.py$' sdist-files.txt
+          grep -q '/tests/test_win32safe_contract.py$' sdist-files.txt
+          grep -q '/src/requirement_ledger/candidate_ledger.py$' sdist-files.txt
+          grep -q '/src/requirement_ledger/review_pack.py$' sdist-files.txt
+          grep -q '/src/requirement_ledger/_win32safe.py$' sdist-files.txt
+          grep -q '/docs/CODEX_ALIGNMENT_RESEARCH.md$' sdist-files.txt
+          grep -q '/docs/V1_STABLE_CONTRACT.md$' sdist-files.txt
           if grep -E '(__pycache__|\.pyc$|\.private\.json$)' sdist-files.txt; then exit 1; fi
           python -m venv .sdist-venv
           .sdist-venv/bin/python -m pip install --disable-pip-version-check --no-input --no-deps dist/*.tar.gz
@@ -88,4 +117,18 @@ jobs:
           tests.test_v01_pipeline.TestPipeline.test_validation_rejects_boolean_unbounded_and_unbound_records
           tests.test_v01_privacy.TestSafeIO.test_output_ancestor_symlink_is_blocked
           tests.test_v01_privacy.TestSafeIO.test_parent_replacement_before_write_is_blocked
+          tests.test_v01_privacy.TestSafeIO.test_descriptor_bound_input_rejects_in_place_mutation
+          tests.test_v01_privacy.TestSafeIO.test_scoped_json_lock_is_held_until_caller_finishes
           tests.test_v01_cli.TestCLI.test_report_privacy_block_happens_before_output_creation
+          tests.test_codex_input_envelope.TestCodexInputEnvelope.test_single_source_window_accounting_and_envelope_privacy
+          tests.test_codex_input_envelope.TestCodexInputEnvelope.test_source_or_scope_drift_fails_before_cli_output_exists
+          tests.test_codex_modern_normalization.TestCodexModernNormalization.test_completed_items_keep_first_order_and_latest_snapshot
+          tests.test_codex_modern_normalization.TestCodexModernNormalization.test_structured_exclusions_are_exact_and_balanced
+          tests.test_codex_modern_normalization.TestCodexModernNormalization.test_control_character_ids_cannot_alias_snapshot_identity
+          tests.test_codex_modern_normalization.TestCodexModernNormalization.test_user_input_blocks_use_an_exact_fail_closed_allowlist
+          tests.test_codex_modern_normalization.TestCodexModernNormalization.test_normalization_schema_rejects_unbalanced_counts_and_statuses
+          tests.test_codex_modern_normalization.TestCodexModernNormalization.test_physical_record_work_limit_fails_closed
+          tests.test_review_pack.SourcePackTests.test_rebinding_rejects_target_or_byte_drift
+          tests.test_review_binding.ReviewBindingTests.test_reverification_rejects_one_byte_report_source_and_pack_drift
+          tests.test_review_binding.ReviewBindingTests.test_incomplete_can_be_archived_but_default_handoff_is_blocked
+          tests.test_win32safe_contract

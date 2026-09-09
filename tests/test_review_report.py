@@ -90,6 +90,26 @@ class TestReviewReportContract(unittest.TestCase):
         findings = MODULE.check_text(text)
         self.assertTrue(any("concrete authorization_ref" in finding for finding in findings))
 
+    def test_unknown_control_fields_and_invalid_targets_fail_closed(self) -> None:
+        original = (ROOT / "templates" / "audit-review.md").read_text(encoding="utf-8")
+        for field in (
+            "authority_granted: true",
+            "execution_authorized: true",
+            "source_pack_head: forged",
+        ):
+            with self.subTest(field=field):
+                text = original.replace("status: draft", f"status: draft\n{field}", 1)
+                self.assertTrue(any(
+                    "unknown frontmatter field" in finding
+                    for finding in MODULE.check_text(text)
+                ))
+        invalid_target = original.replace(
+            "target: synthetic-target",
+            "target: left\u2028right",
+            1,
+        )
+        self.assertNotEqual([], MODULE.check_text(invalid_target))
+
     def test_required_sections_cannot_be_deleted(self) -> None:
         cases = (
             ("audit-review.md", "## What must stay"),
@@ -184,7 +204,7 @@ class TestReviewReportContract(unittest.TestCase):
             self.assertEqual(code, 4)
             self.assertIn("E_UNSAFE_PATH", error)
 
-    def test_review_init_rejects_non_audit_window_and_timezone_without_traceback(self) -> None:
+    def test_review_init_supports_daily_and_rejects_bad_windows_without_traceback(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             report = Path(tmp) / "audit.md"
             code, _, error = self.call_cli([
@@ -196,13 +216,25 @@ class TestReviewReportContract(unittest.TestCase):
             self.assertIn("E_REVIEW_INPUT: start must be earlier", error)
             self.assertNotIn("Traceback", error)
 
-            code, _, error = self.call_cli([
+            daily = Path(tmp) / "daily.md"
+            code, output, error = self.call_cli([
                 "review-init", "--mode", "daily", "--target", "selected-skill",
-                "--start", "2026-08-28T08:00:00+08:00", "--end", "2026-08-29T08:00:00+08:00",
-                "--timezone", "Asia/Shanghai", "--output", str(report),
+                "--at", "2026-08-29T08:00:00+08:00", "--timezone", "Asia/Shanghai",
+                "--output", str(daily),
+            ])
+            self.assertEqual(code, 0, error)
+            self.assertIn("WROTE_PRIVATE_DAILY_SCAFFOLD", output)
+            self.assertEqual(self.call_cli(["review-check", str(daily)])[0], 0)
+
+            bad = Path(tmp) / "bad.md"
+            code, _, error = self.call_cli([
+                "review-init", "--mode", "weekly", "--target", "selected-skill",
+                "--at", "2026-08-29T08:00:00+08:00", "--start", "2026-08-20T08:00:00+08:00",
+                "--end", "2026-08-27T08:00:00+08:00", "--timezone", "Asia/Shanghai",
+                "--output", str(bad),
             ])
             self.assertEqual(code, 2)
-            self.assertIn("E_REVIEW_INPUT: review-init alpha supports only mode=audit", error)
+            self.assertIn("E_REVIEW_INPUT: at cannot be combined", error)
             self.assertNotIn("Traceback", error)
 
     def test_review_check_rejects_symlink_and_oversized_report(self) -> None:

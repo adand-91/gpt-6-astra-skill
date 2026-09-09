@@ -1,6 +1,6 @@
 {
   "name": "gpt6-astra-skill-optimizer-local",
-  "interface": {"displayName": "GPT-6 Astra Skill Optimizer (Local)"},
+  "interface": {"displayName": "Astra Skill Doctor (Local)"},
   "plugins": [
     {
       "name": "gpt6-astra-skill-optimizer",

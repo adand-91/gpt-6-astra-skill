@@ -4,11 +4,15 @@ import tempfile
 import os
 import unittest
 from pathlib import Path
+from unittest import mock
 
-from requirement_ledger.errors import PrivacyBlockError, UnsafePathError
+from requirement_ledger.errors import InputChangedError, PrivacyBlockError, UnsafePathError
 from requirement_ledger.privacy import (assert_automated_privacy_check, finding_counts,
                                         manifest_for_private_texts, redact_text)
-from requirement_ledger.safeio import explicit_regular_file, private_output_path, write_new_text
+from requirement_ledger.safeio import (_forbidden_scope_root, explicit_regular_file,
+                                       open_scoped_json_object,
+                                       open_scoped_regular_input, private_output_path,
+                                       write_new_text)
 
 
 class TestPrivacy(unittest.TestCase):
@@ -49,6 +53,35 @@ class TestPrivacy(unittest.TestCase):
 
 
 class TestSafeIO(unittest.TestCase):
+    @unittest.skipUnless(os.name == "posix", "POSIX account database test")
+    def test_real_account_home_is_forbidden_when_home_environment_is_changed(self) -> None:
+        import pwd
+
+        account_home = Path(pwd.getpwuid(os.getuid()).pw_dir)
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.dict(os.environ, {"HOME": tmp}):
+                self.assertTrue(_forbidden_scope_root(account_home))
+
+    def test_descriptor_bound_input_rejects_in_place_mutation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "source.txt"
+            source.write_bytes(b"before")
+            with self.assertRaises(InputChangedError):
+                with open_scoped_regular_input(source, root) as bound:
+                    self.assertEqual(bound.handle.read(), b"before")
+                    source.write_bytes(b"after!")
+
+    def test_scoped_json_lock_is_held_until_caller_finishes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "state.json"
+            source.write_text('{"state":"before"}\n', encoding="utf-8")
+            with self.assertRaises(InputChangedError):
+                with open_scoped_json_object(source, root) as value:
+                    self.assertEqual(value["state"], "before")
+                    source.write_text('{"state":"after!"}\n', encoding="utf-8")
+
     def test_private_output_requires_suffix_and_does_not_overwrite(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

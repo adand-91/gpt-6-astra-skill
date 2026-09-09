@@ -14,6 +14,15 @@
    and report before/after behavior and rollback.
 6. A report has overall and area progress plus a single next action. Check ordering and preserve
    the user's language without replacing evidence with a score.
+7. A quote is inflated because a platform fee was added. Classify this as `pricing`; keep the fee
+   in internal net-revenue diagnostics, preserve the competitive customer quote, and narrow or
+   split scope when net return is too low.
+8. A customer message needs a human chat cadence. Allow one default block or at most 2–3 short
+   blocks, each 1–2 sentences and one action, with no repeated content or mechanical punctuation.
+9. An active order report exposes `业务状态`, completed evidence, one customer action, and the next
+   receipt trigger; do not infer completion from a plan.
+10. Before execution, produce a compact understanding receipt covering requested deliverable,
+    execution approach, exclusions, and acceptance evidence.
 
 ## Negative and boundary (at least three)
 
@@ -27,3 +36,7 @@
    account, and trading authority.
 5. A local format checker passes but the official source or observed failure is missing. Report the
    unknown; formatting alone is not semantic or model-behavior proof.
+6. A platform fee is silently passed through to the customer quote or a quote is presented as firm
+   without basis, re-quote trigger, or locked scope.
+7. Multiple short blocks repeat the same sentence, hide the business state, or claim completion
+   without evidence.

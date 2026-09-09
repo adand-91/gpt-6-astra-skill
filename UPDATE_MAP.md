@@ -1,105 +1,72 @@
 # Update map
 
-Requirement Ledger is being completed as a usable `v0.2.0` product through a ten-day public
-release train. One substantive candidate is targeted for each day; a failed gate shifts that
-candidate and every dependent target instead of creating an empty release. Every public version
-must have a coherent capability, passing tests, accurate notes, and a clean privacy review.
+Requirement Ledger v1.0.0 is a **local stable candidate**. This map records the completed local
+release train and separates it from external publication: no tag, push, GitHub Release, public CI
+result, marketplace submission, or adoption claim is implied.
 
-[中文更新地图](UPDATE_MAP.zh-CN.md) · [roadmap](ROADMAP.md) ·
-[v0.2.0-alpha.1 notes](docs/release-notes/v0.2.0-alpha.1.md)
-
-## Where this Alpha sits
+[中文更新地图](UPDATE_MAP.zh-CN.md) · [stable contract](docs/V1_STABLE_CONTRACT.md) ·
+[roadmap](ROADMAP.md)
 
 ```mermaid
 flowchart LR
-    A["v0.1.1<br/>explicit evidence pipeline"] --> B["v0.2.0-alpha.1<br/>named-target audit scaffold"]
-    B --> C["alpha.2<br/>bounded Codex input"]
-    C --> D["alpha.3<br/>real-case improvement proof"]
-    D --> E["beta.1<br/>installed daily review"]
-    E --> F["beta.2<br/>installed weekly review"]
-    F --> G["beta.3<br/>candidate carry-over + dedupe"]
-    G --> H["rc.1<br/>exact-byte report binding"]
-    H --> I["rc.2<br/>pre-handoff revalidation"]
-    I --> J["rc.3<br/>three-mode launch qualification"]
-    J --> K["v0.2.0<br/>tested three-mode product"]
+    A["v0.1.x<br/>explicit evidence"] --> B["0.2.0b1<br/>daily scaffolds"]
+    B --> C["0.2.0b2<br/>source + candidate continuity"]
+    C --> D["1.0.0rc1<br/>exact report binding"]
+    D --> E["1.0.0<br/>local stable candidate"]
 ```
 
-`v0.2.0-alpha.1` is the first installable bridge between the released v0.1 evidence engine and
-the Codex-first product. It can initialise and mechanically validate one private, named-target
-audit. It does **not** retrieve the target history or make a semantic diagnosis by itself.
+## Completed local train
 
-## Problem-to-capability map
-
-| User problem | Product response | State |
+| Candidate | Real increment | Local status |
 | --- | --- | --- |
-| “I can name the Skill or project, but I do not know how to structure the review.” | `review-init --mode audit` creates a bounded, private scaffold with explicit target, window, timezone, coverage, and unknowns. | Shipped in Alpha 1 |
-| “A report can look complete while required evidence or safety fields are missing.” | `review-check` validates the report contract, sections, evidence labels, candidate state, authorisation declaration, and time window. | Shipped in Alpha 1 |
-| “A generated review might overwrite work or expose a broadly readable private file.” | New scaffolds use restrictive permissions where supported and fail instead of overwriting an existing path. | Shipped in Alpha 1 |
-| “I want Codex to use related history without making me retell everything.” | Alpha 2 accepts one explicit bounded input envelope; Alpha 3 normalises supported Codex exports and records structured exclusions. | Alpha 2/3 gates |
-| “I want yesterday and the last week reviewed without repeating old suggestions.” | Beta 1 installs daily review, Beta 2 installs weekly review, and Beta 3 carries stable candidates forward with deduplication. | Beta 1/2/3 gates |
-| “I need proof that the final report is the same file that was checked and handed off.” | RC 1 binds exact report bytes; RC 2 revalidates them immediately before handoff; RC 3 qualifies the complete three-mode surface. | RC 1/2/3 gates |
+| `0.2.0b1` | Installed `audit`/`daily`/`weekly` review scaffolds and explicit timezone/window handling. | Completed and locally verified. |
+| `0.2.0b2` | Path-free source packs, explicit source re-verification, and candidate continuity without semantic guessing. | Completed and locally verified. |
+| `1.0.0rc1` | Exact final-report binding plus read-only handoff re-validation. | Completed and locally verified. |
+| `1.0.0` | Stable contract, core/plugin separation, release documentation, and full local qualification. | Local stable candidate; external publication remains separate. |
 
-## Ten-day completion sprint
+The earlier v0.1 explicit-input commands remain compatible. Earlier Alpha work established bounded
+Codex-input handling; it does not grant automatic history discovery or broaden v1 sources.
 
-Git tags use the names below; Python packages map respectively to `0.2.0a1`, `0.2.0a2`,
-`0.2.0a3`, `0.2.0b1`, `0.2.0b2`, `0.2.0b3`, `0.2.0rc1`, `0.2.0rc2`,
-`0.2.0rc3`, and `0.2.0`. Every candidate before stable is a prerelease.
+## Stable product surface
 
-| Target day | Public candidate | One substantive increment and exit gate |
-| --- | --- | --- |
-| 1 | `v0.2.0-alpha.1` | **Published.** Private named-audit scaffold, strict checker, clean wheel/sdist installs, matching notes/checksums, and cross-platform CI. |
-| 2 | `v0.2.0-alpha.2` | Add one explicit bounded input envelope with source identity/digest, target/window, included/excluded records, and honest coverage; reject directory, home, symlink-boundary, changing, and oversized inputs. |
-| 3 | `v0.2.0-alpha.3` | Normalise supported modern Codex exports with ordered completed items, snapshot dedupe, half-open windows, and structured automation/delegation exclusions; prove it with fixtures and one real named-Skill review. |
-| 4 | `v0.2.0-beta.1` | Ship installed daily initialisation/checking with an exact yesterday window, IANA timezone, source provenance, and analysis-only authority. |
-| 5 | `v0.2.0-beta.2` | Ship installed weekly initialisation/checking with an exact week window and source-bound GitHub/ecosystem evidence; no unbounded trend scrape. |
-| 6 | `v0.2.0-beta.3` | Carry stable candidate IDs across audit/daily/weekly runs; unresolved findings continue and repeated recommendations deduplicate without silent loss. |
-| 7 | `v0.2.0-rc.1` | Bind target, sources, candidate state, and exact report bytes at review-pack creation; one-byte, metadata, or target drift fails, while share-facing output contains no private path or source text. |
-| 8 | `v0.2.0-rc.2` | Re-read and revalidate the approved report immediately before handoff without mutating it; stale, mismatch, changed-target, and unsafe-file cases fail closed. |
-| 9 | `v0.2.0-rc.3` | Freeze deterministic one-time/daily/weekly demos, maintainer-owned cases, package/docs/limitations, and full Python 3.10–3.13 × Linux/macOS/Windows qualification on one commit. |
-| 10 | `v0.2.0` | Promote only the unchanged RC evidence when every v0.2 promise passes on the same commit; otherwise retain RC 3, publish the failed gate, and shift the stable date. |
+The fixed v1 workflow is:
 
-`Day N` means the Nth successful release day. Under a no-slip schedule starting with Alpha 1 on
-2026-08-30 (Asia/Shanghai), the stable target is 2026-09-08; any failed gate shifts that date and
-every dependent candidate. Dates never permit backdating or a no-change release.
+```text
+review-init / review-check
+  -> source-pack / source-verify
+  -> candidate-sync
+  -> final report
+  -> review-bind
+  -> review-handoff-check
+```
 
-### Release gates
+`audit`, `daily`, and `weekly` all require a host/user-selected target, window where applicable,
+scope root, and source files. A successful handoff check is only an identity check: it shows that
+the current report bytes, candidate state, and explicit sources match the binding. It does not
+prove correctness, approval, ownership, or authority to execute an action.
 
-Every public candidate must pass the same minimum gate:
+The Codex layer is a repo-local skills-only plugin at `.agents/plugins/marketplace.json` and
+`plugins/requirement-ledger`. It guides an already-installed CLI; it does not contain a duplicate
+runtime, MCP service, app, hooks, plugin-owned authentication implementation or credential flow,
+or updater. Its required `ON_INSTALL` marketplace policy is Codex host metadata.
 
-1. full source tests and bilingual-document sync;
-2. wheel and sdist built from the tagged source;
-3. clean installation and command-level smoke tests for both artefacts;
-4. deterministic synthetic outputs and fail-closed privacy/path checks;
-5. a reviewed diff, accurate limitations, relative checksums, and a public CI result;
-6. coherent Git tag and Python package versions, with CI tied to the exact tagged commit;
-7. candidate-specific fixtures or a maintainer-owned case proving the new increment;
-8. a current maintainer decision for that exact commit, followed by public asset re-download and
-   checksum/installation smoke.
+## Local qualification vs. public release
 
-## Maintenance after `v0.2.0`
+The stable candidate is qualified only when the local source tests, build/install smokes, command
+workflows, plugin structure/installation checks, and documentation/contract review agree for this
+checkout. These are maintainer-controlled checks, not a claim of hosted CI or external use.
 
-- Run one real maintenance cycle every 5–10 days: review user evidence, reproduce findings, update
-  tests/docs/code where justified, and re-run the release gate.
-- Publish a compatible `0.2.x` patch only when that cycle produces a real bug, privacy,
-  compatibility, packaging, or documentation fix. A healthy no-change review creates no tag.
-- Security or data-exposure findings override the cadence and are handled immediately.
-- New incompatible promises wait for the next minor line; the patch train does not smuggle in
-  unfinished `v0.3` work.
+Before any public release, a maintainer must separately decide to commit/tag/push, publish assets,
+verify the exact public artefacts, and satisfy the then-current Codex marketplace/submission
+requirements. None of those actions are performed by the CLI or implied by this file.
 
-## What “complete in ten days” means
+## Future `1.x`
 
-The target is a stable, useful `v0.2.0`: one repository and installable package supporting a
-traceable one-time, daily, and weekly Codex review workflow, with visible authorisation before any
-edit and reproducible handoff evidence afterward. It does not mean that all future integrations or
-every personal workflow are finished. At least one maintainer-owned audit, daily, and weekly case
-must pass the complete installed path; those cases do not prove external-user adoption.
+- `1.0.x`: only evidence-backed compatibility, privacy, parser, packaging, or documentation fixes.
+- `1.1`: opt-in integrations only after their input boundary, consent, retention, and failure
+  modes are specified and independently tested.
+- Later: additional providers or higher-level UX only when they preserve explicit source selection,
+  private evidence, and non-authorising verification.
 
-## Explicitly outside this sprint
-
-- unattended edits, commits, pushes, Issues, PRs, Releases, uploads, or account actions;
-- silent discovery of a home directory or unrelated Codex history;
-- a hosted dashboard, telemetry, or an external-user adoption claim without evidence;
-- claiming that pattern-based privacy checks make a report safe to publish without human review;
-- claiming that a digest proves authorship, truth, approval, or implementation authority;
-- creating an automatic schedule merely because daily/weekly modes are installed;
-- treating CI, synthetic demos, or maintainer-owned cases as proof of general adoption.
+There is no scheduled version churn. A new release needs a real, tested change and a separately
+authorised publication decision.

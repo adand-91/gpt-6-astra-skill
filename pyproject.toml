@@ -3,16 +3,16 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "requirement-ledger"
+name = "gpt-6-astra-skill"
 dynamic = ["version"]
 description = "Privacy-aware evidence ledger for Codex project and Agent Skill improvement"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
-authors = [{ name = "requirement-ledger contributors" }]
+authors = [{ name = "GPT-6 Astra Skill contributors" }]
 classifiers = [
-  "Development Status :: 2 - Pre-Alpha",
+  "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
@@ -40,14 +40,15 @@ keywords = [
 ]
 
 [project.scripts]
+gpt6-astra-skill = "requirement_ledger.cli:main"
 requirement-ledger = "requirement_ledger.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/adand-91/requirement-ledger"
-Documentation = "https://github.com/adand-91/requirement-ledger#readme"
-Repository = "https://github.com/adand-91/requirement-ledger"
-Issues = "https://github.com/adand-91/requirement-ledger/issues"
-Changelog = "https://github.com/adand-91/requirement-ledger/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/adand-91/gpt-6-astra-skill"
+Documentation = "https://github.com/adand-91/gpt-6-astra-skill#readme"
+Repository = "https://github.com/adand-91/gpt-6-astra-skill"
+Issues = "https://github.com/adand-91/gpt-6-astra-skill/issues"
+Changelog = "https://github.com/adand-91/gpt-6-astra-skill/blob/main/CHANGELOG.md"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

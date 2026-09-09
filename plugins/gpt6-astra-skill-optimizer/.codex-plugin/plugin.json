@@ -1,33 +1,32 @@
 {
   "name": "gpt6-astra-skill-optimizer",
-  "version": "1.0.0",
-  "description": "Skill-only, read-only-by-default auditor for GPT-6 Astra compatibility across one Jarvis project and its explicitly related Skills.",
+  "version": "1.0.1",
+  "description": "Focused Astra Skill Doctor workflow for adapting one selected project and its explicitly related Skills to GPT-6/Astra behavior.",
   "author": {
-    "name": "Requirement Ledger contributors"
+    "name": "Astra Skill Doctor contributors"
   },
   "license": "MIT",
   "keywords": [
     "gpt-6-astra",
     "skill",
     "audit",
-    "jarvis",
     "evidence",
     "safety"
   ],
   "skills": "./skills/",
   "interface": {
-    "displayName": "GPT-6 Astra Skill Optimizer",
-    "shortDescription": "Audit one project and its related Skills for Astra readiness.",
-    "longDescription": "Independent Skill-only auditor for GPT-6 Astra adaptation: checks instruction conflicts, authorization boundaries, project-to-Skill alignment, evidence, output contracts, delegation, and risk-calibrated verification. Audits are read-only by default; edits require explicit authorization and an exact path allowlist.",
-    "developerName": "Requirement Ledger contributors",
+    "displayName": "Astra Skill Doctor",
+    "shortDescription": "Audit and adapt one project and its related Skills for GPT-6/Astra.",
+    "longDescription": "Independent Skill workflow for GPT-6/Astra adaptation: checks instruction conflicts, workflow drift, evidence, output contracts, delegation, and risk-calibrated verification. Findings are evidence-bound and changes require explicit authorization.",
+    "developerName": "Astra Skill Doctor contributors",
     "category": "Productivity",
     "capabilities": [
       "Interactive"
     ],
     "defaultPrompt": [
-      "Audit this Jarvis project and its explicitly related Skills for GPT-6 Astra readiness.",
-      "Explain the highest-risk Astra compatibility finding with evidence and one next action.",
-      "After I authorize it, apply only the approved Skill audit fixes to the listed files."
+      "Audit this selected project and its related Skills for Astra Skill Doctor compatibility.",
+      "Find the highest-risk outdated Skill constraint with evidence and one next action.",
+      "After I authorize it, apply only the approved Skill changes to the listed files."
     ]
   }
 }

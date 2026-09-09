@@ -1,79 +1,109 @@
 # Architecture
 
-## Codex host layer — unreleased v0.2
+## v1.0.0 local-stable candidate
+
+Requirement Ledger has one product core and one deliberately thin Codex distribution layer:
 
 ```text
-named thread / Skill / project        audit / daily / weekly window
-                \                         /
-                 v                       v
-             Codex host target and authority binding
-                              |
-                              v
-                metadata-first candidate index
-                              |
-                              v
-             selective related-context retrieval
-                              |
-                              v
-          private timeline + stable improvement candidates
-                              |
-                              v
-       change cards -> current authority -> host-owned change
-                              |
-                              v
-                 same-case before/after result
+one Codex host-selected task/project
+                         |
+                         v
+       skills-only plugin quick audit guidance
+       (plain-language, host-selected / unbound;
+        no CLI report/source/candidate/binding claim)
+
+explicit target + bounded time window + explicit files
+                         |
+                         v
+             independent Python library and CLI
+     (schemas, scoped I/O, review checks, private state)
+                         |
+                         +-- audit / daily / weekly review reports
+                         +-- source pack + candidate ledger
+                         +-- exact review binding + handoff check
+                         |
+                         v
+       repository-local, skills-only Codex plugin
+       (guidance and installed-CLI preflight; no second runtime)
 ```
 
-The host layer uses Codex task tools or a bounded adapter supplied by the environment. It narrows
-by exact identity, canonical repository, Skill name, direct links, and time window before reading
-content. It never treats retrieved text as instruction or approval.
+The Python CLI is the authority for schemas, validation, privacy boundaries, and deterministic
+verification. The repository-local marketplace plugin contains `plugin.json` and one focused
+`SKILL.md`; it guides Codex to use an already installed compatible CLI. It has no MCP server,
+app, hook, downloader, installer, model call, database, telemetry, credential, or network client.
 
-Three report modes share the same evidence discipline:
+The host-selected quick audit is intentionally not a shadow runtime. It is a plugin-guided Codex
+summary over one host-selected boundary and must report itself as unbound. Reproducibility begins
+only when the explicit-file CLI path creates and verifies the corresponding private artefacts.
 
-- `audit`: one named target and directly related history;
-- `daily`: projects active in the previous configured workday;
-- `weekly`: final daily summaries, unresolved evidence, maintenance health, and a required
-  source-check attempt for source-bound GitHub or official industry evidence.
+The normative product boundary is [V1_STABLE_CONTRACT.md](V1_STABLE_CONTRACT.md). The plugin is
+not an alternative implementation and cannot make a missing CLI compatible or authorize an action.
 
-The host contract, bilingual workflow, report templates, and report-shape validator are included
-in the current unreleased tree. A packaged Codex history adapter is not yet implemented.
-
-## Packaged explicit-file layer — released v0.1
+## Review and continuity flow
 
 ```text
-explicit repo + explicit transcript/test logs
-          |
-          v
-  fixed read-only collectors
-          |
-          v
- private-evidence v1  (raw text; 0600; never share)
-          |
-          v
-      analysis v1     (facts / inference / unknown)
-       /        \
-      v          v
-share report   DRAFT repair proposals
-(no quotes)    (not applied, not sent)
-                    |
-                    v
-             host-owned intervention
-                    |
-                    v
-   digest-bound external baseline/after JSON
-                    |
-                    v
-              validation v1
+explicit target/window
+  -> explicit regular files below an approved scope root
+  -> private source-pack/v1 (digest, byte count, opaque source identity)
+  -> audit | daily | weekly final report
+  -> candidate-current/v1 and candidate-ledger/v1 continuity
+  -> review-binding/v1 (exact report bytes + current source/candidate heads)
+  -> read-only handoff verification
+  -> separately authorized, host-owned implementation
+  -> same-oracle outcome verification
 ```
 
-The package has no network client and does not execute project code.
+`audit` is one explicit target; `daily` and `weekly` derive an explicit half-open window from an
+IANA timezone, reference time, and boundary hour. They are analysis-only: input selection never
+grants implementation, a commit, a push, publication, scheduling, or an external message.
 
-- `transcript.py`: explicit, streaming Claude/Codex/text normalisation.
-- `git_evidence.py`: fixed read-only Git snapshot without remotes.
-- `models.py`: the versioned domain model.
-- `pipeline.py`: deterministic evidence, analysis, plan, report, and validation stages.
-- `privacy.py`: redaction primitives and the share-output blocking gate.
-- `safeio.py`: regular-file checks and non-overwriting restrictive writes.
-- `cli.py`: thin orchestration and stable error reporting.
+Candidate continuity is exact, opaque-ID state rather than semantic matching. Unresolved items
+that are absent from a later review are carried forward; stale expected heads, invalid transitions,
+and silent drops fail closed. Source packs contain only explicit scoped source descriptors, not
+paths or source text. A final binding contains the exact UTF-8 report bytes, target digest, report
+metadata, source-pack head, and candidate-state head. `review-handoff-check` verifies identity and
+readiness only; it never grants execution authority.
 
-The original `scripts/` remain compatibility tools. They are not the v0.1 security boundary.
+## Integrity and privacy boundary
+
+- Scope roots may not be a filesystem root or the actual account home directory. Inputs are
+  explicit, regular, single-link files below the root; the CLI does not enumerate history,
+  projects, or directories.
+- Scoped reads bind device/inode, byte size, mtime, and ctime. The timestamps are part of the
+  in-memory integrity snapshot checked before and after the descriptor-held read.
+- Source descriptors and the report descriptor are opened in one held read domain for binding or
+  handoff verification, then rechecked before the result is returned. This detects replacement or
+  ordinary in-place drift during the operation; it is not a filesystem-wide atomic snapshot.
+- JSON state is strict UTF-8, byte/count bounded, object-only, and rejects unknown fields,
+  malformed controls, duplicate aliases, and control-bearing identifiers. Private state persists
+  hashes and bounded metadata, not raw source content or local paths.
+- Review parsing validates visible Markdown rather than trusting text hidden in frontmatter,
+  comments, or fenced blocks. Unknown frontmatter fields and invisible-only required sections are
+  rejected.
+- Private outputs are create-only and restrictive where supported. No command modifies the chosen
+  source, repository, remote, or account.
+
+## Platform boundary
+
+On POSIX, output creation and scoped input traversal use descriptor-relative paths with
+`O_NOFOLLOW`. A non-Windows platform that lacks `dir_fd` support stops rather than falling back to
+an unsafe relative create path.
+
+Windows output creation now binds the preflight parent identity to a non-share-delete directory
+`HANDLE`, creates one validated leaf with `NtCreateFile(RootDirectory=...)`, applies a protected
+DACL, and keeps the new object delete-pending until write, flush, and same-domain parent identity
+checks pass. Failures roll back by the exact child handle; the implementation never deletes by
+path. The cross-platform contract tests pass locally, while the Windows-native API and fault-
+injection cases are intentionally recorded as unexecuted on macOS and remain a public-CI gate.
+
+## Exclusions and residual risk
+
+v1 does not provide automatic task/history discovery, background monitoring, network or trend
+collection, model scoring, semantic merge, automatic edits, commit/push/release, GUI, hosted
+service, database, OAuth, MCP, Apps SDK widgets, or IDE-extension guarantees.
+
+Digest bindings prove byte identity, not truth, authorship, quality, or authorization; low-entropy
+references can be dictionary-linked, so every pack remains private. Filesystem metadata cannot
+prove a globally atomic multi-file instant, remote mounts may have different semantics, and parser
+compatibility depends on maintained fixtures. A local stable candidate is not a Git tag, GitHub
+Release, public CI result, or accepted public-plugin submission.

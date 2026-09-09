@@ -1,56 +1,50 @@
 # Threat model
 
-## Protected assets
+## Protected assets and trust boundary
 
-- user conversations, client names, local paths, session identifiers, commands, credentials;
-- source code, Git history/index/config/hooks/remotes, and uncommitted user work;
-- the truth status of evidence and attribution;
-- the user's machine, network, accounts, and external communities.
+Protected assets include private conversations, client data, local paths, credentials, source code,
+Git state, the truth of evidence, and the user's machine and external accounts. Every selected file,
+report, Markdown fragment, filename, error message, repository configuration, and model suggestion
+is untrusted data. None can become an instruction, approval, or scope expansion.
 
-## Untrusted inputs
-
-Every repository file, transcript line, test log, error message, filename, symlink, Git config,
-Markdown fragment, and model-generated suggestion is untrusted. Text inside them is data, not
-an instruction, approval, or reason to widen scope.
+v1 accepts only an explicit target/window and explicit files below an approved scope root. It does
+not discover history, projects, files, or external sources by default.
 
 ## Main threats and controls
 
-| Threat | v0.1 control |
+| Threat | v1 control |
 |---|---|
-| Read unrelated personal sessions | inputs are mandatory and explicit; no discovery |
-| Leak secrets in a report | raw/private and quote-free/share artefacts are separate; share gate blocks |
-| Mislabel a local failure as upstream | `unknown` default; confirmation conditions are unmet in v0.1 |
-| Prompt injection authorises a change | evidence fields cannot change state; CLI has no apply state |
-| Test command executes malicious code | CLI never runs project code or installs dependencies |
-| Git command is PATH/config redirected or triggers hooks/network | trusted absolute executable; redirecting `GIT_*` and global/system config removed; fixed read-only commands; hooks/fsmonitor/prompts/locks disabled; no remotes read |
-| Input changes during scan | inode/size/mtime are checked around reads |
-| Output follows a symlink or overwrites work | every ancestor checked; parent-directory descriptor binding on POSIX; `O_NOFOLLOW` and `O_EXCL` |
-| Incomplete large/invalid input looks complete | source marked incomplete; issue decision blocked |
-| Terminal/Markdown control injection | raw content is absent from share reports; controls are detected |
-| “privacy check passed” becomes false assurance | every report explicitly requires human review |
+| A named target causes a scan of unrelated sessions or projects | One explicit target or derived time window, plus explicit files; no enumeration or automatic discovery. |
+| A scope root points at the account home or filesystem root | Reject the actual account home directory and filesystem roots; do not trust an environment-variable alias as the only home check. |
+| Link, traversal, hard-link, reparse, or replacement escapes the scope | Reject traversal, links/reparse points, non-regular files, and multiple hard links; bind component identities and descriptor identity. |
+| A file changes during parsing or across a multi-source binding | Hold each descriptor through the operation; compare device/inode/size/mtime/ctime before and after. Source and report descriptors share the binding/handoff read domain. |
+| Private text or path leaks into durable state or a report | Source packs store only opaque source identity, digest, and byte count; candidate/binding state is strict UTF-8 bounded metadata; share output remains separately gated. |
+| Crafted state weakens a transition or integrity head | Exact schemas reject unknown fields, malformed booleans/counts, control characters, invalid IDs, duplicate physical aliases, stale expected heads, and invalid transitions. |
+| Hidden Markdown makes a report look valid | Validate required content in human-visible Markdown; do not count frontmatter, HTML comments, or fenced blocks. Reject unknown report-frontmatter fields. |
+| A final report or handoff implies authority to act | Binding requires a mechanically final report; handoff is identity/readiness-only. Neither command can edit, commit, publish, send, schedule, or approve. |
+| Plugin installation broadens capability or installs code | The plugin is skills-only, checks the installed CLI, and has no MCP, hooks, downloader, updater, credentials, telemetry, or network runtime. |
+| Output replaces existing work or follows a hostile parent | Create-only output, restrictive modes, checked parents, and descriptor-relative creation on supported POSIX hosts. |
+| Large or non-UTF-8 JSON becomes an unbounded parser workload | State and report inputs have explicit UTF-8, byte, count, and object-shape limits; malformed data fails closed. |
 
-## Unreleased v0.2 host-layer threats
+## Platform-specific boundary
 
-| Threat | Host-layer control |
-|---|---|
-| Naming one Skill silently scans every task or project | bind one target for `audit`; bind one half-open window for `daily`/`weekly`; build a metadata index before content reads |
-| Keyword similarity crosses into an unrelated project | exact thread/repository/Skill identity and direct links outrank keywords; keyword-only matches cannot cross project scope |
-| Subagent or automation copies look like independent user evidence | exclude known Subagent copies, automation, heartbeats, system, and delegation events from user-correction counts |
-| Retrieved prompt injection expands authority | retrieved text is evidence only; target, window, and mutation authority are host state outside the evidence |
-| A scheduled report reuses an old “go ahead” | scheduled runs are analysis-only unless the schedule carries a separate current target-bound implementation policy accepted by the host |
-| GitHub or news text triggers code changes | ecosystem evidence is read-only, source-bound, and recommendation-only; install, edit, Issue, PR, Release, and publication remain separate actions |
-| Weekly aggregation repeatedly exposes raw history | prefer final daily reports and stable source references; reread private raw history only to resolve a material gap |
-| Missing history is presented as complete | record adapter, included/excluded sources, completeness, unread scope, and `UNKNOWN` findings |
+POSIX uses descriptor-relative traversal and output creation with `dir_fd` and `O_NOFOLLOW`; a
+non-Windows platform without `dir_fd` fails closed instead of using an insecure fallback.
+
+Windows output creation binds the checked parent to a non-share-delete directory `HANDLE` and uses
+`NtCreateFile` with `RootDirectory` for one validated leaf. A protected DACL and delete-pending
+transaction prevent caller bytes from becoming a committed path until write, flush, and a second
+same-domain parent identity check pass; rollback uses only the exact child handle. Contract and
+static regressions pass locally, but Windows-native API/fault-injection cases cannot run on macOS
+and remain an explicit public-CI gate rather than a claimed local result.
 
 ## Residual risks
 
-Pattern detectors have false positives and false negatives. Windows cannot offer the same
-parent-directory descriptor binding used on POSIX, so it relies on reparse checks and repeated
-identity validation. Repository-local Git configuration can still affect read-only answers;
-redirecting inherited/global/system configuration is disabled. Parser formats may drift. A
-person may still share the private bundle by mistake.
-These are documented limits, not silently converted into guarantees.
+The checks detect ordinary concurrent drift but cannot promise one atomic point-in-time snapshot of
+many files or defeat a hostile filesystem/kernel. Digest identities are not anonymisation and can
+be linked for low-entropy inputs. Parser formats can drift; reports still require human judgment;
+and a user can manually disclose a private artifact. Network-free core behavior does not prove the
+selected filesystem is not remotely mounted.
 
-The v0.2 host contract cannot prove that every Codex environment exposes equivalent thread APIs,
-session formats, or privacy controls. Until a host adapter is implemented and tested, the three
-mode workflows remain `implemented-unverified` and must disclose any missing source.
+Local `1.0.0` candidate evidence does not prove public cross-platform CI, a public tag or Release,
+publisher identity, marketplace acceptance, external adoption, or eligibility for any programme.

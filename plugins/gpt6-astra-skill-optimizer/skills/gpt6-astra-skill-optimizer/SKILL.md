@@ -8,7 +8,7 @@ description: >-
   separate explicit authorization.
 ---
 
-# GPT-6 Astra Skill Optimizer
+# Astra Skill Doctor
 
 This is an independent Skill audit and optimization workflow. It does not manage the business
 project, train GPT-6 Astra, or replace domain Skills. It audits the selected project and the Skills
@@ -48,9 +48,16 @@ used to train the model; they are versioned guidance and audit evidence.
    likely layer (project, Skill, host/model, or unknown), severity, and confidence.
 4. Check Astra dimensions: trigger clarity, initiative and follow-through, focused clarification,
    instruction priority, output format, tool/delegation guidance, verification scope, context
-   loading, authority boundaries, prompt-injection resistance, and source/version maintenance.
-5. Report project findings and Skill findings separately. Recommend one highest-value change, with
-   its benefit, risk, exact files, acceptance test, and rollback point.
+   loading, authority boundaries, prompt-injection resistance, source/version maintenance, and
+   domain-specific pricing, communication cadence, business-state reporting, and execution receipts.
+   For customer-facing work, verify that platform costs stay in internal diagnostics when the
+   target Skill promises competitive pricing; verify estimate basis and 重估触发条件, re-quote triggers, natural 短代码块 cadence, visible 业务状态, and a compact understanding receipt.
+5. For every material finding, use the fixed delta contract: `优化前` → `当前问题` → `优化后` →
+   `验证方式` → `唯一下一步`. In `当前问题`, separate confirmed fact, inference, and unknown. In
+   `验证方式`, replay the original failure plus one positive success case and one boundary case;
+   any failed case keeps the item `待修正`. Then report project findings and Skill findings
+   separately. Recommend one highest-value change, with its benefit, risk, exact files, acceptance
+   test, and rollback point.
 6. If implementation is authorized, apply the smallest patch, run positive and negative cases,
    compare before/after behavior, refresh the project checkpoint, and report remaining unknowns.
 

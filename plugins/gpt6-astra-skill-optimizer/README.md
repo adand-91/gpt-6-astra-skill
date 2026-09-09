@@ -1,6 +1,6 @@
-# GPT-6 Astra Skill Optimizer
+# Astra Skill Doctor
 
-An independent, Skill-only audit workflow for improving how GPT-6 Astra uses project Skills.
+A focused workflow for adapting project Skills and personal workflows to GPT-6/Astra behavior.
 
 It jointly audits one selected project and its explicitly related Skills. It uses versioned
 official-source evidence, separates facts from inferences and unknowns, and is read-only by
@@ -15,8 +15,7 @@ one project, and say:
 > 请审计一下我们目前的项目和相关 Skill，看看有没有需要优化的。
 
 The first report contains the project audit, Skill audit, official-source boundaries, one
-recommended change, and its acceptance test. The optimizer does not train GPT-6 Astra or guarantee
-business results.
+recommended change, and its acceptance test. The workflow does not train GPT-6 Astra or guarantee project results.
 
 ## Scope
 

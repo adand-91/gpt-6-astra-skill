@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import ExitStack
+from datetime import datetime
 import hashlib
 import json
 import sys
@@ -10,21 +12,30 @@ from pathlib import Path
 from typing import Any
 
 from . import __version__
+from .candidate_ledger import MAX_CANDIDATE_STATE_BYTES, sync_candidate_state
 from .errors import LedgerError
 from .git_evidence import bind_repo
-from .pipeline import (analyze_evidence, build_evidence_bundle, build_fix_proposals,
+from .pipeline import (analyze_evidence, build_codex_scan_bundle, build_evidence_bundle, build_fix_proposals,
                        render_markdown_report, share_report, synthetic_demo_bundle,
                        validate_outcomes)
 from .privacy import finding_counts
+from .review_pack import (
+    build_review_binding,
+    build_source_pack,
+    validate_source_pack,
+    verify_review_binding,
+    verify_source_pack,
+)
 from .review import ReviewInputError, check as check_review_report
-from .review import write_audit_scaffold
-from .safeio import (explicit_regular_file, new_output_directory, private_output_path,
-                     read_json_file, share_output_path, write_new_json, write_new_text)
+from .review import write_review_scaffold
+from .safeio import (explicit_regular_file, new_output_directory, open_scoped_json_object,
+                     private_output_path, read_json_file, read_scoped_json_object,
+                     share_output_path, write_new_json, write_new_text)
 
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="requirement-ledger",
+        prog="gpt6-astra-skill",
         description="Offline evidence and repair-planning pipeline for an explicit Git project.",
     )
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
@@ -42,6 +53,27 @@ def _parser() -> argparse.ArgumentParser:
     scan.add_argument("--since")
     scan.add_argument("--until")
     scan.add_argument("--output", required=True, help="new path ending in .private.json")
+
+    codex_scan = sub.add_parser(
+        "codex-scan",
+        help="bind and scan one explicit Codex export inside an approved scope",
+    )
+    codex_scan.add_argument("--repo", required=True)
+    codex_scan.add_argument("--input", required=True)
+    codex_scan.add_argument("--scope-root", required=True)
+    codex_scan.add_argument("--target", required=True, help="single-line non-path target reference")
+    codex_scan.add_argument("--task-ref", required=True, help="single-line non-path Codex task reference")
+    codex_scan.add_argument("--since", required=True)
+    codex_scan.add_argument("--until", required=True)
+    codex_scan.add_argument("--timezone", required=True, help="explicit IANA timezone")
+    codex_scan.add_argument(
+        "--exclude",
+        action="append",
+        default=[],
+        choices=("automation", "delegation", "subagent", "system", "unrelated", "not-provided"),
+        help="declare a fixed class that was not selected; repeat as needed",
+    )
+    codex_scan.add_argument("--output", required=True, help="new path ending in .private.json")
 
     analyze = sub.add_parser("analyze", help="conservatively classify a private evidence bundle")
     analyze.add_argument("--evidence", required=True)
@@ -68,20 +100,98 @@ def _parser() -> argparse.ArgumentParser:
 
     review_init = sub.add_parser(
         "review-init",
-        help="create a new private, analysis-only audit review scaffold (alpha)",
+        help="create a new private, analysis-only audit/daily/weekly review scaffold",
     )
-    review_init.add_argument("--mode", default="audit")
+    review_init.add_argument("--mode", choices=("audit", "daily", "weekly"), default="audit")
     review_init.add_argument("--target", required=True,
                              help="explicit conversation, Skill, or project target")
-    review_init.add_argument("--start", required=True,
-                             help="explicit offset-aware ISO-8601 window start")
-    review_init.add_argument("--end", required=True,
-                             help="explicit offset-aware ISO-8601 window end")
+    review_init.add_argument("--start", help="explicit offset-aware ISO-8601 window start")
+    review_init.add_argument("--end", help="explicit offset-aware ISO-8601 window end")
     review_init.add_argument("--timezone", required=True, help="explicit IANA timezone")
+    review_init.add_argument(
+        "--at",
+        help="offset-aware reference timestamp for the most recently completed daily/weekly window",
+    )
+    review_init.add_argument(
+        "--boundary-hour", type=int, default=8,
+        help="local daily/weekly boundary hour from 0 through 23 (default: 8)",
+    )
     review_init.add_argument("--output", required=True, help="new private Markdown output path")
 
     review_check = sub.add_parser("review-check", help="mechanically validate one explicit review report")
     review_check.add_argument("report", help="explicit Markdown report path")
+
+    candidate_sync = sub.add_parser(
+        "candidate-sync",
+        help="merge one explicit candidate snapshot into private continuity state",
+    )
+    candidate_sync.add_argument("--target", required=True, help="single explicit target identity")
+    candidate_sync.add_argument("--scope-root", required=True,
+                                help="approved non-home root containing current/previous JSON")
+    candidate_sync.add_argument("--current", required=True,
+                                help="explicit candidate-current/v1 private JSON")
+    candidate_sync.add_argument("--previous", help="explicit prior candidate-ledger/v1 private JSON")
+    candidate_sync.add_argument("--output", required=True, help="new path ending in .private.json")
+
+    source_pack = sub.add_parser(
+        "source-pack",
+        help="hash explicitly selected files into a private, path-free source pack",
+    )
+    source_pack.add_argument("--target", required=True, help="single explicit target identity")
+    source_pack.add_argument("--scope-root", required=True,
+                             help="approved non-home root containing every source")
+    source_pack.add_argument("--source", action="append", required=True, dest="sources",
+                             help="explicit file inside scope root; repeat as needed")
+    source_pack.add_argument("--output", required=True, help="new path ending in .private.json")
+
+    source_verify = sub.add_parser(
+        "source-verify",
+        help="rebind a private source pack to the current explicit files without writing",
+    )
+    source_verify.add_argument("--pack", required=True,
+                               help="explicit source-pack/v1 JSON inside scope root")
+    source_verify.add_argument("--target", required=True, help="single explicit target identity")
+    source_verify.add_argument("--scope-root", required=True,
+                               help="approved non-home root containing the pack and every source")
+    source_verify.add_argument("--source", action="append", required=True, dest="sources",
+                               help="explicit file inside scope root; repeat as needed")
+
+    review_bind = sub.add_parser(
+        "review-bind",
+        help="bind one final review to exact bytes, sources, target, and candidate state",
+    )
+    review_bind.add_argument("--target", required=True, help="single explicit target identity")
+    review_bind.add_argument("--scope-root", required=True,
+                             help="approved non-home root containing every input")
+    review_bind.add_argument("--report", required=True, help="explicit final review Markdown")
+    review_bind.add_argument("--source-pack", required=True,
+                             help="explicit source-pack/v1 private JSON")
+    review_bind.add_argument("--source", action="append", required=True, dest="sources",
+                             help="explicit source bound by the pack; repeat as needed")
+    review_bind.add_argument("--candidate-state", required=True,
+                             help="explicit candidate-ledger/v1 private JSON")
+    review_bind.add_argument("--output", required=True, help="new path ending in .private.json")
+
+    handoff_check = sub.add_parser(
+        "review-handoff-check",
+        help="revalidate a bound review and all explicit handoff inputs without writing",
+    )
+    handoff_check.add_argument("--binding", required=True,
+                               help="explicit review-binding/v1 private JSON")
+    handoff_check.add_argument("--target", required=True, help="single explicit target identity")
+    handoff_check.add_argument("--scope-root", required=True,
+                               help="approved non-home root containing every input")
+    handoff_check.add_argument("--report", required=True, help="explicit final review Markdown")
+    handoff_check.add_argument("--source-pack", required=True,
+                               help="explicit source-pack/v1 private JSON")
+    handoff_check.add_argument("--source", action="append", required=True, dest="sources",
+                               help="explicit source bound by the pack; repeat as needed")
+    handoff_check.add_argument("--candidate-state", required=True,
+                               help="explicit candidate-ledger/v1 private JSON")
+    handoff_check.add_argument(
+        "--allow-incomplete-archive", action="store_true",
+        help="verify identity for archival use without declaring the handoff complete",
+    )
 
     demo = sub.add_parser("demo", help="write a complete synthetic, offline v0.1 walkthrough")
     demo.add_argument("--output-dir", required=True)
@@ -125,6 +235,23 @@ def run(args: argparse.Namespace) -> int:
                                        args.since, args.until)
         write_new_json(out, bundle, private=True)
         print(f"WROTE_PRIVATE_EVIDENCE {out}")
+        return 0
+
+    if args.command == "codex-scan":
+        out = private_output_path(args.output)
+        bundle = build_codex_scan_bundle(
+            args.repo,
+            args.input,
+            scope_root=args.scope_root,
+            target=args.target,
+            task_ref=args.task_ref,
+            since=args.since,
+            until=args.until,
+            timezone_name=args.timezone,
+            declared_exclusions=args.exclude,
+        )
+        write_new_json(out, bundle, private=True)
+        print(f"WROTE_PRIVATE_CODEX_EVIDENCE {out}")
         return 0
 
     if args.command == "analyze":
@@ -173,10 +300,28 @@ def run(args: argparse.Namespace) -> int:
         return 3 if findings else 0
 
     if args.command == "review-init":
-        if args.mode != "audit":
-            raise ReviewInputError("review-init alpha supports only mode=audit")
-        output = write_audit_scaffold(args.output, args.target, args.start, args.end, args.timezone)
-        print(f"WROTE_PRIVATE_AUDIT_SCAFFOLD {output}")
+        if args.at and (args.start is not None or args.end is not None):
+            raise ReviewInputError("at cannot be combined with an explicit start/end window")
+        reference = None
+        if args.at:
+            value = args.at[:-1] + "+00:00" if args.at.endswith("Z") else args.at
+            try:
+                reference = datetime.fromisoformat(value)
+            except ValueError as exc:
+                raise ReviewInputError("at must be an offset-aware ISO-8601 timestamp") from exc
+            if reference.tzinfo is None or reference.utcoffset() is None:
+                raise ReviewInputError("at must be an offset-aware ISO-8601 timestamp")
+        output = write_review_scaffold(
+            args.output,
+            args.mode,
+            args.target,
+            args.timezone,
+            start=args.start,
+            end=args.end,
+            boundary_hour=args.boundary_hour,
+            now=reference,
+        )
+        print(f"WROTE_PRIVATE_{args.mode.upper()}_SCAFFOLD {output}")
         return 0
 
     if args.command == "review-check":
@@ -187,6 +332,107 @@ def run(args: argparse.Namespace) -> int:
                 print(f"  - {finding}")
             return 1
         print("REVIEW_REPORT_VALID")
+        return 0
+
+    if args.command == "candidate-sync":
+        output = private_output_path(args.output)
+        with ExitStack() as stack:
+            current = stack.enter_context(open_scoped_json_object(
+                args.current, args.scope_root, max_bytes=MAX_CANDIDATE_STATE_BYTES
+            ))
+            previous = (
+                stack.enter_context(open_scoped_json_object(
+                    args.previous, args.scope_root, max_bytes=MAX_CANDIDATE_STATE_BYTES
+                ))
+                if args.previous else None
+            )
+            state = sync_candidate_state(args.target, current, previous)
+        write_new_json(output, state, private=True)
+        carried = sum(1 for entry in state["entries"] if entry["carried"])
+        print(
+            f"WROTE_PRIVATE_CANDIDATE_STATE head={state['head']} "
+            f"entries={len(state['entries'])} carried={carried} {output}"
+        )
+        return 0
+
+    if args.command == "source-pack":
+        output = private_output_path(args.output)
+        pack = build_source_pack(args.target, args.scope_root, args.sources)
+        write_new_json(output, pack, private=True)
+        print(
+            f"WROTE_PRIVATE_SOURCE_PACK head={pack['head']} "
+            f"sources={pack['source_count']} {output}"
+        )
+        return 0
+
+    if args.command == "source-verify":
+        with open_scoped_json_object(
+            args.pack, args.scope_root, max_bytes=2 * 1024 * 1024
+        ) as pack:
+            validate_source_pack(pack)
+            verified = verify_source_pack(pack, args.target, args.scope_root, args.sources)
+        print(
+            f"SOURCE_PACK_VERIFIED head={verified['head']} sources={verified['source_count']} "
+            "meaning=byte-identity-only"
+        )
+        return 0
+
+    if args.command == "review-bind":
+        output = private_output_path(args.output)
+        with ExitStack() as stack:
+            source_pack = stack.enter_context(open_scoped_json_object(
+                args.source_pack, args.scope_root, max_bytes=2 * 1024 * 1024
+            ))
+            candidate_state = stack.enter_context(open_scoped_json_object(
+                args.candidate_state, args.scope_root, max_bytes=MAX_CANDIDATE_STATE_BYTES
+            ))
+            binding = build_review_binding(
+                args.target,
+                args.scope_root,
+                args.report,
+                source_pack,
+                args.sources,
+                candidate_state,
+            )
+        write_new_json(output, binding, private=True)
+        print(
+            f"WROTE_PRIVATE_REVIEW_BINDING head={binding['head']} "
+            f"report_sha256={binding['report_sha256']} sources={binding['source_count']} "
+            f"candidates={binding['candidate_count']} authority_granted=no {output}"
+        )
+        return 0
+
+    if args.command == "review-handoff-check":
+        with ExitStack() as stack:
+            binding = stack.enter_context(open_scoped_json_object(
+                args.binding, args.scope_root, max_bytes=2 * 1024 * 1024
+            ))
+            source_pack = stack.enter_context(open_scoped_json_object(
+                args.source_pack, args.scope_root, max_bytes=2 * 1024 * 1024
+            ))
+            candidate_state = stack.enter_context(open_scoped_json_object(
+                args.candidate_state, args.scope_root, max_bytes=MAX_CANDIDATE_STATE_BYTES
+            ))
+            verified = verify_review_binding(
+                binding,
+                args.target,
+                args.scope_root,
+                args.report,
+                source_pack,
+                args.sources,
+                candidate_state,
+                require_complete=not args.allow_incomplete_archive,
+            )
+        state = (
+            "REVIEW_ARCHIVE_IDENTITY_VERIFIED"
+            if args.allow_incomplete_archive
+            else "REVIEW_HANDOFF_IDENTITY_READY"
+        )
+        print(
+            f"{state} head={verified['head']} sources={verified['source_count']} "
+            f"candidates={verified['candidate_count']} authorization={verified['authorization']} "
+            "authority_granted=no execution=no meaning=current-identity-only"
+        )
         return 0
 
     if args.command == "demo":

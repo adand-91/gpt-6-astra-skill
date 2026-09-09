@@ -12,7 +12,7 @@ observed: concise observed behavior
 expected: behavior needed for the project goal
 evidence: source paths, turn/event references, or official URLs
 root_cause_layer: project | skill | host/model | unresolved
-astra_dimension: trigger | initiative | clarification | priority | format | tools | verification | context | authority | security | maintenance
+astra_dimension: trigger | initiative | clarification | priority | format | tools | verification | context | authority | security | maintenance | pricing | communication | state | execution
 recommendation: one bounded change
 acceptance: observable positive and boundary checks
 rollback: exact files or checkpoint to restore

@@ -1,38 +1,39 @@
-<!-- translation-of: HANDOFF.md sha256:98b388b0668ad51a -->
+<!-- translation-of: HANDOFF.md sha256:f76a8a3a0d03dc0d -->
 
 # HANDOFF
 
 ## 我们在做什么
 
-本项目已转为独立的 GPT-6 Astra Skill Optimizer v1.0.0：联合审计一个选定项目与其明确关联的 Skill，基于可追溯官方资料检查 Astra 适配性，并在授权后实施最小改进。
+本项目正在统一为 **Astra Skill Doctor**：面向 GPT-6/Astra 新模型的 Skill 与工作流适配系统。短期处理一个明确项目及其相关 Skill 的失真、验证和最小修正；长期发展为类似 Jarvis 的个人与开源社区 Skill 优化系统。
 
 ## 完成了什么
 
-- 新增独立插件 `plugins/gpt6-astra-skill-optimizer`，含 Skill、审计字段、官方来源登记和中英文发布说明。
-- 固定联合审计流程：项目状态、Skill 指令、Astra 适配维度、证据、风险、建议、验收。
-- 默认只读；修改需精确路径白名单和单独授权；不声称训练模型。
-- 增加 5 个正向和 5 个负向/边界用例。
-- 全套测试：211 项通过，7 项平台测试跳过；本地插件安装后源/缓存哈希一致。
-- GitHub 正式 Release `v1.0.0` 已发布：https://github.com/adand-91/requirement-ledger/releases/tag/v1.0.0
+- 已有独立适配插件 `plugins/gpt6-astra-skill-optimizer`，具备证据、正反案例、最小改动和回滚边界。
+- 已建立产品契约 `docs/GPT6_ASTRA_SKILL_CONTRACT.md`，明确新名称、短期目标、长期愿景和纯粹性边界。
+- 本地包元数据和当前 README 已切换到 Astra Skill Doctor；旧 Python 包与 CLI 暂保留为兼容入口。
+- GitHub 仓库已改名为 `gpt-6-astra-skill`。
+- 新增定位修改后，Jarvis 全量测试 213 项通过、7 项跳过；插件结构校验通过。
 
 ## 卡在哪儿
 
-当前没有发布阻断问题。尚未有足够的真实用户样本证明 Skill 审计建议在不同项目中稳定改善行为；这属于后续实测未知，不影响已发布文件身份。
+- 仓库、包、CLI、旧插件和历史文档仍有兼容命名，尚未完成逐项迁移。
+- 实时服务化能力不属于当前已交付范围；短期先完成 Skill 适配闭环。
+- 历史文档对 v1.0.0 的发布状态存在冲突，需要以 Git 和远端事实统一。
+- 尚无足够真实项目样本证明 GPT-6/Astra 适配建议在不同项目中稳定有效。
 
 ## 下一步计划
 
-在一个真实项目中使用自然语言触发“审计项目和相关 Skill”，记录项目层与 Skill 层各自的事实、推断和未知；若出现可复现失败，再准备 v1.0.1 修正。
+先完成仓库远端命名核实、当前公开文档统一和兼容迁移表；随后用一个脱敏真实项目做首个 Astra Skill Doctor 适配回归。
 
 ## 踩过哪些坑
 
-- 官方资料是版本化指导和审计证据，不是对 GPT-6 Astra 的再训练。
-- 进度格式通过不等于项目质量或业务结果通过。
-- 旧 Requirement Ledger/Jarvis 管家版本与当前独立优化器必须分开说明。
-- Codex Ambassadors 申请当前暂停；OpenAI 开源支持、插件提交和外部邮件是不同渠道，不能混称为同一个贡献者活动。
+- 旧模型时代的硬约束可能在新模型上变成阻碍，不能只看 Skill 文案是否完整。
+- 通过格式检查不等于模型行为、项目质量或真实结果通过。
+- 接单教练、交易和其他业务 Skill 不属于本项目产品内容。
 
 ## 当前任务汇总
 
-授权范围：完成并推出 GPT-6 Astra Skill Optimizer v1.0.0；已完成 GitHub 发布。未授权/未执行：OpenAI 申请、邮件、自动化、交易、任意 Skill 扫描。权威检查点见对话接手中心；官方来源和审计规则见插件 Skill 目录。
+当前目标：完成 Astra Skill Doctor 的命名、定位和迁移边界，并准备短期适配闭环。未授权/未执行：扫描无关 Skill、自动改动外部项目、发送外部申请、交易和其他业务动作。
 
 ## 当前架构与入口
 
@@ -40,22 +41,22 @@
 
 ## 运行与依赖
 
-插件不带 MCP server、hooks、Python runtime 或额外权限面；通过 Codex plugin marketplace 安装，默认只读取选定项目和明确关联 Skill。
+插件保持轻量 Skill 分发层，不带 hooks、Python runtime 或额外权限面；通过 Codex plugin marketplace 安装，默认只读取选定项目和明确关联 Skill。
 
 ## 验证证据
 
-插件是 Skill-only，无 MCP server、hooks、Python runtime 或额外权限面。测试命令：
+插件是 Skill-only，不带 hooks、Python runtime 或额外权限面。测试命令：
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q
 ```
 
-发布提交：`cd09633`；正式标签：`v1.0.0`。工作区仍保留此前未提交的 Requirement Ledger 历史改动，未纳入本次正式插件提交。
+Git 标签：`v1.0.0`。工作区仍保留历史未提交改动，未自动清理或重置。
 
 ## 授权与禁止动作
 
-可以继续做真实项目的只读审计和经明确授权的 Skill 小修。禁止将来源称为模型训练、扫描开放 Skill 目录、修改未列入白名单的文件、发送外部申请/邮件、提交新公开版本或执行交易，除非用户另行明确授权。
+可以继续做真实项目的只读审计和经明确授权的 Skill 小修。禁止扫描开放 Skill 目录、修改未列入白名单的文件、发送外部申请/邮件、提交新公开版本或执行交易，除非另行明确授权。
 
 ## 回滚
 
-恢复发布标签 `v1.0.0` 或删除本次新增的独立插件目录即可回退；不得重置或清理工作区中旧 Requirement Ledger 的未提交改动。
+恢复迁移前的本地文档与元数据，或按 Git 记录回退；不得重置或清理无关未提交改动。

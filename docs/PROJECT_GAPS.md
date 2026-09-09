@@ -1,76 +1,77 @@
 # Project gap ledger
 
-This ledger records the distance between the original transcript-retrospective Skill and a
-mature general project optimiser. It prevents a polished README from hiding missing product
-behaviour.
+This ledger distinguishes the v1 local-stable candidate surface from evidence that would be needed
+for a public release or a broader product claim.
 
-## Closed for v0.1
+## Present in the v1 RC/stable surface
 
-- Standard `src/` package, semantic version, console entry point, wheel/sdist metadata.
-- Explicit repository and input binding; no default home-directory discovery in the new CLI.
-- Shared v1 data model for sources, evidence, issues, proposals, and validation.
-- Read-only Git snapshot that does not inspect remotes.
-- Claude, Codex, and plain-text event normalisation with event-level time filtering.
-- Private evidence output, non-overwrite writes, restrictive modes, input mutation checks.
-- Automated privacy category detection and a fail-closed share-output gate.
-- Conservative four-scope attribution with `unknown` as the default.
-- Repair proposals that are mechanically marked `DRAFT — NOT SENT` and `not-applied`.
-- External baseline/after result comparison without running untrusted project code.
-- Synthetic end-to-end demo, anonymous fixtures, CI matrix, release/community documentation.
-- Compatibility retention for the original three scripts and retrospective Skill workflow.
+- Independent Python CLI/library with versioned schemas, deterministic validation, clean
+  wheel/sdist packaging, and a compatibility-preserving legacy surface.
+- Analysis-only `audit`, `daily`, and `weekly` scaffolds with explicit IANA-timezone windows.
+- Explicit scoped inputs, private source packs, exact candidate-ledger transitions and carry-over,
+  exact report/source/candidate review bindings, and identity-only handoff checks.
+- Strict UTF-8, bounded, unknown-field-rejecting state; visible-Markdown report validation; and
+  private, no-overwrite output behavior.
+- A repository-local skills-only Codex marketplace plugin that preflights an installed compatible
+  CLI without becoming a second runtime.
+- No automatic discovery, automatic modification, automatic external action, or network/model
+  execution in the core workflow.
+- Two explicit Codex review levels: a fast `host-selected / unbound` decision aid and a separate
+  evidence-bound CLI workflow. The quick path cannot claim source/report/handoff identity.
+- A conversational Jarvis contract with direct, explained, and full-report answer depths; a fixed
+  eight-field project report for takeover and steering events; and distinct daily/weekly layouts.
+- Six lifecycle routes, high-impact evidence escalation, bounded Skill/resource discovery, and a
+  feedback-driven improvement route that makes no passive-observation or automatic-learning claim.
 
-## Open after v0.1 — product
+These are local implementation claims. They do not establish public distribution or external use.
 
-- Codex-first `audit`, `daily`, and `weekly` host flows are now specified with bilingual templates
-  and a mechanical report validator; they remain `implemented-unverified` until real Codex runs
-  prove context retrieval, relevance, deduplication, and before/after usefulness.
-- A beginner-first Agent Skill personalisation flow is specified; it still needs real
-  external-user evidence and, if warranted, a one-command private handoff.
-- Semantic grouping of many related corrections into one issue with human confirmation.
-- Provider-version compatibility registry and maintained real-format fixtures.
-- A structured adapter for JUnit, pytest JSON, TAP, cargo, Go, Maven, npm, and other test logs.
-- Clean-room reproduction helpers that can actually confirm `project-local` or `upstream`.
-- A user-approved comparison adapter for personal configuration.
-- Cross-session evidence linking without exposing low-entropy identifiers.
-- A concrete Codex-host adapter that can use thread tools or a bounded local session index while
-  keeping raw transcript data out of prompts unnecessarily. The current release provides the
-  host contract and Skill workflow, not a packaged history-discovery daemon.
-- Real daily and weekly runs with stable carry-over IDs and source-bound ecosystem evidence.
-- Adoption records: installs, repeat users, accepted fixes, before/after outcomes, and
-  maintainer response — opt-in and never collected as telemetry by default.
-- Internationalisation of generated CLI/report text, not only documentation.
-- Windows reparse/junction and case-collision hardening beyond ordinary CI coverage.
+## Local stable gate result and remaining platform evidence
 
-## Open after v0.1 — safe modification
+- The 2026-08-30 technical-core gate is complete: exact source tests, clean wheel/sdist installs,
+  audit/daily/weekly workflows, negative drift/no-overwrite cases, a real Codex local marketplace
+  lifecycle, final hashes, and the handoff/checkpoint are recorded in the external evidence root.
+- The reopened Jarvis product gate still requires the current full source/distribution suite,
+  plugin snapshot refresh, and fresh-task dogfood for takeover, answer depth, progress, daily, and
+  weekly behavior before the local v1 product can be called complete.
+- Windows parent-`HANDLE` + `NtCreateFile(RootDirectory=...)` relative output creation, protected
+  DACLs, same-domain parent revalidation, handle-only rollback, and cross-platform contract tests
+  are present. Windows-native API and failure-injection tests are collected but skipped on macOS;
+  they remain a public-CI gate and are not described as locally executed.
+- Cross-platform public CI must be run only after a separately authorized push; local results do
+  not substitute for it.
+- Local plugin source and the versioned snapshot loaded by Codex can drift during development.
+  Requalification must remove/add the unpublished local plugin, start a fresh task, and retest the
+  quick-audit contract; a source-tree test alone is insufficient.
 
-- An isolation backend with proof of network and filesystem boundaries on each host OS.
-- Object-bound, expiring, one-time approvals tied to repo identity, HEAD/status, exact patch,
-  preimages, validation argv, environment, timeout, and file-operation list.
-- Patch generation restricted to ordinary text changes with parser-aware preimage validation.
-- Isolation-only patch application with byte-for-byte proof the real worktree did not change.
-- Frozen oracle execution with CPU, memory, wall-clock, process, file, and output limits.
-- Transactional real-worktree apply, failure injection, complete rollback, and audit record.
-- Explicit designs for renames, deletes, chmod, binary files, submodules, LFS, nested repos,
-  linked worktrees, generated files, migrations, databases, and secret-bearing files.
-- Host-mediated commit/PR helpers. These must remain separate approvals and are not automatic.
+## Product gaps deliberately deferred
 
-## Open after v0.1 — open-source maturity
+- Automatic history/project discovery, background scheduling, telemetry, hosted service, database,
+  OAuth, MCP, Apps SDK widget, GUI, and IDE-extension support.
+- Semantic candidate matching, model scoring, autonomous remediation, arbitrary project-code
+  execution, or unattended patch application.
+- Isolation, object-bound approval, rollback, and audit mechanisms needed before any safe
+  modification workflow could be offered.
+- Broad provider-format compatibility, real-world fixture registry, internationalised generated
+  reports, and external user/adoption outcomes.
+- Voice wake-up, a desktop companion, unattended night research, and broad cross-forum collection;
+  each needs a separately approved runtime, privacy, failure, and resource design.
+- A host API that mechanically binds Codex's selected-task context directly into the CLI. Until
+  such an official, bounded interface is verified, host-selected quick audits remain unbound.
 
-- `v0.1.0` and `v0.1.1` public Releases exist with annotated tags and downloadable artefacts;
-  cryptographic signing, provenance, and SBOM remain open.
-- Reproducible release workflow, provenance/SBOM, vulnerability scanning, and dependency bot.
-- Compatibility policy based on real downstream projects rather than only synthetic fixtures.
-- Maintainer triage SLA, governance, contributor roles, decision log, and deprecation policy.
-- Documentation site, architecture decision records, screencast/GIF, and more use-case recipes.
-- Real issues and PRs from outside contributors, response history, and published maintenance
-  cadence. Stars, forks, and watches are discovery signals, not substitutes for this evidence.
+## Open-source and public-plugin gaps
+
+- No v1 commit, push, tag, GitHub Release, public artifact re-download, or public CI evidence is
+  created by this local train.
+- Public Codex plugin submission remains separate: verified publisher identity, public policy and
+  support URLs, submission-ready metadata, review, and explicit maintainer authorization are all
+  required.
+- Provenance/SBOM, signing, vulnerability automation, governance, maintainer response history,
+  real contributor evidence, and a compatibility policy based on downstream use remain future work.
 
 ## Explicitly not promised
 
-- “Perfect” software, infallible attribution, safe autonomous self-modification, or guaranteed
-  privacy from pattern matching.
-- Automatic discovery of every relevant conversation or every root cause.
-- Reading unrelated Codex history merely because one target was named.
-- Running arbitrary third-party code safely on a normal host without an isolation substrate.
-- Automatic GitHub activity, marketing, telemetry, account actions, or eligibility for any
-  external programme.
+- Perfect privacy, infallible attribution, atomic filesystem snapshots, or safe autonomous
+  self-modification.
+- Eligibility for an OpenAI, Codex, GitHub, or other external programme.
+- Automatic GitHub activity, marketing, account actions, or public acceptance merely because a
+  local candidate passed its own checks.
