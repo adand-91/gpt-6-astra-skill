@@ -1,4 +1,4 @@
-<!-- translation-of: HANDOFF.md sha256:f76a8a3a0d03dc0d -->
+<!-- translation-of: HANDOFF.md sha256:1f2d399d70e8dfd7 -->
 
 # HANDOFF
 

@@ -11,9 +11,9 @@ Build **Astra Skill Doctor**: a focused system that adapts existing project Skil
 - The public product identity is **Astra Skill Doctor**; the GitHub repository slug remains `gpt-6-astra-skill` for URL continuity.
 - The independent Astra audit plugin exists at `plugins/gpt6-astra-skill-optimizer`.
 - Existing Requirement Ledger package and CLI remain compatibility entry points during migration.
-- Version `1.0.1` naming migration is validated: 213 tests passed, 7 skipped; translation sync and plugin validation also pass.
+- Version `1.0.1` naming migration is validated and pushed to `main`: 213 tests passed, 7 skipped; translation sync and plugin validation also pass.
 - Business-specific Skills and order records remain outside this project.
 
 ## Next action and boundary
 
-Prepare the project application brief and run the first redacted real-project Skill adaptation regression, using the contract and compatibility map as the acceptance baseline. Do not mix in order-taking, trading, private customer records, or unrelated project implementation.
+Use `docs/PRO_APPLICATION_BRIEF.md` to fill the project application, then run the first redacted real-project Skill adaptation regression using the contract and compatibility map as the acceptance baseline. Do not mix in order-taking, trading, private customer records, or unrelated project implementation.
