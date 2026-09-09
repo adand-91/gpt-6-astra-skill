@@ -1,0 +1,12 @@
+{
+  "name": "gpt6-astra-skill-optimizer-local",
+  "interface": {"displayName": "GPT-6 Astra Skill Optimizer (Local)"},
+  "plugins": [
+    {
+      "name": "gpt6-astra-skill-optimizer",
+      "source": {"source": "local", "path": "./plugins/gpt6-astra-skill-optimizer"},
+      "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
+      "category": "Productivity"
+    }
+  ]
+}
