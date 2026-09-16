@@ -1,4 +1,4 @@
-<!-- translation-of: docs/PRO_APPLICATION_BRIEF.md sha256:6b6d2f263de6f9b9 -->
+<!-- translation-of: docs/PRO_APPLICATION_BRIEF.md sha256:602ba8b578139afb -->
 
 # Astra Skill Optimizer——项目申请简报
 
@@ -24,7 +24,7 @@ https://github.com/adand-91/gpt-6-astra-skill
 
 ## 长期愿景
 
-建设类似 Jarvis 的个人与开源社区系统，持续维护可复用 Skill：模型兼容性、版本化测试、个人工作流适配、失败回放、有证据的变更历史和安全回滚。
+把 Jarvis 发展成个人项目管理师，让个人专注目标和方向确认，由它维护项目上下文、解释卡点、推荐下一步并执行获授权的工作。Skill 兼容性、失败回放、证据历史和可回滚版本服务于这一长期方向。
 
 ## 当前实现
 
@@ -36,10 +36,10 @@ https://github.com/adand-91/gpt-6-astra-skill
 
 ## 当前验证
 
-- 在文档说明的 macOS 边界下，测试共 213 项，206 项通过、7 项跳过。
+- 223 项测试中 216 项通过、7 项因 macOS 平台边界跳过。
 - 插件结构校验通过。
 - 翻译同步、交接校验和空白差异检查通过。
-- `1.0.2` Astra Skill Optimizer 已推送到默认分支，尚未新建标签或 GitHub Release。
+- `1.0.3` 包含可复现的解析误判回归、范围内授权修正和中英文安装说明；公开发布另以 GitHub Release 核验。
 
 ## 额外模型访问的用途
 
@@ -54,4 +54,4 @@ https://github.com/adand-91/gpt-6-astra-skill
 
 ## 状态与申请说明
 
-仓库已公开，`1.0.2` Optimizer 改名版本已进入 `main`。本文是申请表草稿，尚未提交，不包含私有凭据或令牌。
+仓库公开且采用 MIT 许可证。2026-09-16 GitHub 显示 120 Star、7 Fork、4 位订阅者；下载量尚无核实数据。本文是公开项目简报，不是申请回执。申请身份与提交证据保存在仓库外。

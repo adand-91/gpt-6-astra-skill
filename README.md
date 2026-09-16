@@ -1,22 +1,60 @@
 # Astra Skill Optimizer
 
-### Astra Skill Optimizer compatibility and personal workflow optimization
+### Adapt your Skills to GPT-6/Astra. Build toward Jarvis.
 
-Astra Skill Optimizer adapts existing project Skills and workflows when new GPT-6/Astra model behavior makes older constraints unreliable. Select one project and its related Skills; the workflow produces evidence-bound findings, minimal changes, and reproducible validation. Long term it becomes a Jarvis-like personal and community Skill optimization system.
+**Short term:** Astra Skill Optimizer keeps existing Skills usable as GPT-6/Astra behaviour changes.
+**Long term:** it becomes Jarvis, a personal project manager that keeps goals, requirements,
+decisions, blockers, and next actions aligned through a focused conversation.
+
+The current release starts with evidence-bound Skill adaptation: select one project and its related
+Skills, identify outdated constraints, propose the smallest authorized change, and verify the result.
 
 Plain language here does not mean the shortest possible answer. It means a decision-complete
 explanation: conclusion first, then enough evidence, impact, action, and acceptance detail for the
 user to understand the problem without translating jargon or asking what the report means.
 
-**Astra Skill Optimizer is the current public product and repository identity.** The legacy Python package and CLI remain as compatibility entry points during migration.
-
-**The public identity is Astra Skill Optimizer.** The existing Python package and CLI remain compatibility entry points during the naming migration. The current plugin is a thin Skill workflow; complete GPT-6/Astra adaptation still requires real project feedback.
+**Astra Skill Optimizer is the current public product and repository identity.** The legacy Python package
+and CLI remain as compatibility entry points during migration. The current plugin is a thin Skill workflow;
+complete GPT-6/Astra adaptation still requires real project feedback.
 
 [中文说明](README.zh-CN.md) · [product completion contract](docs/V1_PRODUCT_CONTRACT.md) ·
 [stable contract](docs/V1_STABLE_CONTRACT.md) ·
 [roadmap](ROADMAP.md) · [security](SECURITY.md) · [Codex alignment](docs/CODEX_ALIGNMENT_RESEARCH.md)
 
 > The repository naming migration and public metadata alignment are tracked separately from historical release records.
+
+## Quick start
+
+Clone the repository and install the local Codex plugin:
+
+```bash
+git clone https://github.com/adand-91/gpt-6-astra-skill.git
+cd gpt-6-astra-skill
+codex plugin marketplace add "$PWD"
+codex plugin add gpt6-astra-skill-optimizer@requirement-ledger-local
+codex plugin add requirement-ledger@requirement-ledger-local
+```
+
+The first plugin audits Skills; the second provides the Jarvis project-report workflow. Select one
+project, start a fresh Codex task, and ask for a Skill audit:
+
+```text
+Please audit this project and its related Skills for GPT-6/Astra.
+Explain the current problem, what an improvement would change, and one next step.
+```
+
+For project takeover instead, say:
+
+```text
+Hi Jarvis, take over this project. Recover its goal, current stage,
+blocker, and one next action. Do not modify it.
+```
+
+An audit or read-only takeover does not change files. A clear request to implement a scoped fix
+permits that fix and its validation without repeated permission questions. Publication and other
+external actions need authorization covering those actions.
+
+[See the 1.0.3 changes and verification limits](docs/release-notes/v1.0.3.md).
 
 ## Why it exists
 
@@ -36,14 +74,14 @@ one selected target
 It does not discover every task, scan a home directory, edit the target, or turn analysis into
 permission.
 
-## Fast Codex project takeover
+## What Jarvis does after installation
 
-Install the core and plugin, select one Codex task or project, then start a new task and say:
+Select one Codex task or project and start with the quick-start prompt above. Jarvis then:
 
-```text
-Hi Jarvis, take over this selected project. Recover its goal, current
-stage, blocker, and one next action. Do not modify it.
-```
+- restores the goal, current stage, evidence freshness, and blocker;
+- separates verified facts, inferences, and unknowns;
+- recommends one next action and states the required authority; and
+- leaves a checkpoint that another task can continue from.
 
 If the host does not select the Skill automatically, retry once explicitly:
 `$requirement-ledger-workflow Hi Jarvis, take over this selected project.`
@@ -53,11 +91,9 @@ The first screen should look like this—not like a request for JSONL paths or s
 ```text
 # Project goal
 ...
-## Overall progress: about 60% (estimated)
-██████░░░░
+## Overall progress: scope is not fixed; cannot calculate
 Current work area: ...
-## Current-area progress: about 80% (estimated)
-████████░░
+## Current-area progress: scope is not fixed; cannot calculate
 Current blocker: none.
 No decision is needed from you now.
 # Next step
@@ -77,7 +113,7 @@ Jarvis does not print the complete project card after every message.
 | --- | --- |
 | One narrow answer | The answer first, plus only the decisive reason or practical effect. |
 | A clear explanation | Conclusion, necessary cause or evidence, practical impact, and what follows. |
-| Takeover, complete status, or a key project event | The full eight-field report with both progress bars, one next action, and its completion test. |
+| Takeover, complete status, or a key project event | The full eight-field report with evidence-based progress, one next action, and its completion test. |
 
 Daily and weekly reports keep their own fixed layouts. The daily report ends with one
 highest-value next action; the weekly report may rank up to three next-period actions. Neither
@@ -118,8 +154,7 @@ requires explicit `--start`, `--end`, and `--timezone`. The plugin must never im
 audit already passed the evidence-bound chain.
 
 The complete target experience and its release gates are defined in the
-[Jarvis v1 product completion contract](docs/V1_PRODUCT_CONTRACT.md). The local Python version
-`1.0.0` is the stable technical core; it is not, by itself, proof that every product gate or
+[Jarvis v1 product completion contract](docs/V1_PRODUCT_CONTRACT.md). The Python CLI is the compatibility core; it is not, by itself, proof that every product gate or
 public-release gate has passed.
 
 ## Why Codex-first
@@ -165,7 +200,6 @@ uv tool install .
 requirement-ledger --version
 ```
 
-This exact macOS checkout installed `requirement-ledger 1.0.0` through `uv tool install .`.
 Homebrew-managed Python follows PEP 668 and can reject system-level `pip install`; do not use
 `--break-system-packages` for this project.
 
@@ -177,13 +211,13 @@ requirement-ledger --version
 ```
 
 The core uses the Python standard library. Windows installs also receive the small conditional
-`tzdata` package so IANA review windows remain available. The old public Alpha wheel is not this
-local candidate.
+`tzdata` package so IANA review windows remain available. Check `requirement-ledger --version` against the release you installed.
 
 ## Install or refresh the local Codex plugin
 
 ```bash
-codex plugin marketplace add /absolute/path/to/requirement-ledger
+codex plugin marketplace add /absolute/path/to/gpt-6-astra-skill
+codex plugin add gpt6-astra-skill-optimizer@requirement-ledger-local
 codex plugin add requirement-ledger@requirement-ledger-local
 codex plugin list --marketplace requirement-ledger-local
 ```
@@ -193,7 +227,9 @@ not prove that a new task loaded the changed Skill bytes. If the same unpublishe
 already installed, refresh it explicitly and then start a new Codex task:
 
 ```bash
+codex plugin remove gpt6-astra-skill-optimizer@requirement-ledger-local
 codex plugin remove requirement-ledger@requirement-ledger-local
+codex plugin add gpt6-astra-skill-optimizer@requirement-ledger-local
 codex plugin add requirement-ledger@requirement-ledger-local
 ```
 

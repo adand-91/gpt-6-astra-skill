@@ -1,11 +1,9 @@
 ---
 name: gpt6-astra-skill-optimizer
 description: >-
-  Audit one selected project and its explicitly related Skills for GPT-6 Astra compatibility,
-  then propose evidence-backed improvements. Use when the user asks to audit a project and its
-  Skills, check Astra readiness, diagnose repeated Skill failures, or apply an approved Skill fix.
-  Read-only by default; changing files, syncing, committing, publishing, or messaging requires
-  separate explicit authorization.
+  Audit a selected project and its related Skills for GPT-6/Astra workflow failures,
+  or apply requested fixes while preserving existing capabilities. Use for Skill
+  compatibility reviews, repeated instruction failures, and scoped Skill optimization.
 ---
 
 # Astra Skill Optimizer
@@ -14,16 +12,33 @@ This is an independent Skill audit and optimization workflow. It does not manage
 project, train GPT-6 Astra, or replace domain Skills. It audits the selected project and the Skills
 that project explicitly uses, using the evidence sources in `references/official-sources.md`.
 
+## Two-pass optimization contract
+
+For a repository-wide request, first apply the OpenAI Skill baseline: short and truthful metadata,
+explicit inputs and outputs, actionable steps, progressive disclosure, edge cases, final checks, and
+versioned supporting resources. Then apply the GPT-6/Astra pass: remove obsolete handholding and
+unconditional reads, preserve outcome and acceptance criteria, and test whether any safety or
+authorization rule is genuinely invariant. A passing text audit is not runtime evidence.
+
+The optimizer may change only approved authority roots. For every Skill, preserve a before/after
+feature list and run a normal case, a missing-context case, and a boundary case. If no reproducible
+problem is found, leave the Skill content unchanged and record “audited, no safe change”. Never turn
+official guidance into a claim that the model was trained on those sources.
+
 ## Entry and authority
 
 When the user says “请审计一下我们目前的项目和相关 Skill，看看有没有需要优化的” or an
 equivalent request, begin with the useful conclusion, then inspect only the selected project and
 its declared or host-exposed related Skills. Do not enumerate a home directory or an open catalog.
-The default authority is read-only audit. A broad request to optimize does not authorize edits,
-sync, commit, release, installation, external messages, or model training.
+An audit request is a read-only audit. An explicit request to fix or optimize the selected
+Skills authorizes the necessary scoped edits and validation; do not ask for that same permission
+again. Preserve earlier authorization in the conversation. Commit, publication, installation, and
+external messages require authorization covering those actions; an audit result does not grant it.
 
 If the user authorizes implementation, first produce an exact path allowlist and a reviewable
-change plan. Modify only approved Skill files, preserve the source-of-truth and its mirrors, run
+change plan within the user-authorized scope; this is not an extra approval gate. Resolve routine
+implementation choices yourself. Modify only scoped Skill files, preserve the source-of-truth
+and its mirrors, run
 the relevant regression cases, and stop before commit or publication unless those actions were
 also explicitly authorized.
 
@@ -49,9 +64,9 @@ used to train the model; they are versioned guidance and audit evidence.
 4. Check Astra dimensions: trigger clarity, initiative and follow-through, focused clarification,
    instruction priority, output format, tool/delegation guidance, verification scope, context
    loading, authority boundaries, prompt-injection resistance, source/version maintenance, and
-   domain-specific pricing, communication cadence, business-state reporting, and execution receipts.
-   For customer-facing work, verify that platform costs stay in internal diagnostics when the
-   target Skill promises competitive pricing; verify estimate basis and 重估触发条件, re-quote triggers, natural 短代码块 cadence, visible 业务状态, and a compact understanding receipt.
+   task-specific acceptance criteria and execution receipts. Preserve the selected project's
+   domain rules; do not import pricing, customer communication, or other unrelated business policies
+   into this reusable optimizer.
 5. For every material finding, use the fixed delta contract: `优化前` → `当前问题` → `优化后` →
    `验证方式` → `唯一下一步`. In `当前问题`, separate confirmed fact, inference, and unknown. In
    `验证方式`, replay the original failure plus one positive success case and one boundary case;

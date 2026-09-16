@@ -22,7 +22,7 @@ Use the system on selected, redacted projects to identify outdated constraints a
 
 ## Long-term vision
 
-Build a Jarvis-like personal and open-source community system for maintaining reusable Skills: model compatibility, versioned tests, user-specific workflow adaptation, failure replay, evidence-backed change history, and safe rollback.
+Build Jarvis into a personal project manager: let individuals focus on goals and direction decisions while it maintains project context, explains blockers, recommends the next action, and carries out authorized work. Skill compatibility, failure replay, evidence-backed history, and safe rollback support that long-term direction.
 
 ## Current implementation
 
@@ -34,10 +34,10 @@ Build a Jarvis-like personal and open-source community system for maintaining re
 
 ## Current verification
 
-- 213 tests were collected: 206 passed and 7 were skipped under the documented macOS boundary.
+- 223 tests were collected: 216 passed and 7 were skipped under the documented macOS boundary.
 - Plugin structure validation passed.
 - Translation synchronization, handoff validation, and whitespace checks passed.
-- Version `1.0.2` Astra Skill Optimizer is pushed to the default branch; no new tag or GitHub Release has been created.
+- Version `1.0.3` includes a reproducible parser-regression example, scoped-authorization correction, and bilingual installation instructions. Publication is verified separately against the GitHub release.
 
 ## Why additional model access would help
 
@@ -52,4 +52,4 @@ A higher-capability model environment would let us evaluate the same audit workf
 
 ## Status and request
 
-The repository is public; version `1.0.2` with the Optimizer name is on `main`. This document is a draft for an application form; it has not been submitted and contains no private credentials or tokens.
+The repository is public and MIT-licensed. GitHub reported 120 stars, 7 forks, and 4 subscribers on 2026-09-16; verified download counts are not available. This is a public project brief, not an application receipt. Application identity and submission evidence are kept outside the repository.

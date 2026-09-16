@@ -1,59 +1,69 @@
-<!-- translation-of: HANDOFF.md sha256:e5c1ef6cbf6a9579 -->
+<!-- translation-of: HANDOFF.md sha256:ac8a51fccc94da04 -->
 
 # HANDOFF
 
 ## 我们在做什么
 
-产品名已确认为 **Astra Skill Optimizer**：面向 GPT-6/Astra 的项目 Skill 与工作流适配。长期发展为类似 Jarvis 的个人与社区 Skill 优化系统。
+准备 Astra Skill Optimizer 1.0.3，按用户授权发布 GitHub 并申请 Codex for OSS。短期产品适配选定项目的 GPT-6／Astra Skill，长期 Jarvis 是个人项目管理师方向，不冒称自主项目管理已完成。
 
 ## 完成了什么
 
-- README、契约、路线图、申请草稿、包描述和插件显示名已统一。
-- 版本为 `1.0.2`，内部插件 ID `gpt6-astra-skill-optimizer`、包模块和旧 CLI 保留兼容。
-- 改名提交 `c5da2d8` 已推送到 `main`，沿用用户此前“最新版推上去”的授权。
-- 本轮 213 项测试中 206 项通过、7 项跳过；插件结构、翻译同步和差异检查通过。
+- 纳入官方基线与 Astra 适配两轮合同，保留领域核心功能。
+- 修复常见 YAML 描述误报；不支持的语法交人工复核。独立抽查发现的多行 plain 描述截断也已加入回归。
+- 沿用范围内已有修改授权，不重复请示；从通用 Skill、字段和案例移除特定业务报价及沟通策略。
+- 中英文安装说明提供两个插件入口，进度示例不再编造百分比。
+- 包与插件均为 1.0.3；两个已安装快照与源码字节一致。
+- 修正历史审计报告：23 项静态记录不是全库运行时证明；原始私有材料另行保存在仓库外。
 
 ## 卡在哪儿
 
-本轮改名无阻断问题。尚无新建的 `1.0.2` 标签或 GitHub Release；真实项目适配效果仍需回归验证。
+本地验证当前无阻断问题。推送、公开 CI、Release 和申请回执必须分别核实；本检查点只记录本地验收。
+跨项目 Astra 质量提升和新任务自动触发仍未证明。
 
 ## 下一步计划
 
-使用 `docs/PRO_APPLICATION_BRIEF.md` 准备申请内容；提交申请尚未执行。
+发布验收后的 1.0.3 提交与资产，再提交真实申请并私下保留回执。用户已在当前任务授权这些动作。
 
 ## 踩过哪些坑
 
-版本号和格式检查不能证明模型行为有效。测试收集数包含跳过项，不能把全部收集项写成通过项。名称修改不应覆盖历史标签。
+旧正则把不识别的 YAML 写法误当成缺字段。静态 PASS 不是模型行为合格证。源码版本和目录列表不证明缓存新鲜，须核对安装回执和字节。七项跳过不能算通过。系统 Python 的 build 入口不可用，改用隔离的 `uv build` 成功，无需修改系统包。私有目录不能进入公开产物。
 
 ## 当前任务汇总
 
-Optimizer 改名已完成并推送；仓库 slug 仍为 `gpt-6-astra-skill`。申请材料已改名，外部申请尚未提交。
+本地候选：223 项测试，216 通过、7 项在 macOS 跳过。独立 Agent 只读抽查覆盖审计、缺上下文和沿用授权三种情况；其具体模型名无法核验，不作为 Astra 基准。未修改第三方领域 Skill 或账号。
 
 ## 当前架构与入口
 
-插件：`plugins/gpt6-astra-skill-optimizer/.codex-plugin/plugin.json`。
-核心 Skill：`plugins/gpt6-astra-skill-optimizer/skills/gpt6-astra-skill-optimizer/SKILL.md`。
-
-```bash
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q
-python3 scripts/check_translation_sync.py
-git diff --check
-```
-
-以上命令通过；7 项平台相关测试在当前 macOS 环境跳过。Skill 结构校验通过。
+`src/requirement_ledger` 保留兼容核心，两个 CLI 入口是 `gpt6-astra-skill` 和 `requirement-ledger`。
+插件位于 `plugins/`，目录元数据位于 `.agents/plugins`。
+`scripts/audit_skill_catalog.py` 为只读启发式检查器，`examples/skill-audit/SKILL.md` 为公开合成回归输入。
 
 ## 运行与依赖
 
-插件为轻量 Skill 分发层，未新增外部服务依赖或执行权限。
+Python 3.10+；Windows 保留条件依赖 `tzdata`。未新增运行时依赖、服务、模型调用、调度或账号集成。
+Codex 使用带版本快照，更新后需新任务加载指令；安装与刷新命令见 README。
 
 ## 验证证据
 
-213 项测试收集，206 项通过、7 项跳过；翻译同步、差异检查、交接检查和 Skill 结构校验通过。
+在仓库根目录运行，退出码均为 0：
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q
+python3 scripts/audit_skill_catalog.py examples/skill-audit
+python3 scripts/check_translation_sync.py
+python3 -m compileall -q src scripts tests
+git diff --check
+```
+
+两份 Skill 与插件校验均通过。`uv build` 构建 wheel 和 sdist；干净 wheel 环境验证两个 CLI 版本，运行两遍 demo 字节一致。
+文档定稿后重建最终发布资产。目录审计的十一项回归覆盖正常、缺失、不支持、重复、多行元数据、空输入与启发式说明。
+其他操作系统的证据以 GitHub CI 为准。
 
 ## 授权与禁止动作
 
-此前推送授权覆盖本次名称修正。未执行申请提交、外部消息或业务项目修改。
+当前指令授权准备发布此版本和申请 Codex for OSS，不授权编造资格、更换申请身份、给员工发信、交易、修改无关业务 Skill 或新增后台自动化。
+申请身份和原始本地审计证据保存在仓库外。
 
 ## 回滚
 
-若需回滚，以针对本轮提交的反向补丁恢复，不重置历史或覆盖他人改动。
+必要时以新提交反向恢复本轮改动，重装前一标签的插件并新建任务。不重置用户工作树、不改写已发布标签、不删除私有历史证据。不需要 CLI 结构迁移。

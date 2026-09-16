@@ -1,19 +1,22 @@
 # Project context
 
-Short pickup index. Task rules: `AGENTS.md`; product contract: `docs/GPT6_ASTRA_SKILL_CONTRACT.md`; technical handoff: `HANDOFF.md`.
+Short pickup index. Rules: `AGENTS.md`; product: `docs/GPT6_ASTRA_SKILL_CONTRACT.md`;
+technical evidence: `HANDOFF.md`; current change summary: `docs/release-notes/v1.0.3.md`.
 
-## Project goal
+## Goal
 
-Build **Astra Skill Optimizer**: a focused system that adapts existing project Skills and workflows to new GPT-6/Astra model behavior, using traceable evidence, minimal changes, and reproducible validation. Long term it becomes a Jarvis-like personal and community Skill optimization system.
+Astra Skill Optimizer adapts selected project Skills to GPT-6/Astra without losing core capabilities.
+Long term, Jarvis becomes a personal project manager so users can focus on goals and direction.
 
 ## Current checkpoint
 
-- The public product identity is **Astra Skill Optimizer**; the GitHub repository slug remains `gpt-6-astra-skill` for URL continuity.
-- The independent Astra audit plugin exists at `plugins/gpt6-astra-skill-optimizer`.
-- Existing Requirement Ledger package and CLI remain compatibility entry points during migration.
-- Version `1.0.2` Optimizer rename candidate is pushed to `main`: 213 tests collected, 206 passed, 7 skipped; translation sync and plugin validation also pass.
-- Business-specific Skills and order records remain outside this project.
+1.0.3 local candidate: 216 tests passed, 7 skipped; two plugin snapshots refreshed and byte-checked.
+Parser regressions, unnecessary permission gates, business-policy contamination, and bilingual
+entry points are addressed. Cross-project model quality and fresh-task auto-selection are unknown.
 
-## Next action and boundary
+## Next action and authority
 
-Use `docs/PRO_APPLICATION_BRIEF.md` to fill the project application, then run the first redacted real-project Skill adaptation regression using the contract and compatibility map as the acceptance baseline. Do not mix in order-taking, trading, private customer records, or unrelated project implementation.
+The user authorized GitHub publication followed by a Codex for OSS application on 2026-09-16.
+Verify public release and submission receipts separately; this file is not proof of either.
+Private application evidence and the current task checkpoint live in the maintainer's external
+handoff center, under this project's Codex task, and are excluded from distribution.

@@ -150,9 +150,9 @@ class PluginDistributionTests(unittest.TestCase):
         self.assertIn("`██████░░░░ 约 60%（估算）`", skill)
         self.assertIn("`当前无阻断问题`", skill)
         self.assertIn("`你现在无需操作`", skill)
-        self.assertIn("## 项目总进度：约 60%（估算）", skill)
+        self.assertIn("## 项目总进度：范围未锁定，无法计算", skill)
         self.assertIn("当前工作区域：<one active stage derived from the goal>", skill)
-        self.assertIn("## 当前区域进度：约 40%（估算）", skill)
+        self.assertIn("## 当前区域进度：范围未锁定，无法计算", skill)
         self.assertIn("# 需要你确定", skill)
         self.assertIn("Mandatory Jarvis first screen", skill)
         self.assertLess(

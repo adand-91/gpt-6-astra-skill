@@ -1,10 +1,13 @@
-<!-- translation-of: README.md sha256:e19d809a94d03023 -->
+<!-- translation-of: README.md sha256:0e48e2c56b151f89 -->
 
 # Astra Skill Optimizer
 
-### 面向 GPT-6／Astra 的 Skill 适配与个人工作流优化
+### 让 Skill 适配 GPT-6／Astra，逐步走向 Jarvis
 
-Astra Skill Optimizer 专门处理新 GPT-6／Astra 发布后旧 Skill 约束失真的问题。用户选定一个项目和相关 Skill 后，它输出有证据的适配判断、最小改动和可复核验证；长期发展为类似 Jarvis 的个人与社区 Skill 优化系统。
+**短期：** Astra Skill Optimizer 让现有 Skill 在 GPT-6／Astra 行为变化后继续可用。
+**长期：** 它将发展为 Jarvis 个人项目管理师，通过聚焦对话保持目标、需求、决定、卡点和下一步方向一致。
+
+当前版本从有证据的 Skill 适配开始：选定一个项目和相关 Skill，找出过时约束，提出最小的获授权改动，并复核结果。
 
 这里的“说人话”不等于把字数压到最少，而是先给结论，再提供足够的依据、影响、行动和验收说明，
 让用户不需要翻译术语或继续追问，就能真正理解问题。
@@ -18,6 +21,37 @@ Astra Skill Optimizer 专门处理新 GPT-6／Astra 发布后旧 Skill 约束失
 [路线图](ROADMAP.zh-CN.md) · [安全政策](SECURITY.zh-CN.md) · [Codex 对齐调研](docs/CODEX_ALIGNMENT_RESEARCH.zh-CN.md)
 
 > 仓库命名迁移与历史发布记录分开维护。
+
+## 快速开始
+
+克隆仓库并安装本地 Codex 插件：
+
+```bash
+git clone https://github.com/adand-91/gpt-6-astra-skill.git
+cd gpt-6-astra-skill
+codex plugin marketplace add "$PWD"
+codex plugin add gpt6-astra-skill-optimizer@requirement-ledger-local
+codex plugin add requirement-ledger@requirement-ledger-local
+```
+
+第一个插件负责 Skill 审计，第二个提供 Jarvis 项目汇报流程。选中一个项目，新建 Codex 任务后请求审计：
+
+```text
+请审计这个项目和相关 Skill 是否适配 GPT-6／Astra
+说明当前问题 优化后会变成什么样 以及唯一下一步
+```
+
+需要接管项目时，输入：
+
+```text
+嗨，贾维斯，接管这个项目。恢复它的目标、当前阶段、卡点和唯一下一步。
+不要修改项目。
+```
+
+审计或只读接管不会修改文件。明确要求实施某项修复后，它会完成范围内的修改和验证，不重复请示同一权限。
+发布和其他外部操作仍需要覆盖这些动作的授权。
+
+[查看 1.0.3 改进与验证边界](docs/release-notes/v1.0.3.zh-CN.md)。
 
 ## 为什么需要它
 
@@ -35,14 +69,14 @@ Astra Skill Optimizer 专门处理新 GPT-6／Astra 发布后旧 Skill 约束失
 
 它不会发现所有任务、扫描主目录、编辑目标，也不会把分析变成权限。
 
-## 快速接管 Codex 项目
+## 安装后 Jarvis 会做什么
 
-安装核心和插件，选中一个 Codex 任务或项目，再新开一个任务并输入：
+选中一个 Codex 任务或项目，使用上面的快速开始提示词。Jarvis 会：
 
-```text
-嗨，贾维斯，接管这个已选项目。恢复它的目标、当前阶段、卡点和唯一下一步。
-不要修改项目。
-```
+- 恢复目标、当前阶段、证据新鲜度和卡点；
+- 分开已核实事实、推断和未知；
+- 推荐一项下一步，并说明需要的权限；
+- 留下可供其他任务继续使用的检查点。
 
 若宿主没有自动选择 Skill，可显式重试一次：
 `$requirement-ledger-workflow 嗨，贾维斯，接管这个已选项目。`
@@ -52,11 +86,9 @@ Astra Skill Optimizer 专门处理新 GPT-6／Astra 发布后旧 Skill 约束失
 ```text
 # 项目总目标
 ……
-## 项目总进度：约 60%（估算）
-██████░░░░
+## 项目总进度：范围未锁定，无法计算
 当前工作区域：……
-## 当前区域进度：约 80%（估算）
-████████░░
+## 当前区域进度：范围未锁定，无法计算
 当前卡点：当前无阻断问题。
 你现在无需操作。
 # 下一步
@@ -109,7 +141,7 @@ v1 CLI 的 `review-init --mode audit` 属于第二级，因此仍要求显式 `-
 `--timezone`。插件绝不能暗示快速审查已经通过证据绑定链。
 
 完整目标体验和发布门见[贾维斯 v1 产品完工合同](docs/V1_PRODUCT_CONTRACT.zh-CN.md)。
-本地 Python 版本 `1.0.0` 是稳定技术核心，不等于全部产品门和公开发布门已经通过。
+Python CLI 是兼容技术核心，本身不等于全部产品门和公开发布门已经通过。
 
 ## 为什么以 Codex 为先
 
@@ -150,7 +182,7 @@ uv tool install .
 requirement-ledger --version
 ```
 
-此 macOS checkout 已用 `uv tool install .` 成功安装 `requirement-ledger 1.0.0`。Homebrew 管理的
+Homebrew 管理的
 Python 遵循 PEP 668，可能拒绝系统级 `pip install`；本项目不要使用 `--break-system-packages`。
 
 ### 已有虚拟环境
@@ -161,12 +193,13 @@ requirement-ledger --version
 ```
 
 核心使用 Python 标准库。Windows 安装还会获得小型条件依赖 `tzdata`，以便使用 IANA 审查窗口。
-旧公开 Alpha wheel 不是这个本地候选。
+请用 `requirement-ledger --version` 核对实际安装版本。
 
 ## 安装或刷新本地 Codex 插件
 
 ```bash
-codex plugin marketplace add /absolute/path/to/requirement-ledger
+codex plugin marketplace add /absolute/path/to/gpt-6-astra-skill
+codex plugin add gpt6-astra-skill-optimizer@requirement-ledger-local
 codex plugin add requirement-ledger@requirement-ledger-local
 codex plugin list --marketplace requirement-ledger-local
 ```
@@ -175,7 +208,9 @@ Codex 会安装带版本的插件快照。本地开发时，编辑此 checkout �
 字节。如果同一个未发布版本已经安装，应显式刷新，然后新建 Codex 任务：
 
 ```bash
+codex plugin remove gpt6-astra-skill-optimizer@requirement-ledger-local
 codex plugin remove requirement-ledger@requirement-ledger-local
+codex plugin add gpt6-astra-skill-optimizer@requirement-ledger-local
 codex plugin add requirement-ledger@requirement-ledger-local
 ```
 

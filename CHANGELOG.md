@@ -5,6 +5,21 @@ All notable changes to this project are documented here. Versions follow
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-09-16
+
+### Fixed
+
+- Corrected catalog false positives for common valid YAML descriptions; uncertain syntax is a manual review, not a missing field.
+- Scoped implementation requests no longer trigger a second permission gate for the same edit.
+- Removed business-specific pricing and customer-message rules from the reusable optimizer.
+- Replaced illustrative progress percentages with an explicit unknown when no denominator exists.
+
+### Changed
+
+- Added English/Chinese entry points for both Skill auditing and Jarvis project takeover.
+- Published the OpenAI baseline / Astra adaptation contract with preserved capabilities and regression boundaries.
+- Distinguished heuristic static checks, deterministic tests, installed snapshots, and observed model behavior.
+
 ## [1.0.2] - 2026-09-09
 
 ### Changed

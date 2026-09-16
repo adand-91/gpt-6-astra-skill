@@ -1,21 +1,21 @@
-<!-- translation-of: CONTEXT.md sha256:6db6f55e6560aa81 -->
+<!-- translation-of: CONTEXT.md sha256:b599614c52f27264 -->
 
 # 项目上下文
 
-短接手索引。任务规则见 `AGENTS.md`；产品契约见 `docs/GPT6_ASTRA_SKILL_CONTRACT.md`；技术交接见 `HANDOFF.md`。
+短接手索引。规则见 `AGENTS.md`，产品见 `docs/GPT6_ASTRA_SKILL_CONTRACT.md`，技术证据见 `HANDOFF.md`，本轮变更见 `docs/release-notes/v1.0.3.zh-CN.md`。
 
-## 项目目标
+## 目标
 
-构建 **Astra Skill Optimizer**：基于可追溯证据、最小改动和可复核验证，适配现有项目 Skill 与工作流。长期发展为类似 Jarvis 的个人与社区 Skill 优化系统。
+Astra Skill Optimizer 在保留核心功能的前提下，为选定项目适配 GPT-6／Astra Skill。
+长期 Jarvis 发展为个人项目管理师，让用户专注目标与方向。
 
 ## 当前检查点
 
-- 产品名为 Astra Skill Optimizer，GitHub 仓库 slug 保留 `gpt-6-astra-skill`。
-- 独立插件位于 `plugins/gpt6-astra-skill-optimizer`。
-- 旧 Requirement Ledger 包和 CLI 保留为兼容入口。
-- `1.0.2` 改名已推送到 `main`：测试共 213 项，206 项通过、7 项跳过；翻译和插件校验通过。
-- 业务 Skill 和订单记录不属于本项目。
+1.0.3 本地候选：216 项通过、7 项跳过，两个插件安装快照已刷新且字节一致。
+已修复解析误判、重复请示、业务规则混入及双语入口。跨项目模型质量和新任务自动触发仍未知。
 
-## 下一步与边界
+## 下一步与授权
 
-使用 `docs/PRO_APPLICATION_BRIEF.md` 准备申请，再开展脱敏真实项目适配回归。不得混入接单、交易、私人客户记录或无关项目实现。
+用户于 2026-09-16 授权先发布 GitHub，再申请 Codex for OSS。
+公开 Release 与提交回执须分别核验，本文本身不证明二者已完成。
+申请私有证据和当前任务检查点保存在维护者外部接手中心、本项目的 Codex 任务目录，不随仓库分发。

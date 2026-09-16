@@ -5,6 +5,8 @@ import re
 from pathlib import Path
 import unittest
 
+from requirement_ledger import __version__
+
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "plugins" / "gpt6-astra-skill-optimizer"
 SKILL = PLUGIN / "skills" / "gpt6-astra-skill-optimizer"
@@ -14,7 +16,7 @@ class AstraSkillOptimizerTests(unittest.TestCase):
     def test_manifest_is_independent_skill_only_v1(self) -> None:
         manifest = json.loads((PLUGIN / ".codex-plugin" / "plugin.json").read_text())
         self.assertEqual(manifest["name"], "gpt6-astra-skill-optimizer")
-        self.assertEqual(manifest["version"], "1.0.2")
+        self.assertEqual(manifest["version"], __version__)
         self.assertEqual(manifest["skills"], "./skills/")
         self.assertEqual(manifest["interface"]["capabilities"], ["Interactive"])
         self.assertEqual(len(manifest["interface"]["defaultPrompt"]), 3)
@@ -48,20 +50,14 @@ class AstraSkillOptimizerTests(unittest.TestCase):
         self.assertGreaterEqual(len(re.findall(r"^\d+\. ", negative, re.M)), 3)
         self.assertIn("does not train GPT-6 Astra", (PLUGIN / "README.md").read_text())
 
-    def test_fixed_delta_contract_and_domain_dimensions(self) -> None:
+    def test_preserves_delta_contract_without_business_policy(self) -> None:
         text = (SKILL / "SKILL.md").read_text()
-        for phrase in ("优化前", "当前问题", "优化后", "验证方式", "唯一下一步",
-                       "platform costs", "重估触发", "业务状态", "execution receipts", "短代码块"):
+        for phrase in ("优化前", "当前问题", "优化后", "验证方式", "唯一下一步"):
             self.assertIn(phrase, text)
-        schema = (SKILL / "references" / "audit-schema.md").read_text()
-        for dimension in ("pricing", "communication", "state", "execution"):
-            self.assertIn(dimension, schema)
-
-    def test_domain_regression_cases_present(self) -> None:
-        cases = (SKILL / "references" / "test-cases.md").read_text()
-        for phrase in ("platform fee was added", "2–3 short", "业务状态", "understanding receipt",
-                       "silently passed through", "claim completion"):
-            self.assertIn(phrase, cases)
+        for relative in ("SKILL.md", "references/test-cases.md", "references/audit-schema.md"):
+            content = (SKILL / relative).read_text()
+            for leaked_policy in ("platform costs", "platform fee", "短代码块", "业务状态"):
+                self.assertNotIn(leaked_policy, content)
 
     def test_no_second_runtime_or_private_evidence_fixture(self) -> None:
         self.assertEqual(list(PLUGIN.rglob("*.py")), [])

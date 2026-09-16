@@ -1,6 +1,6 @@
 {
   "name": "gpt6-astra-skill-optimizer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Focused Astra Skill Optimizer workflow for adapting one selected project and its explicitly related Skills to GPT-6/Astra behavior.",
   "author": {
     "name": "Astra Skill Optimizer contributors"

@@ -44,11 +44,9 @@ the lifecycle router below.
 ```text
 # 项目总目标
 <one confirmed goal>
-## 项目总进度：约 60%（估算）
-██████░░░░
+## 项目总进度：范围未锁定，无法计算
 当前工作区域：<one active stage derived from the goal>
-## 当前区域进度：约 40%（估算）
-████░░░░░░
+## 当前区域进度：范围未锁定，无法计算
 当前卡点：当前无阻断问题。
 你现在无需操作。
 # 下一步
